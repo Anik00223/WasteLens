@@ -176,4 +176,11 @@ robustness to camera-captured images vs TrashNet's studio-style shots). Neither 
 the hazardous gap; if battery/hazardous per-class recall is poor, a small web-scraped
 hazardous set would be the fallback — to be discussed separately.
 
+**Download note (implementation):** the `asdasdasasdas/garbage-classification` Kaggle
+handle now points to a 6-class TrashNet-derived variant (latest version), and its old
+12-class version 404s for anonymous versioned downloads. `src/train.py` therefore uses
+the identical 12-class mirror `mostafaabla/garbage-classification` via kagglehub —
+first scan verified all per-class counts match this document exactly (total 8,213
+usable after dropping clothes/shoes).
+
 

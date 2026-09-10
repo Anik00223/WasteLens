@@ -1,0 +1,6 @@
+# WasteLens — pinned dependencies (Python 3.13, CPU)
+tensorflow==2.21.0
+kagglehub>=0.3.0
+scikit-learn==1.8.0
+pillow==12.1.0
+numpy==2.4.1
