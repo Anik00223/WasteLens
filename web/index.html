@@ -1,15 +1,436 @@
 <!DOCTYPE html>
-<!-- WasteLens — single-page web demo (PLACEHOLDER) -->
-<!-- Final page will provide: camera capture / file upload, client-side -->
-<!-- TensorFlow.js inference, and display of the predicted waste category -->
-<!-- with a confidence score. Model artifacts will be loaded from model/. -->
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>WasteLens</title>
-  </head>
-  <body>
-    <h1>WasteLens</h1>
-    <p>Skeleton placeholder — no implementation logic yet.</p>
-  </body>
+<!-- WasteLens - single-file browser demo (HTML/CSS/JS, no build step).
+     Serve this folder over HTTP (e.g. `python -m http.server` from web/)
+     and load the exported TF.js model into web/model/ (model.json + shards). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0e1116">
+<link rel="icon" href="data:,">
+<title>WasteLens - what bin does this go in?</title>
+<style>
+  :root {
+    --bg: #0e1116;
+    --surface: #161b23;
+    --surface-2: #1d232e;
+    --border: #273040;
+    --text: #e7eaf1;
+    --muted: #8d95a6;
+    --accent: #3fb98a;
+    --accent-soft: rgba(63, 185, 138, 0.14);
+    --danger: #e06c7d;
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background:
+      radial-gradient(1100px 700px at 80% -10%, rgba(63, 185, 138, 0.07), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 28px 18px 40px; }
+  header { margin-bottom: 22px; }
+  .wordmark {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 26px; font-weight: 700; letter-spacing: 0.2px;
+  }
+  .wordmark .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .tagline { color: var(--muted); margin: 4px 0 0; font-size: 15px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+  .status { display: flex; align-items: flex-start; gap: 12px; min-height: 0; }
+  .status .spinner {
+    width: 18px; height: 18px; flex: none;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    margin-top: 3px;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .status .mark { font-size: 18px; flex: 0 0 22px; width: 22px; max-width: 22px; overflow: hidden; text-align: center; line-height: 1.4; align-self: flex-start; display: block; }
+  .status .copy { flex: 1 1 auto; min-width: 0; }
+  .status .title { font-weight: 600; }
+  .status .detail { color: var(--muted); font-size: 14px; margin-top: 2px; overflow-wrap: anywhere; }
+  .status.error .title { color: var(--danger); }
+  .status.ready .mark { color: var(--accent); }
+  .dropzone {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    padding: 30px 18px;
+    border: 1.5px dashed var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    user-select: none;
+  }
+  .dropzone:hover, .dropzone:focus-visible, .dropzone.dragging {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    outline: none;
+  }
+  .dropzone.disabled { opacity: 0.55; cursor: not-allowed; }
+  .dropzone svg { width: 34px; height: 34px; stroke: var(--accent); }
+  .dropzone .dz-title { font-weight: 600; font-size: 16px; }
+  .dropzone .dz-hint { color: var(--muted); font-size: 13.5px; max-width: 52ch; }
+  .dropzone .dz-hint .ext { white-space: nowrap; }
+  .dropzone kbd {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1px 6px; font-size: 12px; color: var(--muted);
+  }
+  input[type="file"] { display: none; }
+  .results { display: grid; gap: 16px; }
+  @media (min-width: 700px) {
+    .results { grid-template-columns: 300px 1fr; align-items: start; }
+  }
+  .preview-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 180px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .preview-box img { display: block; max-width: 100%; max-height: 340px; object-fit: contain; }
+  .placeholder { color: var(--muted); font-size: 14px; padding: 24px; text-align: center; }
+  .bin-label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; }
+  .bin-name { font-size: 30px; font-weight: 700; margin: 2px 0 14px; }
+  .bin-name .chip {
+    display: inline-block; padding: 4px 14px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+    border: 1px solid rgba(63, 185, 138, 0.35);
+  }
+  .conf-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+  .conf-num { font-size: 40px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .conf-cap { color: var(--muted); font-size: 14px; }
+  .bar-row { display: grid; grid-template-columns: 110px 1fr 52px; gap: 10px; align-items: center; margin: 8px 0; }
+  .bar-row .bar-label { font-size: 13.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-row.predicted .bar-label { color: var(--text); font-weight: 600; }
+  .bar-track { height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; background: var(--border); transition: width 0.5s ease; }
+  .bar-row.predicted .bar-fill { background: linear-gradient(90deg, var(--accent), #6dd6a8); }
+  .bar-row .bar-pct { font-size: 13px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+  .bar-row.predicted .bar-pct { color: var(--accent); }
+  .result-error { color: var(--danger); font-size: 14.5px; }
+  .result-error:empty { display: none; }
+  footer { color: var(--muted); font-size: 12.5px; margin-top: 22px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="wordmark"><span class="dot"></span> WasteLens</div>
+    <p class="tagline">Snap a photo, find out which bin it belongs in. Runs entirely in your browser.</p>
+  </header>
+
+  <section id="status" class="card status" aria-live="polite">
+    <div class="spinner" id="statusIcon"></div>
+    <div class="copy">
+      <div class="title" id="statusTitle">Loading model&hellip;</div>
+      <div class="detail" id="statusDetail">Fetching the TensorFlow.js model from web/model/</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <label id="dropzone" class="dropzone disabled" for="fileInput" tabindex="0" role="button"
+           aria-label="Take a photo or choose an image to classify">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/>
+        <circle cx="12" cy="13" r="3.4"/>
+      </svg>
+      <span class="dz-title" id="dzTitle">Take a photo or choose an image</span>
+      <span class="dz-hint" id="dzHint">On your phone this opens the camera &middot; on desktop, pick a file or drag &amp; drop <span class="ext">(JPG&nbsp;/&nbsp;PNG)</span></span>
+    </label>
+    <input type="file" id="fileInput" accept="image/*" capture="environment">
+  </section>
+
+  <section id="results" class="card results" hidden>
+    <div class="preview-box">
+      <img id="preview" alt="Selected photo preview" hidden>
+      <div class="placeholder" id="placeholder">Analyzing&hellip;</div>
+    </div>
+    <div>
+      <div id="resultError" class="result-error" role="alert"></div>
+      <div id="resultPanel" hidden>
+        <div class="bin-label">Predicted bin</div>
+        <div class="bin-name"><span class="chip" id="binName">&ndash;</span></div>
+        <div class="conf-row">
+          <div class="conf-num" id="confidence">&ndash;</div>
+          <div class="conf-cap">model confidence</div>
+        </div>
+        <div id="bars"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    MobileNetV2 (ImageNet) + 4-bin head &middot; preprocessing: resize 224&times;224, (x / 127.5) &minus; 1 &middot;
+    label order: recyclable, organic, hazardous, general trash &middot; no image ever leaves your device.
+  </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // MUST match the training label order (see src/train.py BINS / labels.json).
+  var LABELS = ['recyclable', 'organic', 'hazardous', 'general trash'];
+  var MODEL_URL = 'model/model.json';
+  var IMG_SIZE = [224, 224];
+
+  var model = null;
+  var modelReady = false;
+  var busy = false;
+  var lastObjectUrl = null;
+
+  var els = {
+    status: document.getElementById('status'),
+    statusIcon: document.getElementById('statusIcon'),
+    statusTitle: document.getElementById('statusTitle'),
+    statusDetail: document.getElementById('statusDetail'),
+    dropzone: document.getElementById('dropzone'),
+    fileInput: document.getElementById('fileInput'),
+    results: document.getElementById('results'),
+    preview: document.getElementById('preview'),
+    placeholder: document.getElementById('placeholder'),
+    resultError: document.getElementById('resultError'),
+    resultPanel: document.getElementById('resultPanel'),
+    binName: document.getElementById('binName'),
+    confidence: document.getElementById('confidence'),
+    bars: document.getElementById('bars')
+  };
+
+  function setStatus(state, title, detail) {
+    els.status.classList.remove('ready', 'error');
+    if (state === 'ready') {
+      els.status.classList.add('ready');
+      els.statusIcon.className = 'mark';
+      els.statusIcon.textContent = '\u2713';
+    } else if (state === 'error') {
+      els.status.classList.add('error');
+      els.statusIcon.className = 'mark';
+      els.statusIcon.textContent = '\u2715';
+    } else {
+      els.statusIcon.className = 'spinner';
+      els.statusIcon.textContent = '';
+    }
+    els.statusTitle.textContent = title;
+    els.statusDetail.textContent = detail || '';
+  }
+
+  function setDropzoneEnabled(enabled) {
+    els.dropzone.classList.toggle('disabled', !enabled);
+  }
+
+  function showAnalyzing() {
+    els.results.hidden = false;
+    els.preview.hidden = true;
+    els.resultPanel.hidden = true;
+    els.resultError.textContent = '';
+    els.placeholder.hidden = false;
+    els.placeholder.textContent = 'Analyzing\u2026';
+  }
+
+  function showImage() {
+    els.preview.hidden = false;
+    els.placeholder.hidden = true;
+  }
+
+  function showResultError(message) {
+    els.resultPanel.hidden = true;
+    els.resultError.textContent = message;
+  }
+
+  function loadImage(url) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () { resolve(img); };
+      img.onerror = function () { reject(new Error('image could not be decoded')); };
+      img.src = url;
+    });
+  }
+
+  function runInference(img) {
+    // Preprocessing must exactly match training (src/train.py make_dataset):
+    // decode -> resizeBilinear to 224x224 -> (x / 127.5) - 1  (range [-1, 1]).
+    return tf.tidy(function () {
+      var pixels = tf.browser.fromPixels(img);
+      var resized = tf.image.resizeBilinear(pixels, IMG_SIZE);
+      var normalized = resized.div(127.5).sub(1);
+      return model.predict(normalized.expandDims(0));
+    });
+  }
+
+  function renderResult(probs) {
+    var best = 0;
+    var i;
+    for (i = 1; i < probs.length; i++) {
+      if (probs[i] > probs[best]) best = i;
+    }
+    var name = LABELS[best];
+    els.binName.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+    els.confidence.textContent = (probs[best] * 100).toFixed(1) + '%';
+
+    els.bars.innerHTML = '';
+    LABELS.forEach(function (label, i) {
+      var row = document.createElement('div');
+      row.className = 'bar-row' + (i === best ? ' predicted' : '');
+      var nameDiv = document.createElement('div');
+      nameDiv.className = 'bar-label';
+      nameDiv.textContent = label;
+      var track = document.createElement('div');
+      track.className = 'bar-track';
+      var fill = document.createElement('div');
+      fill.className = 'bar-fill';
+      fill.style.width = '0%';
+      track.appendChild(fill);
+      var pct = document.createElement('div');
+      pct.className = 'bar-pct';
+      pct.textContent = (probs[i] * 100).toFixed(1) + '%';
+      row.appendChild(nameDiv);
+      row.appendChild(track);
+      row.appendChild(pct);
+      els.bars.appendChild(row);
+      window.requestAnimationFrame(function () {
+        fill.style.width = Math.max(2, probs[i] * 100).toFixed(1) + '%';
+      });
+    });
+
+    showImage();
+    els.resultPanel.hidden = false;
+  }
+
+  function handleFile(file) {
+    if (!modelReady || busy || !file) return;
+    if (!file.type || file.type.indexOf('image/') !== 0) {
+      showAnalyzing();
+      showImage();
+      showResultError('That file does not look like an image. Please choose or take a photo (JPG/PNG).');
+      return;
+    }
+    busy = true;
+    setDropzoneEnabled(false);
+    showAnalyzing();
+    if (lastObjectUrl) URL.revokeObjectURL(lastObjectUrl);
+    lastObjectUrl = URL.createObjectURL(file);
+    loadImage(lastObjectUrl).then(function (img) {
+      els.preview.src = lastObjectUrl;
+      showImage();
+      var probsTensor = runInference(img);
+      return probsTensor.data().then(function (data) {
+        probsTensor.dispose();
+        renderResult(Array.prototype.slice.call(data));
+      });
+    }).catch(function (err) {
+      var msg = err && err.message ? err.message : String(err);
+      showImage();
+      showResultError('Could not process that image (' + msg + '). Try another photo.');
+    }).then(function () {
+      busy = false;
+      setDropzoneEnabled(true);
+    });
+  }
+
+  function init() {
+    if (window.location.protocol === 'file:') {
+      setStatus('error',
+        'Opened from the file system (file://)',
+        'Browsers block loading the model this way. Serve the web/ folder over HTTP, e.g. run "python -m http.server" inside web/ and open http://localhost:8000.');
+      setDropzoneEnabled(false);
+      return;
+    }
+    if (typeof tf === 'undefined') {
+      setStatus('error',
+        'Could not load TensorFlow.js',
+        'The TF.js CDN script did not load. Check your internet connection and reload the page.');
+      setDropzoneEnabled(false);
+      return;
+    }
+    fetch(MODEL_URL, { cache: 'no-store' }).then(function (head) {
+      if (!head.ok) {
+        throw new Error('model not found (HTTP ' + head.status + ')');
+      }
+      return tf.loadLayersModel(MODEL_URL);
+    }).then(function (loaded) {
+      model = loaded;
+      // Warm-up pass so the first real inference is fast.
+      var warm = tf.tidy(function () {
+        return model.predict(tf.zeros([1, IMG_SIZE[0], IMG_SIZE[1], 3]));
+      });
+      return warm.data().then(function () {
+        warm.dispose();
+        modelReady = true;
+        setDropzoneEnabled(true);
+        setStatus('ready', 'Model ready',
+          'MobileNetV2 + 4-bin head loaded from web/model/ \u00b7 all inference runs locally.');
+      });
+    }).catch(function (err) {
+      var msg = err && err.message ? err.message : String(err);
+      if (/404|not found/i.test(msg)) {
+        setStatus('error', 'Model not found in web/model/',
+          'No model.json is served from web/model/. Export the trained model first (src/export_tfjs.py, or the export cell of notebooks/train_colab.ipynb), place model.json + shard files in web/model/, then reload this page.');
+      } else {
+        setStatus('error', 'Failed to load the model', msg);
+      }
+      setDropzoneEnabled(false);
+    });
+  }
+
+  els.dropzone.addEventListener('click', function (e) {
+    if (!modelReady || busy) e.preventDefault();
+  });
+  els.dropzone.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (modelReady && !busy) els.fileInput.click();
+    }
+  });
+  els.fileInput.addEventListener('change', function () {
+    var file = this.files && this.files[0];
+    this.value = '';
+    handleFile(file);
+  });
+  ['dragenter', 'dragover'].forEach(function (type) {
+    els.dropzone.addEventListener(type, function (e) {
+      e.preventDefault();
+      els.dropzone.classList.add('dragging');
+    });
+  });
+  ['dragleave', 'drop'].forEach(function (type) {
+    els.dropzone.addEventListener(type, function () {
+      els.dropzone.classList.remove('dragging');
+    });
+  });
+  els.dropzone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  });
+  window.addEventListener('dragover', function (e) { e.preventDefault(); });
+  window.addEventListener('drop', function (e) { e.preventDefault(); });
+
+  init();
+
+})();
+
+</script>
+</body>
 </html>
+
