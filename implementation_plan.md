@@ -71,5 +71,60 @@ Integration: no changes to `web/` (TF.js conversion is a separate later step via
 3. Replace `src/train.py` skeleton with the implemented script (constants → CLASS_TO_BIN → functions 1–9 → `if __name__ == "__main__": main()`).
 4. Run `python src/train.py` end-to-end once — confirm kagglehub download, scan/remap validation, split, model build, class weights, and pre-training summary all print correctly, and that it **stops without training**.
 5. Commit and push (`git add -A; git commit -m "Implement train.py: data loading, remap, stratified split, model build (pre-training)"; git push origin main`).
-6. Present the printed per-bin counts/split table to the user and await explicit confirmation before adding the `model.fit` training step.
+# Implementation Plan — src/export_tfjs.py (TF.js export)
+
+[Overview]
+Convert the trained `models/checkpoints/wastelens_ep09.keras` checkpoint to
+TensorFlow.js layers-model format (`model.json` + weight shards) into
+`web/model/`, plus a `labels.json` pinning the output-index → bin mapping.
+No training, no evaluation, and no changes to `web/index.html` (it already
+loads `model/model.json` via `tf.loadLayersModel`).
+
+[Findings — verified 2026-09-11, not assumed]
+1. `tensorflowjs` is NOT installed (nor is `tf_keras`). Install command:
+   `C:\...\Python313\python.exe -m pip install tensorflowjs`
+   (latest is 4.22.0, wheel `tensorflowjs-4.22.0-py3-none-any.whl`,
+   `requires_python` is null/unrestricted).
+2. No manual intermediate step is needed. Conversion call (signatures read
+   verbatim from tfjs@master `keras_h5_conversion.py`):
+   `model = tf.keras.models.load_model("models/checkpoints/wastelens_ep09.keras")`
+   then `import tensorflowjs as tfjs` +
+   `tfjs.converters.save_keras_model(model, "web/model")`.
+   It takes the in-memory model, serializes to a temp `.h5` internally, and
+   the converter explicitly handles the Keras-3 HDF5 weight layout
+   (`_check_version` / `_convert_v3_group` — the 'vars' subgroup branch).
+   Checkpoint verified loadable here (TF 2.21.0 + Keras 3.15.1):
+   `wastelens_mobilenetv2`, in `(None,224,224,3)` → out `(None,4)`.
+   Fallback (SavedModel → graph-model) is REJECTED: it would emit
+   `format: "graph-model"`, which `tf.loadLayersModel` cannot load, and
+   `web/index.html` must not be modified.
+3. Labels: `train.py BINS` is verbatim
+   `["recyclable", "organic", "hazardous", "general trash"]`, identical to
+   `web/index.html` `LABELS`. `labels.json` will be written from the imported
+   `train.BINS` (never retyped) so order drift is impossible.
+4. Version risks: (a) tensorflowjs 4.22.0 pins `packaging~=23.1` but this env
+   has packaging 25.0 (needed by black/matplotlib/huggingface_hub/...) — pip
+   will try to downgrade it; (b) TF-DF (`>=1.5.0`, a hard dep) lists only
+   Python 3.9–3.12 classifiers, no 3.13 — install on this Python 3.13 env may
+   fail; TF 2.21.0 itself already satisfies `tensorflow<3,>=2.13.0`.
+   Mitigations in order: plain `pip install tensorflowjs` first; on failure,
+   isolated venv; final fallback is the existing Colab export cell (writes
+   Drive `models/tfjs_model/`, copy down to `web/model/`).
+
+[Files]
+- Modify `src/export_tfjs.py` only: argparse (`--model`, `--out`,
+  defaulting to the ep09 checkpoint and `web/model/`), guarded
+  `import tensorflowjs` (clear error + pip command on ImportError), convert,
+  write `labels.json` from `train.BINS`, mirror both outputs to
+  `models/tfjs_model/` (archive; git-ignored), print written-file list.
+
+[Testing]
+- Run on the real local ep09 checkpoint; assert `web/model/model.json`
+  exists with `"format": "layers-model"`, ≥1 `group1-shard*of*` file,
+  `labels.json` == BINS order; confirm no `web/index.html` diff.
+
+[Implementation Order]
+1. (After user confirms) implement `src/export_tfjs.py`, run it, verify
+   artifacts, commit + push. No implementation is written by this plan step.
+
 
