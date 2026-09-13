@@ -1,10 +1,6 @@
 # Large model artifacts are produced locally / on Colab Drive - never commit.
 models/checkpoints/*.keras
 models/checkpoints/*.h5
-models/tfjs_model/*
-!models/tfjs_model/.gitkeep
-web/model/*
-!web/model/.gitkeep
 
 # Python
 __pycache__/

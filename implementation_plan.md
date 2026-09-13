@@ -127,4 +127,24 @@ loads `model/model.json` via `tf.loadLayersModel`).
 1. (After user confirms) implement `src/export_tfjs.py`, run it, verify
    artifacts, commit + push. No implementation is written by this plan step.
 
+**Note on the standalone exporter approach (implemented):** The tensorflowjs
+Python package is fundamentally incompatible with this environment's
+TensorFlow/NumPy/protobuf versions, across every version tried — this is a
+chain of unfixable upstream issues, not a bug in the exporter:
+- Older tensorflowjs (<=4.x) depends on `tensorflow-estimator`, whose internal
+  `tf.compat.v1.estimator` module was removed from TF >= 2.16, so it cannot be
+  imported on TF 2.21.
+- Newer tensorflowjs (4.22+) re-uses the Keras v3 weight layout and requires
+  `numpy.object` (deprecated/removed in NumPy 2.x), plus protobuf descriptor
+  errors from version skew between TF's bundled protobuf and the standalone
+  protobuf the converter expects.
+- The pip resolver also drags in `tensorflow-decision-forests`, whose wheels
+  don't ship for Python 3.13, making a clean install impossible.
+
+The exporter therefore manually constructs the TF.js layers-model format:
+topology from `model.to_json()` restructured to be browser-loadable (handling
+Keras-3 dict inbound nodes, flat input/output layers, DTypePolicy dicts), plus
+a weightsManifest and raw float32 binary shards. Validated end-to-end against
+the TF.js runtime (tf.loadLayersModel + prediction parity vs Keras).
+
 
