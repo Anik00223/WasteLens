@@ -53,6 +53,44 @@ Where it goes (most frequent confusions):
 
 Plausible explanation (consistent with docs/dataset_research.md, section 5): in the mapped dataset `general trash` has 697 images overall (8.5% of the 8,213 usable images), versus 5,586 for recyclable - an ~8:1 max/min imbalance. Smaller support means the model sees fewer and more varied examples of this bin and, for general trash specifically, it is an open-ended catch-all (miscellaneous items that fit no other bin), so it overlaps visually with every other class. The off-diagonal confusions above show exactly which bins it gets mistaken for; training-time class weights already up-weighted it (weight = 2.95), which mitigates but cannot fully remove the imbalance effect.
 
+## 4.1 Real-World Testing Beyond the Held-Out Set
+
+The held-out test set (Section 3) is drawn from the same distribution as
+training: single-item photos with consistent framing and backgrounds. To
+check whether this generalizes to real-world use, the model was tested
+informally via the web demo on four photos outside this distribution.
+
+On a single clean object (a folded paper item, plain background, filling
+the frame), the model predicted **recyclable at 98.4% confidence**, with a
+small residual probability (1.6%) on general trash — showing some
+calibrated uncertainty.
+
+On three complex real-world street scenes (each containing multiple
+objects, people, vehicles, and cluttered backgrounds unlike the
+single-item training images), the model predicted **recyclable with
+99.7-100.0% confidence** and effectively zero probability on all other
+bins in every case.
+
+This pattern is consistent with majority-class bias: recyclable makes up
+68% of the training data (5,586 of 8,213 images), and the model appears
+to default to it with high confidence when the input falls outside its
+training distribution, rather than expressing genuine uncertainty or
+reasoning about scene content. The held-out test set could not reveal
+this limitation, since it shares the training distribution's single-item
+framing.
+
+**Implication:** WasteLens likely performs close to its measured 98.2%
+test accuracy on clean, single-item photos, but is unreliable and
+overconfident on cluttered multi-object scenes. A production version
+would need either (a) training data that includes multi-object/cluttered
+scenes, or (b) confidence-based rejection (e.g., flag predictions below
+a confidence threshold, or when the top prediction doesn't dominate, as
+"uncertain" rather than presenting a single confident bin).
+
 ## 5. Conclusion
 
 On the held-out test set the frozen-backbone transfer model reached accuracy = 0.9822 and macro-F1 = 0.9742 (weighted-F1 = 0.9822). The per-class results and confusion matrix above satisfy the project success criteria; the flagged weak bin and its analysis (section 4) document the main limitation.
+
+Real-world testing (section 4.1) revealed that this accuracy is distribution-dependent, not uniform: the model performs close to its measured test accuracy on clean single-item photos, but is unreliable and overconfident on cluttered multi-object scenes drawn from outside the training distribution.
+
+**Future work:** closer investigation of the model's real-world behavior; confidence calibration on out-of-distribution inputs (e.g., flagging predictions below a confidence threshold, or when the top prediction doesn't dominate, as "uncertain" rather than presenting a single confident bin); training data that includes multi-object/cluttered scenes to close the generalization gap.
