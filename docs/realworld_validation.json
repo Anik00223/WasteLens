@@ -1,0 +1,629 @@
+{
+  "generated_utc": "2026-09-19 18:48",
+  "checkpoint": "models\\checkpoints\\wastelens_ep09.keras",
+  "rule": {
+    "MIN_TOP": 0.6,
+    "MIN_MARGIN": 0.5,
+    "epsilon": 1e-09
+  },
+  "sampling_seed": 2026,
+  "per_bin_samples": 8,
+  "examples": [
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "cardboard186.jpg",
+      "probs": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pred": 0,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 0.999999,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "metal676.jpg",
+      "probs": [
+        0.000506,
+        0.0,
+        0.999487,
+        7e-06
+      ],
+      "pred": 2,
+      "top": 0.999487,
+      "runner_up": 0.000506,
+      "margin": 0.998981,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "paper409.jpg",
+      "probs": [
+        0.999966,
+        0.0,
+        3.4e-05,
+        1e-06
+      ],
+      "pred": 0,
+      "top": 0.999966,
+      "runner_up": 3.4e-05,
+      "margin": 0.999932,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "plastic254.jpg",
+      "probs": [
+        0.999617,
+        3.2e-05,
+        0.000282,
+        6.9e-05
+      ],
+      "pred": 0,
+      "top": 0.999617,
+      "runner_up": 0.000282,
+      "margin": 0.999335,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "plastic752.jpg",
+      "probs": [
+        0.992271,
+        0.0,
+        0.0,
+        0.007728
+      ],
+      "pred": 0,
+      "top": 0.992271,
+      "runner_up": 0.007728,
+      "margin": 0.984543,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "plastic80.jpg",
+      "probs": [
+        0.999996,
+        0.0,
+        0.0,
+        4e-06
+      ],
+      "pred": 0,
+      "top": 0.999996,
+      "runner_up": 4e-06,
+      "margin": 0.999991,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "plastic818.jpg",
+      "probs": [
+        0.999999,
+        0.0,
+        0.0,
+        1e-06
+      ],
+      "pred": 0,
+      "top": 0.999999,
+      "runner_up": 1e-06,
+      "margin": 0.999998,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "white-glass307.jpg",
+      "probs": [
+        0.998316,
+        0.0,
+        2e-06,
+        0.001681
+      ],
+      "pred": 0,
+      "top": 0.998316,
+      "runner_up": 0.001681,
+      "margin": 0.996635,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological316.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological317.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological375.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 0.999999,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological441.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological709.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological744.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological906.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological948.jpg",
+      "probs": [
+        1e-06,
+        0.999999,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 0.999999,
+      "runner_up": 1e-06,
+      "margin": 0.999998,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery134.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "pred": 2,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery187.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "pred": 2,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery205.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "pred": 2,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery645.jpg",
+      "probs": [
+        0.000979,
+        0.0,
+        0.99902,
+        1e-06
+      ],
+      "pred": 2,
+      "top": 0.99902,
+      "runner_up": 0.000979,
+      "margin": 0.99804,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery732.jpg",
+      "probs": [
+        1.4e-05,
+        0.0,
+        0.999986,
+        0.0
+      ],
+      "pred": 2,
+      "top": 0.999986,
+      "runner_up": 1.4e-05,
+      "margin": 0.999972,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery839.jpg",
+      "probs": [
+        0.049649,
+        7e-06,
+        0.950344,
+        0.0
+      ],
+      "pred": 2,
+      "top": 0.950344,
+      "runner_up": 0.049649,
+      "margin": 0.900695,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery846.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "pred": 2,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery880.jpg",
+      "probs": [
+        2.9e-05,
+        0.0,
+        0.999971,
+        0.0
+      ],
+      "pred": 2,
+      "top": 0.999971,
+      "runner_up": 2.9e-05,
+      "margin": 0.999942,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash102.jpg",
+      "probs": [
+        3e-06,
+        0.0,
+        0.0,
+        0.999997
+      ],
+      "pred": 3,
+      "top": 0.999997,
+      "runner_up": 3e-06,
+      "margin": 0.999994,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash223.jpg",
+      "probs": [
+        0.236373,
+        0.000995,
+        0.673841,
+        0.088791
+      ],
+      "pred": 2,
+      "top": 0.673841,
+      "runner_up": 0.236373,
+      "margin": 0.437467,
+      "uncertain": true
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash381.jpg",
+      "probs": [
+        0.000436,
+        0.013936,
+        0.154304,
+        0.831323
+      ],
+      "pred": 3,
+      "top": 0.831323,
+      "runner_up": 0.154304,
+      "margin": 0.677019,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash440.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "pred": 3,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash553.jpg",
+      "probs": [
+        4e-06,
+        8e-06,
+        2e-06,
+        0.999986
+      ],
+      "pred": 3,
+      "top": 0.999986,
+      "runner_up": 8e-06,
+      "margin": 0.999977,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash571.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        0.0,
+        0.999999
+      ],
+      "pred": 3,
+      "top": 0.999999,
+      "runner_up": 0.0,
+      "margin": 0.999999,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash603.jpg",
+      "probs": [
+        2e-06,
+        0.0,
+        1.4e-05,
+        0.999984
+      ],
+      "pred": 3,
+      "top": 0.999984,
+      "runner_up": 1.4e-05,
+      "margin": 0.99997,
+      "uncertain": false
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash667.jpg",
+      "probs": [
+        0.0,
+        3e-06,
+        5.2e-05,
+        0.999946
+      ],
+      "pred": 3,
+      "top": 0.999946,
+      "runner_up": 5.2e-05,
+      "margin": 0.999894,
+      "uncertain": false
+    },
+    {
+      "set": "ood_probe",
+      "true_bin": "n/a (not a waste image)",
+      "file": "gray noise (static)",
+      "probs": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pred": 0,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false
+    },
+    {
+      "set": "ood_probe",
+      "true_bin": "n/a (not a waste image)",
+      "file": "flat color field (#161b23)",
+      "probs": [
+        0.999948,
+        0.0,
+        5.2e-05,
+        0.0
+      ],
+      "pred": 0,
+      "top": 0.999948,
+      "runner_up": 5.2e-05,
+      "margin": 0.999896,
+      "uncertain": false
+    },
+    {
+      "set": "ood_probe",
+      "true_bin": "n/a (not a waste image)",
+      "file": "checkerboard 8px",
+      "probs": [
+        0.999978,
+        0.0,
+        2.2e-05,
+        0.0
+      ],
+      "pred": 0,
+      "top": 0.999978,
+      "runner_up": 2.2e-05,
+      "margin": 0.999956,
+      "uncertain": false
+    },
+    {
+      "set": "ood_probe",
+      "true_bin": "n/a (not a waste image)",
+      "file": "horizontal gradient",
+      "probs": [
+        0.996651,
+        6e-06,
+        0.003286,
+        5.7e-05
+      ],
+      "pred": 0,
+      "top": 0.996651,
+      "runner_up": 0.003286,
+      "margin": 0.993364,
+      "uncertain": false
+    },
+    {
+      "set": "ood_probe",
+      "true_bin": "n/a (not a waste image)",
+      "file": "blank white frame",
+      "probs": [
+        0.999995,
+        0.0,
+        2e-06,
+        3e-06
+      ],
+      "pred": 0,
+      "top": 0.999995,
+      "runner_up": 3e-06,
+      "margin": 0.999993,
+      "uncertain": false
+    }
+  ],
+  "summary_in_distribution": {
+    "n": 32,
+    "flagged_uncertain": 1,
+    "top_ge_95pct": 30,
+    "top_ge_99pct": 29,
+    "margin_lt_050": 1,
+    "top_min": 0.673841,
+    "top_median": 0.999998,
+    "top_max": 1.0,
+    "margin_min": 0.437467,
+    "margin_median": 0.999996
+  },
+  "summary_ood": {
+    "n": 5,
+    "flagged_uncertain": 0,
+    "top_ge_95pct": 5,
+    "top_ge_99pct": 5,
+    "margin_lt_050": 0,
+    "top_min": 0.996651,
+    "top_median": 0.999978,
+    "top_max": 1.0,
+    "margin_min": 0.993364,
+    "margin_median": 0.999956
+  }
+}

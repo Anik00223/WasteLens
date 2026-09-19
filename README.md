@@ -29,6 +29,10 @@ MVP complete. The MobileNetV2 (frozen) + 4-bin head is trained (test accuracy
 TensorFlow.js, and served by the single-page demo in `web/`. Predictions whose
 top bin is not clearly dominant are flagged **uncertain** in the demo
 (motivated by the real-world testing findings in docs/report.md, section 4.1).
+Real-inference validation (`src/validate_realworld.py` →
+`docs/realworld_validation.md`) confirmed the flag detects *ambiguity between
+bins* only — out-of-distribution images still return ~100% confidence — so the
+results panel also discloses the single-item-photo scope limitation.
 
 ## Out of Scope (for now)
 

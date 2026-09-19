@@ -126,6 +126,10 @@
   .conf-num { font-size: 40px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .conf-cap { color: var(--muted); font-size: 14px; }
   .uncertain-note { color: var(--warning); font-size: 14px; margin: -6px 0 14px; }
+  .scope-note {
+    color: var(--muted); font-size: 13.5px; line-height: 1.55;
+    margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);
+  }
   .bar-row { display: grid; grid-template-columns: 110px 1fr 52px; gap: 10px; align-items: center; margin: 8px 0; }
   .bar-row .bar-label { font-size: 13.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .bar-row.predicted .bar-label { color: var(--text); font-weight: 600; }
@@ -164,7 +168,7 @@
         <circle cx="12" cy="13" r="3.4"/>
       </svg>
       <span class="dz-title" id="dzTitle">Take a photo or choose an image</span>
-      <span class="dz-hint" id="dzHint">On your phone this opens the camera &middot; on desktop, pick a file or drag &amp; drop <span class="ext">(JPG&nbsp;/&nbsp;PNG)</span></span>
+      <span class="dz-hint" id="dzHint">On your phone this opens the camera &middot; on desktop, pick a file or drag &amp; drop <span class="ext">(JPG&nbsp;/&nbsp;PNG)</span> &middot; one item per photo works best</span>
     </label>
     <input type="file" id="fileInput" accept="image/*" capture="environment">
   </section>
@@ -187,13 +191,19 @@
           Low confidence &mdash; the model is not sure which bin this is. Double-check locally before disposing.
         </div>
         <div id="bars"></div>
+        <div class="scope-note">
+          Trained on single-item photos. Cluttered scenes, multiple objects, or
+          non-waste images are outside the model's training data &mdash; even a
+          confident answer can be wrong. Photograph one item at a time on a
+          plain background for best results.
+        </div>
       </div>
     </div>
   </section>
 
   <footer>
     MobileNetV2 (ImageNet) + 4-bin head &middot; preprocessing: resize 224&times;224, (x / 127.5) &minus; 1 &middot;
-    label order: recyclable, organic, hazardous, general trash &middot; weakly dominant predictions are flagged uncertain &middot; no image ever leaves your device.
+    label order: recyclable, organic, hazardous, general trash &middot; weakly dominant predictions are flagged uncertain &middot; trained on single-item photos: cluttered or non-waste scenes are out of distribution &middot; no image ever leaves your device.
   </footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
@@ -211,6 +221,12 @@
   // clearly dominant: top probability >= MIN_TOP and (top - runner-up) >=
   // MIN_MARGIN. Calibrated so clean single-item shots (>= 98% dominant) stay
   // confident while ambiguous / borderline inputs are flagged.
+  //
+  // SCOPE (validated by real inference, src/validate_realworld.py ->
+  // docs/realworld_validation.md): this rule detects AMBIGUITY BETWEEN BINS
+  // only. Out-of-distribution images (noise, flat fields, cluttered scenes)
+  // come back 99.7-100% confident, so NO softmax threshold can detect them;
+  // the scope note in the results panel discloses that limitation instead.
   var UNCERTAIN = { MIN_TOP: 0.60, MIN_MARGIN: 0.50 };
 
   var model = null;
