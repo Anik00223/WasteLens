@@ -24,7 +24,11 @@ docs/report.md         # Project report (methodology, per-class results, weak-cl
 
 ## Status
 
-Skeleton only — no implementation logic yet.
+MVP complete. The MobileNetV2 (frozen) + 4-bin head is trained (test accuracy
+0.9822, macro-F1 0.9742 — see [docs/report.md](docs/report.md)), exported to
+TensorFlow.js, and served by the single-page demo in `web/`. Predictions whose
+top bin is not clearly dominant are flagged **uncertain** in the demo
+(motivated by the real-world testing findings in docs/report.md, section 4.1).
 
 ## Out of Scope (for now)
 
