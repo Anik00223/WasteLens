@@ -1,0 +1,28 @@
+{
+  "generated_utc": "2026-09-21 18:33:19 UTC",
+  "variant": "B (rejection head on FROZEN baseline representation)",
+  "base_checkpoint": "models\\checkpoints\\wastelens_ep09.keras",
+  "out_checkpoint": "models\\checkpoints\\wastelens_rej_frozen_best.keras",
+  "epochs": 10,
+  "seed": 42,
+  "monitor": "val_loss",
+  "optimizer": "Adam(1e-3)",
+  "loss_weights": {
+    "bins": 1.0,
+    "reject": 1.0
+  },
+  "freeze_proof": {
+    "method": "predict 16 supported train images (baseline vs frozen)",
+    "max_abs_diff": 1.1920928955078125e-07,
+    "identical_bit_exact": false
+  },
+  "trainable_params": 257,
+  "frozen_params": 2586948,
+  "train_images": 14218,
+  "val_images": 3165,
+  "elapsed_seconds": 1765.34,
+  "best_epoch": 10,
+  "best_val_loss": 0.15420101583003998,
+  "best_val_bins_acc": 0.8808846473693848,
+  "best_val_reject_acc": 0.9554502367973328
+}
