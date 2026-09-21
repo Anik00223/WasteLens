@@ -1,0 +1,98 @@
+{
+  "generated_utc": "2026-09-20 13:35",
+  "supported_split_seed": 42,
+  "unsupported_split_seed": 42,
+  "dedupe": {
+    "method": "md5 file hash",
+    "checked_against": "all 8,213 supported images + within-source",
+    "duplicates_dropped": 1,
+    "examples": [
+      "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes5234.jpg"
+    ]
+  },
+  "sources": [
+    {
+      "source": "kaggle mostafaabla/garbage-classification (12-class)",
+      "class": "4-bin taxonomy (10 classes mapped, clothes/shoes dropped)",
+      "mapped_label": "bins 0-3 (supported)",
+      "supported": true,
+      "split_counts": {
+        "train": 5749,
+        "val": 1231,
+        "test": 1233
+      },
+      "seed": 42,
+      "note": "UNCHANGED train.py pipeline; identical membership to the baseline model's data"
+    },
+    {
+      "source": "kaggle mostafaabla/garbage-classification (12-class)",
+      "class": "clothes",
+      "mapped_label": "unsupported",
+      "supported": false,
+      "split_counts": {
+        "train": 3726,
+        "val": 798,
+        "test": 800
+      },
+      "seed": 42,
+      "note": "md5-deduped against ALL supported images + within-source (1 duplicates dropped so far)"
+    },
+    {
+      "source": "kaggle mostafaabla/garbage-classification (12-class)",
+      "class": "shoes",
+      "mapped_label": "unsupported",
+      "supported": false,
+      "split_counts": {
+        "train": 1383,
+        "val": 296,
+        "test": 298
+      },
+      "seed": 42,
+      "note": "md5-deduped against ALL supported images + within-source (1 duplicates dropped so far)"
+    },
+    {
+      "source": "synthetic composition of kaggle waste photos",
+      "class": "collages (2/4/6 items on cluttered background)",
+      "mapped_label": "unsupported",
+      "supported": false,
+      "split_counts": {
+        "train": 360,
+        "val": 90,
+        "test": 90
+      },
+      "seed": 42,
+      "note": "train/val collages built from DISJOINT train-split source pools; test collages from TEST-split sources only"
+    },
+    {
+      "source": "CIFAR-10 (cs.toronto.edu)",
+      "class": "airplane/automobile/bird/cat/deer/dog/frog/horse/ship/truck",
+      "mapped_label": "unsupported",
+      "supported": false,
+      "split_counts": {
+        "train": 3000,
+        "val": 750,
+        "test": 750
+      },
+      "seed": 42,
+      "note": "official disjoint batches (train 1-4 vs test); train+val selected from train batches in one pass then sliced 300/75 per class"
+    },
+    {
+      "source": "deterministic synthetic patterns (validate_realworld.py)",
+      "class": "10 probes",
+      "mapped_label": "unsupported (EVAL ONLY)",
+      "supported": false,
+      "split_counts": {
+        "train": 0,
+        "val": 0,
+        "test": 10
+      },
+      "seed": "n/a",
+      "note": "never trained on; regression set only"
+    }
+  ],
+  "rejection_head": {
+    "input": "dropout_2 output (shared fc_256 representation)",
+    "output": "sigmoid P(unsupported)",
+    "bins_head": "unchanged Dense(4, softmax), label order = train.BINS"
+  }
+}

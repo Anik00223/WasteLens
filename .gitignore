@@ -5,3 +5,16 @@ models/checkpoints/*.h5
 # Python
 __pycache__/
 *.pyc
+
+# Node dependencies (installed locally for the browser-runtime proof harness;
+# package.json / package-lock.json pin them for reproducibility).
+node_modules/
+
+# Session scratch space: throwaway launchers and export validation artifacts
+# (regenerable via src/export_tfjs.py).
+scratch/
+
+# TensorBoard event logs (optional dependency, regenerable).
+docs/rejection_experiment/frozen_tensorboard/
+docs/rejection_experiment/tensorboard/
+

@@ -153,6 +153,12 @@ def _wrap_io_triplet(value):
     if (isinstance(value, list) and len(value) == 3
             and isinstance(value[0], str)):
         return [value]
+    if isinstance(value, dict):
+        # Keras 3 serializes NAMED (dict) model inputs/outputs as
+        # {key: [name, j, k]}; tfjs containers only accept a flat list of
+        # triplets. Python dicts keep insertion order and json.dumps preserves
+        # it, so the triplets come out in the model's output order.
+        return list(value.values())
     return value
 
 
@@ -319,14 +325,37 @@ def write_labels_json(out_dir: Path, archive_dir: Path) -> list[Path]:
     return written
 
 
+def bin_output_units(model) -> int:
+    """Units of the bin (waste) output, for single- OR multi-output models.
+
+    Iteration 4 adds a second (rejection) head, so a checkpoint may expose two
+    outputs. The 4-bin contract is unchanged: exactly one output must still
+    carry len(wl.BINS) units, and the exporter refuses anything else.
+    """
+    shape = model.output_shape
+    if isinstance(shape, dict):
+        shapes = list(shape.values())
+    elif isinstance(shape, list):
+        shapes = shape
+    else:
+        shapes = [shape]
+    units = [int(s[-1]) for s in shapes]
+    if units.count(len(wl.BINS)) != 1:
+        raise ValueError(
+            f"expected exactly one output with {len(wl.BINS)} bin units, "
+            f"found output units {units} - refusing to export."
+        )
+    return len(wl.BINS)
+
+
 def export(model_path: Path, out_dir: Path) -> tuple[Path, list[Path]]:
     """Load checkpoint and write the full TF.js layers-model artifact set."""
     print(f"[1/4] Loading checkpoint: {model_path}")
     model = tf.keras.models.load_model(model_path)
-    if model.output_shape[-1] != len(wl.BINS):
+    if bin_output_units(model) != len(wl.BINS):
         raise ValueError(
-            f"Checkpoint has {model.output_shape[-1]} outputs but "
-            f"train.BINS has {len(wl.BINS)} entries - refusing to export."
+            f"Checkpoint bin output does not match train.BINS "
+            f"({len(wl.BINS)} entries) - refusing to export."
         )
     print(f"      loaded: {model.name} "
           f"in {model.input_shape} -> out {model.output_shape}")

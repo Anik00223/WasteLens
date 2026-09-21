@@ -1,0 +1,43 @@
+WasteLens - Iteration 4 Variant B (rejection head on FROZEN baseline representation)
+      base checkpoint : models\checkpoints\wastelens_ep09.keras
+      out checkpoint  : models\checkpoints\wastelens_rej_frozen_best.keras
+      epochs          : 10
+      smoke           : False
+      data ...
+[1/6] Downloading dataset via kagglehub: mostafaabla/garbage-classification
+      cached at: C:\Users\dasa8\.cache\kagglehub\datasets\mostafaabla\garbage-classification\versions\1
+[2/6] Scanning image files (dropping classes: clothes, shoes)
+      per-class scan:
+        battery        945  (expected   945)  ok
+        biological     985  (expected   985)  ok
+        brown-glass    607  (expected   607)  ok
+        cardboard      891  (expected   891)  ok
+        green-glass    629  (expected   629)  ok
+        metal          769  (expected   769)  ok
+        paper         1050  (expected  1050)  ok
+        plastic        865  (expected   865)  ok
+        trash          697  (expected   697)  ok
+        white-glass    775  (expected   775)  ok
+      scanned total: 8213 (expected 8213)  ok
+[3/6] Remapping 12 classes -> 4 bins
+        recyclable      5586
+        organic          985
+        hazardous        945
+        general trash    697
+[4/6] Stratified split (70/15/15, stratified by bin, seed=42)
+
+  Class weights (inverse frequency, train split only):
+    recyclable      count= 3910  weight=0.368
+    organic         count=  689  weight=2.086
+    hazardous       count=  662  weight=2.171
+    general trash   count=  488  weight=2.945
+      hashing supported images for the dedupe guard ...
+      done. supported=5749 train / 1231 val / 1233 test
+      freeze proof ...
+      freeze proof: bit_exact=False  max_abs_diff=1.19e-07
+      train: 5749 supported + 8469 unsupported = 14218 images (445 steps/epoch)
+      val:   1231 supported + 1934 unsupported = 3165 images (99 val steps)
+      trainable params: 257  (reject head only)
+      frozen params:    2,586,948
+      freeze proof: bit_exact=False  max_abs_diff=1.19e-07
+Epoch 1/10

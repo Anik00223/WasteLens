@@ -1,0 +1,27 @@
+{
+  "name": "wastelens",
+  "version": "1.0.0",
+  "description": "A browser-based waste/garbage image classifier. Upload or take a photo, and the model (running entirely client-side via TensorFlow.js) classifies it into a waste category and shows a confidence score.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anik00223/WasteLens.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Anik00223/WasteLens/issues"
+  },
+  "homepage": "https://github.com/Anik00223/WasteLens#readme",
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.22.0"
+  }
+}
