@@ -1,0 +1,483 @@
+{
+ "model": "models/checkpoints/wastelens_rej_frozen_best.keras",
+ "created_utc": "2026-09-22 17:25:40 UTC",
+ "reject_threshold": 0.8774,
+ "cases": [
+  {
+   "id": "sup_conf_0",
+   "group": "supported_confident",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery1.jpg",
+   "ground_truth": "hazardous",
+   "expected": "supported",
+   "bins": [
+    8.145245260493539e-07,
+    1.719055564564087e-09,
+    0.9999991655349731,
+    5.351880605353188e-10
+   ],
+   "reject": 0.00245272577740252
+  },
+  {
+   "id": "sup_conf_1",
+   "group": "supported_confident",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery449.jpg",
+   "ground_truth": "hazardous",
+   "expected": "supported",
+   "bins": [
+    1.393437543129039e-07,
+    1.4516096769057185e-07,
+    0.9999997615814209,
+    7.138377888793457e-09
+   ],
+   "reject": 0.0021466559264808893
+  },
+  {
+   "id": "sup_conf_2",
+   "group": "supported_confident",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery76.jpg",
+   "ground_truth": "hazardous",
+   "expected": "supported",
+   "bins": [
+    3.87448108085664e-06,
+    7.682326774727244e-09,
+    0.9999960660934448,
+    1.1387889936598228e-10
+   ],
+   "reject": 0.0031747734174132347
+  },
+  {
+   "id": "sup_conf_3",
+   "group": "supported_confident",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\biological\\biological174.jpg",
+   "ground_truth": "organic",
+   "expected": "supported",
+   "bins": [
+    6.222243769116176e-07,
+    0.9999985694885254,
+    6.388733027051785e-07,
+    7.914778166195902e-08
+   ],
+   "reject": 0.020646777004003525
+  },
+  {
+   "id": "sup_conf_4",
+   "group": "supported_confident",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\biological\\biological796.jpg",
+   "ground_truth": "organic",
+   "expected": "supported",
+   "bins": [
+    2.9230506015665014e-08,
+    1.0,
+    5.2685127371887575e-09,
+    4.430828967616485e-11
+   ],
+   "reject": 0.009019086137413979
+  },
+  {
+   "id": "sup_conf_5",
+   "group": "supported_confident",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\brown-glass\\brown-glass242.jpg",
+   "ground_truth": "recyclable",
+   "expected": "supported",
+   "bins": [
+    0.9999997615814209,
+    7.255886202983675e-08,
+    7.504281995807105e-08,
+    3.0543598206200784e-10
+   ],
+   "reject": 0.028551895171403885
+  },
+  {
+   "id": "sup_conf_6",
+   "group": "supported_confident",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\brown-glass\\brown-glass543.jpg",
+   "ground_truth": "recyclable",
+   "expected": "supported",
+   "bins": [
+    0.9999998807907104,
+    1.4635329392831409e-08,
+    1.245678049599519e-07,
+    1.245839764685286e-09
+   ],
+   "reject": 0.00011171144433319569
+  },
+  {
+   "id": "sup_conf_7",
+   "group": "supported_confident",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\cardboard\\cardboard352.jpg",
+   "ground_truth": "recyclable",
+   "expected": "supported",
+   "bins": [
+    0.9999799728393555,
+    6.095534672567737e-07,
+    2.5387596025439052e-08,
+    1.943929419212509e-05
+   ],
+   "reject": 0.14064519107341766
+  },
+  {
+   "id": "sup_amb_0",
+   "group": "supported_ambiguous",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\biological\\biological46.jpg",
+   "ground_truth": "organic",
+   "expected": "uncertain",
+   "bins": [
+    0.3827627897262573,
+    0.6171534061431885,
+    8.386850822716951e-05,
+    4.209173454228221e-09
+   ],
+   "reject": 0.4693383276462555
+  },
+  {
+   "id": "clothes_0",
+   "group": "ood_clothes",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes1244.jpg",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.9784107208251953,
+    0.0009232572629116476,
+    1.4629290490120184e-06,
+    0.020664524286985397
+   ],
+   "reject": 0.9959803223609924
+  },
+  {
+   "id": "clothes_1",
+   "group": "ood_clothes",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes2594.jpg",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.9910891056060791,
+    0.00728644011542201,
+    0.00018438904953654855,
+    0.001440047868527472
+   ],
+   "reject": 0.9951985478401184
+  },
+  {
+   "id": "clothes_2",
+   "group": "ood_clothes",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes2368.jpg",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.9998975992202759,
+    3.274860864621587e-05,
+    2.06409276870545e-06,
+    6.759550160495564e-05
+   ],
+   "reject": 0.9944558143615723
+  },
+  {
+   "id": "clothes_miss_0",
+   "group": "ood_clothes_miss",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes5220.jpg",
+   "ground_truth": "unsupported",
+   "expected": null,
+   "bins": [
+    0.8593005537986755,
+    0.12023316323757172,
+    7.251281931530684e-05,
+    0.020393799990415573
+   ],
+   "reject": 0.9925520420074463
+  },
+  {
+   "id": "clothes_miss_1",
+   "group": "ood_clothes_miss",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes4837.jpg",
+   "ground_truth": "unsupported",
+   "expected": null,
+   "bins": [
+    0.7166858911514282,
+    0.0023186143953353167,
+    0.002427773317322135,
+    0.27856770157814026
+   ],
+   "reject": 0.9917001128196716
+  },
+  {
+   "id": "shoes_0",
+   "group": "ood_shoes",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes494.jpg",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.9999451637268066,
+    3.896522321156226e-05,
+    5.09972232975997e-06,
+    1.0778754585771821e-05
+   ],
+   "reject": 0.9956958889961243
+  },
+  {
+   "id": "shoes_1",
+   "group": "ood_shoes",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes123.jpg",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.9999008178710938,
+    9.782873530639336e-05,
+    1.2761854577547638e-06,
+    2.529978004872646e-09
+   ],
+   "reject": 0.9872484803199768
+  },
+  {
+   "id": "shoes_2",
+   "group": "ood_shoes",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes31.jpg",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.9606642723083496,
+    0.02762819081544876,
+    0.009730062447488308,
+    0.0019774502143263817
+   ],
+   "reject": 0.9844159483909607
+  },
+  {
+   "id": "shoes_miss_0",
+   "group": "ood_shoes_miss",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes269.jpg",
+   "ground_truth": "unsupported",
+   "expected": null,
+   "bins": [
+    0.9996967315673828,
+    1.875007728813216e-05,
+    1.233860302818357e-06,
+    0.00028333556838333607
+   ],
+   "reject": 0.9799226522445679
+  },
+  {
+   "id": "shoes_miss_1",
+   "group": "ood_shoes_miss",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes1459.jpg",
+   "ground_truth": "unsupported",
+   "expected": null,
+   "bins": [
+    0.9545016288757324,
+    0.0405053049325943,
+    0.004381366539746523,
+    0.0006116432487033308
+   ],
+   "reject": 0.979466438293457
+  },
+  {
+   "id": "nonwaste_0",
+   "group": "ood_nonwaste",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_6_0318.png",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.6408934593200684,
+    0.3591001629829407,
+    6.448241492762463e-06,
+    4.188130120486022e-10
+   ],
+   "reject": 0.9992070198059082
+  },
+  {
+   "id": "nonwaste_1",
+   "group": "ood_nonwaste",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_5_0357.png",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.9999326467514038,
+    6.5692285716068e-05,
+    1.6398115576521377e-06,
+    2.6756106663583523e-08
+   ],
+   "reject": 0.9980847239494324
+  },
+  {
+   "id": "nonwaste_2",
+   "group": "ood_nonwaste",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_1_0315.png",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.780366837978363,
+    0.040889278054237366,
+    0.1787431836128235,
+    6.879661782477342e-07
+   ],
+   "reject": 0.9971573948860168
+  },
+  {
+   "id": "nonwaste_miss_0",
+   "group": "ood_nonwaste_miss",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_5_0321.png",
+   "ground_truth": "unsupported",
+   "expected": null,
+   "bins": [
+    0.9193835258483887,
+    0.08060012757778168,
+    1.1345715620336705e-06,
+    1.5190115846053232e-05
+   ],
+   "reject": 0.9963587522506714
+  },
+  {
+   "id": "nonwaste_miss_1",
+   "group": "ood_nonwaste_miss",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_8_0366.png",
+   "ground_truth": "unsupported",
+   "expected": null,
+   "bins": [
+    0.9670517444610596,
+    0.03129790723323822,
+    0.001649814541451633,
+    5.477724585034593e-07
+   ],
+   "reject": 0.9963261485099792
+  },
+  {
+   "id": "collage_0",
+   "group": "ood_collage",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_4item_024.jpg",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.9999985694885254,
+    1.3717864248974365e-06,
+    8.290225728124767e-10,
+    3.3715075176132814e-10
+   ],
+   "reject": 0.9542338252067566
+  },
+  {
+   "id": "collage_1",
+   "group": "ood_collage",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_4item_026.jpg",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.9997227787971497,
+    0.00026690048980526626,
+    2.979634928124142e-06,
+    7.3261662691948e-06
+   ],
+   "reject": 0.9517004489898682
+  },
+  {
+   "id": "collage_2",
+   "group": "ood_collage",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_4item_016.jpg",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.9974728226661682,
+    0.002526132157072425,
+    8.630632919448544e-08,
+    8.803051514405524e-07
+   ],
+   "reject": 0.9364665746688843
+  },
+  {
+   "id": "collage_3",
+   "group": "ood_collage",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_6item_004.jpg",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.9999117851257324,
+    2.6104658900294453e-05,
+    3.553152782842517e-05,
+    2.6566547603579238e-05
+   ],
+   "reject": 0.9286434054374695
+  },
+  {
+   "id": "collage_4",
+   "group": "ood_collage",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_4item_000.jpg",
+   "ground_truth": "unsupported",
+   "expected": "unsupported",
+   "bins": [
+    0.5439115762710571,
+    0.45608413219451904,
+    4.216131856082939e-06,
+    2.1845673714437908e-08
+   ],
+   "reject": 0.8979136347770691
+  },
+  {
+   "id": "synth_ood_0",
+   "group": "synth_ood",
+   "path": "gray noise (static)",
+   "ground_truth": "unsupported",
+   "expected": null,
+   "bins": [
+    0.9999998807907104,
+    3.9388073247437205e-08,
+    2.3959456640909593e-10,
+    1.0207429568254156e-07
+   ],
+   "reject": 0.0030583299230784178
+  },
+  {
+   "id": "synth_ood_1",
+   "group": "synth_ood",
+   "path": "flat color field (#161b23)",
+   "ground_truth": "unsupported",
+   "expected": null,
+   "bins": [
+    0.9999480247497559,
+    1.5940704756189916e-08,
+    5.1647115469677374e-05,
+    2.984155571539304e-07
+   ],
+   "reject": 0.04685905575752258
+  },
+  {
+   "id": "synth_ood_2",
+   "group": "synth_ood",
+   "path": "checkerboard 8px",
+   "ground_truth": "unsupported",
+   "expected": null,
+   "bins": [
+    0.9999778270721436,
+    3.149379494971072e-07,
+    2.1723661120631732e-05,
+    1.198858541329173e-07
+   ],
+   "reject": 0.046167001128196716
+  },
+  {
+   "id": "synth_ood_3",
+   "group": "synth_ood",
+   "path": "horizontal gradient",
+   "ground_truth": "unsupported",
+   "expected": null,
+   "bins": [
+    0.996650755405426,
+    6.406493412214331e-06,
+    0.00328631023876369,
+    5.6556986237410456e-05
+   ],
+   "reject": 0.22749510407447815
+  },
+  {
+   "id": "synth_ood_4",
+   "group": "synth_ood",
+   "path": "blank white frame",
+   "ground_truth": "unsupported",
+   "expected": null,
+   "bins": [
+    0.999995231628418,
+    1.758453471722987e-08,
+    2.134828491762164e-06,
+    2.6254413114656927e-06
+   ],
+   "reject": 0.030254481360316277
+  }
+ ]
+}

@@ -1,150 +1,141 @@
-# Implementation Plan — src/train.py (WasteLens)
+# Implementation Plan — Iteration 5: Integrate and Ship the Verified Frozen Rejection Model
 
-[Overview]
-Implement `src/train.py`: a transfer-learning training script that loads the 12-class Kaggle "Garbage Classification" dataset (`asdasdasasdas/garbage-classification`) via kagglehub, remaps it to the 4-bin taxonomy (recyclable / organic / hazardous / general trash), performs a stratified 70/15/15 train/val/test split, builds a MobileNetV2 (frozen) + trainable classification-head model, computes class weights for the ~8:1 imbalance, and prints a summary of per-bin training image counts before stopping — awaiting user confirmation before any training begins.
+## Overview
 
-The scope of THIS task is strictly up to the "print counts and stop" point. Checkpoint saving, fine-tuning of deeper layers, evaluation, and TF.js export are out of scope for this iteration (they live in `src/evaluate.py` / `src/export_tfjs.py` skeletons already present). The script targets CPU-only execution (no GPU detected), so all preprocessing must be lightweight.
+Wire the approved Variant B dual-head checkpoint (`models/checkpoints/wastelens_rej_frozen_best.keras`) into the actual browser app in `web/index.html`, add a third **unsupported** result state driven by the calibrated rejection head, extend the browser/validation harnesses, and ship via a single reviewed commit to `main`. No product redesign, no retraining, no label-order change.
 
-[Types]
-No formal type system (plain Python + Keras 3). Data structures used:
-- `CLASS_TO_BIN: dict[str, str]` — the explicit 12-class → 4-bin remap (source of truth from `docs/dataset_research.md` §6):
-  - `cardboard, paper, plastic, metal, brown-glass, green-glass, white-glass` → `recyclable`
-  - `biological` → `organic`
-  - `battery` → `hazardous`
-  - `trash` → `general trash`
-  - `clothes, shoes` → dropped entirely (not used in training)
-- `BINS: list[str]` — `["recyclable", "organic", "hazardous", "general trash"]` (fixed index order; this exact order becomes the model's output-label order and must match `web/` later)
-- `split_paths: dict[str, list[tuple[str, int]]]` — mapping `"train"/"val"/"test"` to a list of `(absolute_image_path, bin_index)` tuples; used to build a `tf.data.Dataset`
-- Class weights: `dict[int, float]` — bin index → weight (inverse-frequency, computed from the train split only)
+**Baseline (verified 2026-09-21):** `main ≡ origin/main ≡ f20c2d6`, working tree clean. `web/model/` currently holds the OLD **single-head** export (model.json 213,970 B, 7 layers, one `predictions(4)` output); the Variant B dual-head export (model.json 215,184 B, 8 layers, named outputs `bins`/`reject`) has only ever been produced into `scratch/validate_reject_export/` from the **Variant A** checkpoint. Exporting Variant B into `web/model/` is therefore a required first step.
 
-[Files]
-New files:
-- `C:\Users\dasa8\OneDrive\Desktop\WasteLens\src\train.py` — replaces the current skeleton placeholder comments with the implemented training entry point (up to the pre-training summary)
-- `C:\Users\dasa8\OneDrive\Desktop\WasteLens\requirements.txt` — pinned dependencies for reproducibility (TF, kagglehub, scikit-learn, Pillow, numpy)
+**Verified facts this plan relies on (not assumptions):**
 
-Existing files to modify: none.
+1. **Reject-output semantics** — `src/train_rejection.py`, `assemble()` (line ~354): `y_rej = [0] * n_s + [1] * n_u`. The `reject` head outputs **P(unsupported)**: higher = more likely outside scope. The web must treat `reject >= THRESHOLD` as unsupported.
+2. **Calibrated threshold** — `docs/rejection_experiment/rejection_metrics_frozen.json`, operating point `"0.01"`: **reject ≥ 0.8774** (val-frozen 1% FRR point), measured on test: **84.26% OOD detection @ 1.38% FRR**. This is the threshold `docs/rejection_experiment/outcome_decision.md` ("What ships") fixes for shipping. The 5% FRR point (0.5432; 96.08% @ 6.65%) is documented but NOT shipped.
+3. **Rejection priority over uncertain** — correct per the experiment: `eval_rejection.py` defines the operating point purely on the rejection head (FRR measured on supported test only, detection on unsupported only); the top/margin rule is only ever evaluated on non-rejected inputs. Decision layer order: unsupported (rejection first) → uncertain (existing rule) → supported.
+4. **Existing ambiguity rule** (kept independent) — `web/index.html`: `UNCERTAIN = { MIN_TOP: 0.60, MIN_MARGIN: 0.50 }` inside pure `classify(probs)`.
+5. **tfjs version parity** — CDN `@tensorflow/tfjs@4.22.0` == installed `node_modules/@tensorflow/tfjs` 4.22.0. No dependency work needed.
+6. **Preprocessing contract** — unchanged: resizeBilinear 224×224 → `(x / 127.5) - 1`; `LABELS = ['recyclable','organic','hazardous','general trash']` matches `train.BINS` and `labels.json`.
+7. **Known weak spot** — collages: 57.8% detection @5% FRR (Variant B, documented). The unsupported state must not claim perfect OOD detection; the existing scope disclosure stays.
+8. **User decisions (this session):** the "49-check validator" is an external checklist — all existing in-repo validators must keep passing and the full check list is enumerated in the iteration report; §13 uses NO new dependencies (HTTP-serve + Node tfjs harness against the served URL + a manual interactive checklist).
 
-Files to delete/move: none.
+## Types
 
-Configuration: none (all constants live at the top of `train.py`: `SEED=42`, `IMG_SIZE=(224,224)`, `BATCH_SIZE=32`, `SPLIT=(0.70, 0.15, 0.15)`).
+No formal type system (vanilla JS + Python). Introduced data shapes:
 
-[Functions]
-New functions in `C:\Users\dasa8\OneDrive\Desktop\WasteLens\src\train.py`:
+- **Verdict state (JS, in `web/index.html`):** string enum `'supported' | 'uncertain' | 'unsupported'`.
+- **`decideVerdict(probs, rejectProb)` return (JS object):** `{ state: 'supported'|'uncertain'|'unsupported', best: int, second: int, top: float, margin: float, reject: float }` — pure, DOM-free, so it can be extracted and unit-tested.
+- **`REJECT_THRESHOLD = 0.8774`** (JS const inside the marked decision block, next to `UNCERTAIN`), with a comment citing `rejection_metrics_frozen.json` op point `"0.01"`.
+- **Parity artifact set (files):** `inputs.f32` — raw little-endian float32, C-order, `N × 1 × 224 × 224 × 3`, values ALREADY preprocessed to `[-1,1]` (exact model input); `parity.json` — `{model, created_utc, n, input_shape: [1,224,224,3], keras: {bins: number[N][4], reject: number[N][1]}}`.
+- **Product-test artifact (JSON):** `{model, created_utc, reject_threshold, cases: [{id, group, path, ground_truth, expected: 'supported'|'uncertain'|'unsupported'|null, bins: number[4], reject: number}]}`.
+- **Perf report (harness stdout JSON):** `{model_ref, load_ms, first_predict_ms, warm_avg_ms, warm_runs, model_json_bytes, shard_bytes}`.
 
-1. `download_dataset() -> Path` — uses `kagglehub.dataset_download("asdasdasasdas/garbage-classification")` to fetch/cache the 12-class dataset; returns the local `Path` to the extracted root (contains 12 subfolders: battery, biological, brown-glass, cardboard, clothes, green-glass, metal, paper, plastic, shoes, trash, white-glass).
-2. `scan_images(dataset_root: Path) -> list[tuple[Path, str]]` — walks the 12 class subfolders, collects `(image_path, class_name)` for every supported image file (.jpg/.jpeg/.png), filters out `clothes` and `shoes`, and validates the total count (expect ~8,213 across 10 classes).
-3. `remap_to_bins(images: list[tuple[Path, str]]) -> list[tuple[Path, str]]` — replaces `class_name` with the 4-bin label via `CLASS_TO_BIN`; raises `ValueError` if any class name is missing from `CLASS_TO_BIN` (guards against dataset layout changes).
-4. `stratified_split(images: list[tuple[Path, str]]) -> dict[str, list[tuple[Path, int]]]` — uses `sklearn.model_selection.train_test_split` twice (first 70/30, then 15/15 within the 30) with `stratify=labels` and `random_state=SEED`; converts bin labels to integer indices per `BINS`; returns `{"train": [...], "val": [...], "test": [...]}` of `(path, bin_index)` tuples.
-5. `report_split_sizes(splits: dict[str, list[tuple[Path, int]]]) -> None` — prints a table of per-bin image counts for each of train/val/test (expected ~5,586 recyclable / ~985 organic / ~945 hazardous / ~697 general-trash totals).
-6. `compute_class_weights(train_labels: list[int]) -> dict[int, float]` — inverse-frequency weighting from the train split only, so val/test remain untouched; prints the weights.
-7. `build_model(num_bins: int = 4) -> tuple[keras.Model, keras.Model]` — constructs the frozen-transfer-learning model:
-   - Base: `tf.keras.applications.MobileNetV2(input_shape=(224,224,3), include_top=False, weights="imagenet")` with `base.trainable = False` (all BatchNorm layers stay in inference mode)
-   - Head (the "fine-tuned classification head"): `GlobalAveragePooling2D → Dropout(0.2) → Dense(256, ReLU) → Dropout(0.2) → Dense(4, softmax)`
-   - Preprocessing: `tf.keras.applications.mobilenet_v2.preprocess_input` applied inside the pipeline (MobileNetV2 expects `[-1, 1]`)
-   - Loss: `sparse_categorical_crossentropy`; optimizer: `Adam(1e-3)`; metric: `sparse_categorical_accuracy`
-   - Returns `(full_model, base_model)` so a later iteration can unfreeze `base_model` layers for fine-tuning
-8. `make_dataset(split: list[tuple[Path, int]], training: bool) -> tf.data.Dataset` — builds a `tf.data.Dataset` from `(path, label)` pairs: decode JPEG/PNG via `tf.io.decode_image`, resize to (224,224), apply `preprocess_input`, shuffle+repeat+prefetch when `training=True`.
-9. `main() -> None` — orchestrates: download → scan → remap → split → report split sizes → build model → compute class weights → print per-bin TRAIN image count summary → **stop** (prints "Counts confirmed — run `train.py train` to begin training" and exits; a `train` CLI subcommand, added in a later iteration, is what will actually kick off `model.fit`).
+## Files
 
-No existing functions to modify (this file was a skeleton). No functions to remove.
+**New files:**
+- `src/make_parity_inputs.py` — builds deterministic parity inputs (synthetic + optional real from the dataset cache), runs Keras on them, writes `inputs.f32` + `parity.json` (schema in Types). CLI: `--model` (default `models/checkpoints/wastelens_rej_frozen_best.keras`), `--out` (default `scratch/parity_frozen`), `--real-per-group N` (default 8).
+- `src/product_test_outputs.py` — deterministic selection of product-test samples (Testing §C) from `docs/rejection_experiment/eval_sets.json` + the `%TEMP%\wastelens_rejection_data` cache; runs the Variant B Keras model; writes `docs/rejection_experiment/product_test_outputs.json`. CLI: `--model`, `--seed 42`.
+- `src/test_decision_logic.js` — Node test runner; extracts the marked decision block from `web/index.html`, unit-tests `decideVerdict` boundaries, then replays every case in `product_test_outputs.json` through `decideVerdict` and asserts states. Exits non-zero on failure.
+- `docs/rejection_experiment/shipping_report.md` — Iteration 5 report artifact: what shipped, decision logic, measured numbers (parity, perf before/after, OOD product tests), full enumerated check list, remaining limitations.
+- `scratch/perf_baseline_singlehead/` (NOT committed) — copy of the current `web/model/` taken **before** overwriting, for the performance "before" measurement.
 
-[Classes]
-No classes — plain functions only, per the existing codebase convention (skeleton `src/*.py` are plain scripts; no OOP patterns anywhere in the repo yet).
+**Modified files:**
+- `web/model/model.json`, `web/model/group1-shard{1,2,3}of3.bin` — replaced by the Variant B dual-head export (git tracks these binaries; ~10.3 MB total, same ballpark as today). `web/model/labels.json` — byte-identical content re-written by the exporter (no diff expected).
+- `web/index.html` — core integration (see Functions). CSS: add `.chip.unsupported` and `.unsupported-note` using the existing `--danger` palette; keep `.chip.uncertain` (warning) visually distinct. Copy updates: ready-status message, footer, and the stale SCOPE comment above `UNCERTAIN` (the claim "NO softmax threshold can detect OOD" is superseded by the model-side rejection head; the margin rule now covers ambiguity only).
+- `src/validate_reject_in_browser.js` — model-ref may be a local dir **or an `http(s)://` URL** (tf.loadLayersModel fetches; shards resolve relative to the URL); `--parity <dir>` mode (Python-vs-TF.js parity, tolerance atol 2e-5, justified below); `--perf` mode (load/first/warm timing + artifact sizes); existing structural checks become hard gates (exit non-zero).
+- `src/validate_realworld.py` — add `--model` (default unchanged `models/checkpoints/wastelens_ep09.keras`) and `--tag` (output suffix); dual-head-aware prediction (Keras dict outputs: take `out["bins"]`, capture `out["reject"]` when present); report gains a reject column and an OOD-probe rejection section when a dual-head model is evaluated; writes `docs/realworld_validation{tag}.md/json`.
+- `models/tfjs_model/` — archive copy of the new export (model.json + shards + labels.json; currently holds only `labels.json` + `.gitkeep`).
+- `README.md` — Status section: Variant B shipped, dual-head architecture, calibrated threshold, measured OOD performance, collage limitation, `uncertain` vs `unsupported` distinction.
+- `docs/report.md` — append "## 6. Shipped rejection model (Iteration 5)" (file header says "edit freely"; do not touch computed sections 3/4).
+- `docs/rejection_experiment/outcome_decision.md` — "What ships" updated: `web/model/` now carries the dual-head export; threshold 0.8774 active in the UI.
 
-[Dependencies]
-New packages to install (pinned in `requirements.txt`):
-- `tensorflow==2.21.0` — for py3.13 (verified available); brings in Keras 3 (needed for `tf.keras.applications.MobileNetV2`, which requires TF ≥ 2.19 on Keras 3)
-- `kagglehub` — for `dataset_download` (no Kaggle credentials needed for public datasets; caches under `%USERPROFILE%\.cache\kagglehub`)
-- `scikit-learn==1.8.0` — already installed; pin it
-- `pillow==12.1.0`, `numpy==2.4.1` — already installed; pin them
+**Deleted/moved:** none. **Config:** none (thresholds live in `web/index.html`).
 
-Integration: no changes to `web/` (TF.js conversion is a separate later step via `src/export_tfjs.py`).
+## Functions
 
-[Testing]
-- No formal unit-test framework exists in this repo; use lightweight inline assertions and print-based validation inside `train.py` (e.g., assert total scanned image count == 8,213 ± 1%; assert `len(splits["train"]) + len(splits["val"]) + len(splits["test"]) == len(remapped_images)`; assert all 4 bins are present in train/val/test).
-- Validation strategy for THIS task: run `python src/train.py` once — it must complete up to the pre-training summary and exit without invoking `model.fit`; visually confirm the printed per-bin split table matches the counts derived in `docs/dataset_research.md` §5.
-- Later (out of scope for this iteration): `src/evaluate.py` produces the real per-class precision/recall/F1 table; no `tests/` folder planned yet.
+**`web/index.html` (all changes in the existing IIFE):**
+- `runInference(img)` — MODIFY: return `model.predict(...)` as-is; it is now a **2-element Tensor array** (`[binsTensor, rejectTensor]`). Still inside `tf.tidy`; tidy preserves returned tensor containers.
+- `handleFile(file)` — MODIFY: replace the single `probsTensor.data()` with `Promise.all([outs[0].data(), outs[1].data()])`, dispose both tensors, call `renderResult(Array.from(binData), rejectData[0])`.
+- `classify(probs)` — KEEP unchanged (pure argmax/margin logic), but move it — with `UNCERTAIN`, new `REJECT_THRESHOLD`, and `decideVerdict` — between marker comments: `// === DECISION-BEGIN (pure logic; extracted verbatim by src/test_decision_logic.js) ===` and `// === DECISION-END ===`.
+- `decideVerdict(probs, rejectProb)` — NEW (inside the markers): rejection gate first (`rejectProb >= REJECT_THRESHOLD` → `'unsupported'`), else existing `classify()` uncertainty → `'uncertain'`/`'supported'`. Returns the verdict object from Types.
+- `renderResult(probs, rejectProb)` — MODIFY: `var verdict = decideVerdict(probs, rejectProb)`; branch on `verdict.state`:
+  - `supported`: exactly today's render (accent chip, predicted-highlight bars).
+  - `uncertain`: exactly today's render (warning chip + note).
+  - `unsupported`: bin-label text → "Result"; chip text "Unsupported" with class `unsupported` (danger); confidence number = `(verdict.reject*100).toFixed(1)+'%'` with caption "rejection confidence"; show `els.unsupportedNote`; render all four bars **without** the predicted highlight (muted); hide `uncertainNote`; keep `scope-note` visible.
+  - Copy for `unsupportedNote` (no overclaiming): "This image appears to be outside WasteLens's supported single-item waste classification scope. Non-waste objects, cluttered or multi-object scenes, and unsupported item types may be rejected. Rejection is not perfect — some unsupported images may still be classified, and occasional supported photos may be flagged. Photograph one item at a time on a plain background for best results."
+- `init()` — MODIFY ready-status detail: "MobileNetV2 + 4-bin head + rejection head loaded from web/model/ · all inference runs locally."
+- `els` map — ADD `unsupportedNote`.
+- Footer — ADD: "images that appear outside the supported single-item scope are flagged unsupported (imperfect; ~84% of unsupported inputs caught at ~1.4% false rejections in the validation experiment)".
+- Keep untouched: file-type guard, loading/error handling, camera `capture` attribute on `fileInput`, drag/drop, keyboard activation, `hidden` result flow.
 
-[Implementation Order]
-1. Confirm environment: install `tensorflow==2.21.0` and `kagglehub` into Python 3.13 (`py -3.13 -m pip install ...`), verify `import tensorflow` succeeds.
-2. Write `requirements.txt` pinning all deps.
-3. Replace `src/train.py` skeleton with the implemented script (constants → CLASS_TO_BIN → functions 1–9 → `if __name__ == "__main__": main()`).
-4. Run `python src/train.py` end-to-end once — confirm kagglehub download, scan/remap validation, split, model build, class weights, and pre-training summary all print correctly, and that it **stops without training**.
-5. Commit and push (`git add -A; git commit -m "Implement train.py: data loading, remap, stratified split, model build (pre-training)"; git push origin main`).
-# Implementation Plan — src/export_tfjs.py (TF.js export)
+**`src/validate_reject_in_browser.js`:**
+- `loadLocalLayersModel(dir)` — KEEP (fs + `tf.io.fromMemory`); used for local dirs.
+- `main()` — MODIFY: `argv[2]` may be a dir or URL; dispatch on `--parity`/`--perf`; structural checks (backend, inputs=1, outputs=2, named `predictions/predictions` + `reject/reject`, bins valid dist, reject in [0,1]) exit non-zero on failure.
+- NEW `runParity(model, parityDir)` — read `inputs.f32` + `parity.json`; slice into `tf.tensor4d` inputs; predict both heads; per-input and max abs diffs for bins and reject; PASS iff max diffs ≤ 2e-5 (justification: measured parity on identical input was 5.0e-6 bins / 3.8e-6 reject; 2e-5 leaves ~4× headroom for float32 accumulation-order differences between oneDNN (Keras CPU) and the XLA/Eigen TF.js CPU backend).
+- NEW `runPerf(model, ref)` — load ms, first predict ms, warm avg over 10 runs, artifact byte sizes; prints one JSON line.
 
-[Overview]
-Convert the trained `models/checkpoints/wastelens_ep09.keras` checkpoint to
-TensorFlow.js layers-model format (`model.json` + weight shards) into
-`web/model/`, plus a `labels.json` pinning the output-index → bin mapping.
-No training, no evaluation, and no changes to `web/index.html` (it already
-loads `model/model.json` via `tf.loadLayersModel`).
+**`src/validate_realworld.py`:**
+- Prediction call site — dual-head-aware: `out = model.predict(...)`; `probs = out["bins"] if isinstance(out, dict) else out`; `rej = out["reject"].ravel() if isinstance(out, dict) else None`.
+- `render_md(payload)` — ADD reject column + per-probe rejection rows when `rej` is present; when a dual-head model is evaluated, add a "model-side rejection" section for the 5 synthetic probes (report actual counts — never fabricate) while the margin-rule analysis stays for continuity.
+- `main()` — ADD argparse `--model`, `--tag`.
 
-[Findings — verified 2026-09-11, not assumed]
-1. `tensorflowjs` is NOT installed (nor is `tf_keras`). Install command:
-   `C:\...\Python313\python.exe -m pip install tensorflowjs`
-   (latest is 4.22.0, wheel `tensorflowjs-4.22.0-py3-none-any.whl`,
-   `requires_python` is null/unrestricted).
-2. No manual intermediate step is needed. Conversion call (signatures read
-   verbatim from tfjs@master `keras_h5_conversion.py`):
-   `model = tf.keras.models.load_model("models/checkpoints/wastelens_ep09.keras")`
-   then `import tensorflowjs as tfjs` +
-   `tfjs.converters.save_keras_model(model, "web/model")`.
-   It takes the in-memory model, serializes to a temp `.h5` internally, and
-   the converter explicitly handles the Keras-3 HDF5 weight layout
-   (`_check_version` / `_convert_v3_group` — the 'vars' subgroup branch).
-   Checkpoint verified loadable here (TF 2.21.0 + Keras 3.15.1):
-   `wastelens_mobilenetv2`, in `(None,224,224,3)` → out `(None,4)`.
-   Fallback (SavedModel → graph-model) is REJECTED: it would emit
-   `format: "graph-model"`, which `tf.loadLayersModel` cannot load, and
-   `web/index.html` must not be modified.
-3. Labels: `train.py BINS` is verbatim
-   `["recyclable", "organic", "hazardous", "general trash"]`, identical to
-   `web/index.html` `LABELS`. `labels.json` will be written from the imported
-   `train.BINS` (never retyped) so order drift is impossible.
-4. Version risks: (a) tensorflowjs 4.22.0 pins `packaging~=23.1` but this env
-   has packaging 25.0 (needed by black/matplotlib/huggingface_hub/...) — pip
-   will try to downgrade it; (b) TF-DF (`>=1.5.0`, a hard dep) lists only
-   Python 3.9–3.12 classifiers, no 3.13 — install on this Python 3.13 env may
-   fail; TF 2.21.0 itself already satisfies `tensorflow<3,>=2.13.0`.
-   Mitigations in order: plain `pip install tensorflowjs` first; on failure,
-   isolated venv; final fallback is the existing Colab export cell (writes
-   Drive `models/tfjs_model/`, copy down to `web/model/`).
+**`src/make_parity_inputs.py`** — NEW `main()` + helpers: `build_synthetic_inputs()` (5 deterministic images: zeros, 16px checkerboard, horizontal gradient, seeded gaussian noise, flat mid-gray; built directly in `[-1,1]` model-input space), `select_real_inputs(data, n)` (sorted-path stride sampling from `eval_sets.json` `supported_test` and `val_unsup`), `keras_predict(model, paths)` (reuse `tr.make_weighted_ds(...)` images-only mapping exactly as `src/eval_rejection.py::batches` does, guaranteeing identical preprocessing), `write_artifacts(out_dir, inputs, outputs)`.
 
-[Files]
-- Modify `src/export_tfjs.py` only: argparse (`--model`, `--out`,
-  defaulting to the ep09 checkpoint and `web/model/`), guarded
-  `import tensorflowjs` (clear error + pip command on ImportError), convert,
-  write `labels.json` from `train.BINS`, mirror both outputs to
-  `models/tfjs_model/` (archive; git-ignored), print written-file list.
+**`src/product_test_outputs.py`** — NEW `main()` + `select_cases(data, seed)` (rules in Testing §C) + `write_json(out, payload)`.
 
-[Testing]
-- Run on the real local ep09 checkpoint; assert `web/model/model.json`
-  exists with `"format": "layers-model"`, ≥1 `group1-shard*of*` file,
-  `labels.json` == BINS order; confirm no `web/index.html` diff.
+**`src/test_decision_logic.js`** — NEW `extractDecisionBlock()` (regex between markers + `new Function`), `runUnitCases()`, `runProductCases()`, `main()` with PASS/FAIL table and exit code.
 
-[Implementation Order]
-1. (After user confirms) implement `src/export_tfjs.py`, run it, verify
-   artifacts, commit + push. No implementation is written by this plan step.
+**`src/export_tfjs.py`** — NO code changes (already supports multi-output; `--out` is parameterized).
 
-**Note on the standalone exporter approach (implemented):** The tensorflowjs
-Python package is fundamentally incompatible with this environment's
-TensorFlow/NumPy/protobuf versions, across every version tried — this is a
-chain of unfixable upstream issues, not a bug in the exporter:
-- Older tensorflowjs (<=4.x) depends on `tensorflow-estimator`, whose internal
-  `tf.compat.v1.estimator` module was removed from TF >= 2.16, so it cannot be
-  imported on TF 2.21.
-- Newer tensorflowjs (4.22+) re-uses the Keras v3 weight layout and requires
-  `numpy.object` (deprecated/removed in NumPy 2.x), plus protobuf descriptor
-  errors from version skew between TF's bundled protobuf and the standalone
-  protobuf the converter expects.
-- The pip resolver also drags in `tensorflow-decision-forests`, whose wheels
-  don't ship for Python 3.13, making a clean install impossible.
+## Classes
 
-The exporter therefore manually constructs the TF.js layers-model format:
-topology from `model.to_json()` restructured to be browser-loadable (handling
-Keras-3 dict inbound nodes, flat input/output layers, DTypePolicy dicts), plus
-a weightsManifest and raw float32 binary shards. Validated end-to-end against
-the TF.js runtime (tf.loadLayersModel + prediction parity vs Keras).
+None — the repo has no classes in `web/` or `src/` scripts; this plan introduces none (plain functions + constants only, matching existing conventions).
 
+## Dependencies
 
+- **None new.** Node harness uses `node_modules/@tensorflow/tfjs` 4.22.0 (installed; matches the CDN pin 4.22.0 in `web/index.html`). Python side uses installed TF 2.21 / numpy / scikit-learn. `package.json` already pins `@tensorflow/tfjs-node ^4.22.0` (its tfjs transitive dep is what the harness requires; the native binding remains unusable on this machine — documented in Iteration 4 — so the pure-JS backend stays).
+- Optional (no-op unless it installs cleanly): pin `"@tensorflow/tfjs": "4.22.0"` explicitly in `package.json` for clarity. NEVER commit `node_modules/`.
+
+## Testing
+
+**A. Export + structural gates (hard gates, exit non-zero on failure)**
+1. Export Variant B → `web/model/` and archive → `models/tfjs_model/`; assert `format: layers-model`, 2 outputs (`predictions/predictions`, `reject/reject`), 3 shards, `labels.json` == BINS order, and no unintended `web/index.html` diff from the export itself.
+2. Harness structural run: `node src/validate_reject_in_browser.js web/model` — all Iteration-4 checks pass on the SHIPPED artifact.
+
+**B. Python ↔ TF.js parity** — `py -3.13 -W ignore src/make_parity_inputs.py` then `node src/validate_reject_in_browser.js web/model --parity scratch/parity_frozen`. Inputs: 5 synthetic + up to 16 real (8 supported-test + 8 val-unsup when the `%TEMP%` cache exists; the script skips real inputs with a clear message otherwise). Report per-input and max abs diffs for bins and reject; tolerance atol 2e-5.
+
+**C. Decision-layer tests** — `node src/test_decision_logic.js`:
+- Unit boundaries: `reject=0.8774` → unsupported; `reject=0.87739` with dominant bins → supported; `top=0.55` → uncertain; `top=0.9, margin=0.3` → uncertain; ambiguous bins + `reject=0.95` → unsupported (priority check); exact `MIN_TOP/MIN_MARGIN` boundaries ±1e-9.
+- Product cases (real Variant B Keras outputs, deterministic selection, seed 42):
+  - 8 supported-confident (2 per bin; argmax correct AND top ≥ 0.95) → expected `supported`.
+  - up to 3 supported-ambiguous (top < 0.6 or margin < 0.5; `trash223.jpg` is a known case: top 67.4%, margin 43.7%) → expected `uncertain`.
+  - 3 clothes + 3 shoes + 3 non-waste (val-unsup, highest reject scores — all three sources ≥ 94% mean detection in Iteration 4) → expected `unsupported`.
+  - 5 collages → `expected: null` — assert only decision-layer consistency and LOG the state; ground truth is documented weak (57.8% @5% FRR). Never assert perfect collage rejection.
+  - Ground truth per case is recorded in the JSON; high-margin unsupported cases must match their ground truth.
+
+**D. Regression (existing validators must keep passing)**
+1. `py -3.13 -W ignore src/validate_realworld.py` (default ep09) — numbers must match the existing `docs/realworld_validation.md` (only the timestamp changes).
+2. `py -3.13 -W ignore src/validate_realworld.py --model models/checkpoints/wastelens_rej_frozen_best.keras --tag frozen` → `docs/realworld_validation_frozen.md`: 32 in-distribution FRR ≈ 1/32 (consistent with 1.38%); synthetic OOD probes now caught by the rejection head (report actual counts).
+3. `py -3.13 -m py_compile src/*.py`; single-output exporter regression re-run (`wastelens_ep09.keras` → `scratch/regress_single_output`, `output_layers` must remain a flat list).
+4. Existing rejection eval artifacts (`rejection_metrics_frozen.json`, `rejection_report_frozen.md`) stay the source of truth — no retraining, no re-eval.
+
+**E. Performance** — harness `--perf` on `scratch/perf_baseline_singlehead` (BEFORE — captured in step 1, prior to overwriting `web/model/`) and on `web/model` (AFTER); report load/first/warm + artifact sizes. Only investigate material regressions (per brief).
+
+**F. HTTP + manual UI (no new dependencies, per user decision)**
+- `py -3.13 -m http.server 8000 --directory web` (background); `GET http://localhost:8000/index.html` → 200; run the harness against `http://localhost:8000/model/model.json` (same tfjs loading path as the browser) with parity inputs.
+- Manual interactive checklist (recorded in `shipping_report.md` for the user to run): model-ready status, file input, camera capture, drag/drop, keyboard (Tab/Enter/Space), supported state, uncertain state, unsupported state (e.g., a photo of a person/room), error state (non-image file), desktop + mobile layout, footer disclosure.
+
+**Full check list enumerated in `shipping_report.md`** (the user's "49-check" list is an external artifact — this report reproduces it): 2 export checks, 5 structural harness checks, 2 parity gates × (5 synthetic + up to 16 real) inputs, ~8 decision unit cases, 19–22 product cases, 2 realworld-validation runs, 1 exporter regression, 2 perf runs, 2 HTTP checks, ~12 manual UI checks, 3 git-state checks.
+
+## Implementation Order
+
+1. **Preflight:** confirm `git status` clean at `f20c2d6`; `py -3.13 -m py_compile src/*.py`; copy `web/model/` → `scratch/perf_baseline_singlehead/`; run harness `--perf` on the single-head baseline (the "before" number) BEFORE overwriting `web/model/`.
+2. **Export Variant B:** `py -3.13 -W ignore src/export_tfjs.py --model models/checkpoints/wastelens_rej_frozen_best.keras --out web/model`; copy artifacts to `models/tfjs_model/`; verify topology (2 named outputs) and labels.
+3. **Structural harness gate:** `node src/validate_reject_in_browser.js web/model` — all checks green on the shipped artifact.
+4. **`web/index.html` integration:** markers + `REJECT_THRESHOLD` + `decideVerdict`; dual-output read in `handleFile`; 3-state `renderResult` + unsupported CSS/copy; status/footer/comment updates. (Largest change; done before parity so served-page tests exercise final code.)
+5. **Parity:** write `src/make_parity_inputs.py`, run it; add `--parity` to the harness; run locally; record max diffs.
+6. **Decision tests:** write `src/product_test_outputs.py` (run against the Keras frozen checkpoint), `src/test_decision_logic.js`; run; investigate any expectation mismatch (never silently relax ground-truth assertions).
+7. **Real-world validator:** dual-head-aware `src/validate_realworld.py` (`--model`/`--tag`); run baseline (must match prior numbers) and frozen runs.
+8. **Performance "after":** harness `--perf` on `web/model`; assemble the before/after table.
+9. **Docs:** README status, `docs/report.md` §6, `outcome_decision.md` "What ships".
+10. **HTTP verification:** serve `web/`, GET 200, harness against the served URL with parity; capture outputs.
+11. **Write `docs/rejection_experiment/shipping_report.md`** with the full enumerated check list and measured numbers.
+12. **Git (mandatory):** `git status` + `git diff` review (expected changes ONLY: `web/index.html`, `web/model/*`, `models/tfjs_model/*`, `README.md`, `docs/report.md`, `docs/rejection_experiment/{outcome_decision.md, product_test_outputs.json, shipping_report.md, realworld_validation_frozen.md, realworld_validation_frozen.json}`, `src/{validate_reject_in_browser.js, validate_realworld.py, make_parity_inputs.py, product_test_outputs.py, test_decision_logic.js}`; NO `node_modules/`, NO `scratch/`, NO logs, NO checkpoints); commit `Ship dual-head OOD rejection model`; `git push origin main`; verify `git status` clean and `git rev-parse HEAD` == `git rev-parse origin/main` (final state: `local main ≡ origin/main ≡ <commit>`, working tree clean).

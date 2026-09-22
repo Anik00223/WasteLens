@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-19 18:48",
+  "generated_utc": "2026-09-22 15:02",
   "checkpoint": "models\\checkpoints\\wastelens_ep09.keras",
   "rule": {
     "MIN_TOP": 0.6,

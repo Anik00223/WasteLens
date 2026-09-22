@@ -122,10 +122,15 @@
     background: var(--warning-soft); color: var(--warning);
     border: 1px solid rgba(224, 176, 108, 0.4);
   }
+  .bin-name .chip.unsupported {
+    background: rgba(224, 108, 125, 0.14); color: var(--danger);
+    border: 1px solid rgba(224, 108, 125, 0.4);
+  }
   .conf-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
   .conf-num { font-size: 40px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .conf-cap { color: var(--muted); font-size: 14px; }
   .uncertain-note { color: var(--warning); font-size: 14px; margin: -6px 0 14px; }
+  .unsupported-note { color: var(--danger); font-size: 14px; margin: -6px 0 14px; }
   .scope-note {
     color: var(--muted); font-size: 13.5px; line-height: 1.55;
     margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);
@@ -181,14 +186,21 @@
     <div>
       <div id="resultError" class="result-error" role="alert"></div>
       <div id="resultPanel" hidden>
-        <div class="bin-label">Predicted bin</div>
+        <div class="bin-label" id="binLabel">Predicted bin</div>
         <div class="bin-name"><span class="chip" id="binName">&ndash;</span></div>
         <div class="conf-row">
           <div class="conf-num" id="confidence">&ndash;</div>
-          <div class="conf-cap">model confidence</div>
+          <div class="conf-cap" id="confCap">model confidence</div>
         </div>
         <div class="uncertain-note" id="uncertainNote" hidden>
           Low confidence &mdash; the model is not sure which bin this is. Double-check locally before disposing.
+        </div>
+        <div class="unsupported-note" id="unsupportedNote" hidden>
+          This image appears to be outside WasteLens's supported single-item
+          waste classification scope. Non-waste objects, cluttered or
+          multi-object scenes, and unsupported item types may be rejected.
+          Rejection is not perfect &mdash; some unsupported images may still be
+          classified, and occasional supported photos may be flagged.
         </div>
         <div id="bars"></div>
         <div class="scope-note">
@@ -202,8 +214,8 @@
   </section>
 
   <footer>
-    MobileNetV2 (ImageNet) + 4-bin head &middot; preprocessing: resize 224&times;224, (x / 127.5) &minus; 1 &middot;
-    label order: recyclable, organic, hazardous, general trash &middot; weakly dominant predictions are flagged uncertain &middot; trained on single-item photos: cluttered or non-waste scenes are out of distribution &middot; no image ever leaves your device.
+    MobileNetV2 (ImageNet) + 4-bin head + rejection head &middot; preprocessing: resize 224&times;224, (x / 127.5) &minus; 1 &middot;
+    label order: recyclable, organic, hazardous, general trash &middot; weakly dominant predictions are flagged uncertain &middot; images that appear outside the supported single-item scope are flagged unsupported (imperfect: ~84% of unsupported inputs caught at ~1.4% false rejections in the validation experiment) &middot; no image ever leaves your device.
   </footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
@@ -215,8 +227,8 @@
   var LABELS = ['recyclable', 'organic', 'hazardous', 'general trash'];
   var MODEL_URL = 'model/model.json';
   var IMG_SIZE = [224, 224];
-  // Confidence-based rejection (docs/report.md section 4.1): the model tends
-  // to answer 'recyclable' with near-100% confidence on out-of-distribution
+  // Ambiguity rule (docs/report.md section 4.1): the base model tends to
+  // answer 'recyclable' with near-100% confidence on out-of-distribution
   // scenes, so a prediction is flagged 'uncertain' unless the top bin is
   // clearly dominant: top probability >= MIN_TOP and (top - runner-up) >=
   // MIN_MARGIN. Calibrated so clean single-item shots (>= 98% dominant) stay
@@ -224,10 +236,52 @@
   //
   // SCOPE (validated by real inference, src/validate_realworld.py ->
   // docs/realworld_validation.md): this rule detects AMBIGUITY BETWEEN BINS
-  // only. Out-of-distribution images (noise, flat fields, cluttered scenes)
-  // come back 99.7-100% confident, so NO softmax threshold can detect them;
-  // the scope note in the results panel discloses that limitation instead.
+  // only - it is not an out-of-distribution detector (OOD images come back
+  // 99.7-100% confident). OOD detection is the rejection head's job below.
+  // === DECISION-BEGIN (pure logic; extracted verbatim by src/test_decision_logic.js) ===
   var UNCERTAIN = { MIN_TOP: 0.60, MIN_MARGIN: 0.50 };
+
+  // Model-side rejection (Iteration 4, Variant B): the dual-head model adds a
+  // sigmoid 'reject' output = P(image is OUTSIDE the supported single-item
+  // waste scope) (y_rej = 1 for unsupported inputs in src/train_rejection.py).
+  // REJECT_THRESHOLD is the calibrated operating point frozen on the val
+  // split at the 1% false-rejection-rate target
+  // (docs/rejection_experiment/rejection_metrics_frozen.json, op point "0.01":
+  // threshold 0.8774 -> measured on test: 84.26% OOD detection at 1.38% FRR;
+  // per-source at THIS point: clothes 84.5%, shoes 74.5%, nonwaste 95.5%,
+  // collage 21.1%).
+  // Do not change it without re-running the calibration.
+  var REJECT_THRESHOLD = 0.8774;
+
+  // Pure decision layer: rejection first (its operating point was validated on
+  // supported inputs only), then the existing ambiguity rule. DOM-free so the
+  // exact shipped logic can be unit-tested.
+  function decideVerdict(probs, rejectProb) {
+    if (!Array.isArray(probs) || probs.length !== 4 ||
+        !probs.every(function (v) { return isFinite(v); }) ||
+        !isFinite(rejectProb)) {
+      throw new TypeError('decideVerdict expects 4 finite bin probs and a finite reject prob');
+    }
+    var best = 0, second = 1, i;
+    if (probs[1] > probs[0]) { best = 1; second = 0; }
+    for (i = 2; i < probs.length; i++) {
+      if (probs[i] > probs[best]) { second = best; best = i; }
+      else if (probs[i] > probs[second]) { second = i; }
+    }
+    var margin = probs[best] - probs[second];
+    var state;
+    if (rejectProb >= REJECT_THRESHOLD) {
+      state = 'unsupported';
+    } else if (probs[best] < UNCERTAIN.MIN_TOP - 1e-9 ||
+               margin + 1e-9 < UNCERTAIN.MIN_MARGIN) {
+      state = 'uncertain';
+    } else {
+      state = 'supported';
+    }
+    return { state: state, best: best, second: second,
+             top: probs[best], margin: margin, reject: rejectProb };
+  }
+  // === DECISION-END ===
 
   var model = null;
   var modelReady = false;
@@ -247,8 +301,11 @@
     resultError: document.getElementById('resultError'),
     resultPanel: document.getElementById('resultPanel'),
     binName: document.getElementById('binName'),
+    binLabel: document.getElementById('binLabel'),
     confidence: document.getElementById('confidence'),
+    confCap: document.getElementById('confCap'),
     uncertainNote: document.getElementById('uncertainNote'),
+    unsupportedNote: document.getElementById('unsupportedNote'),
     bars: document.getElementById('bars')
   };
 
@@ -313,40 +370,30 @@
     });
   }
 
-  function classify(probs) {
-    // Argmax bin + runner-up stats for the 'uncertain' flag. Pure function:
-    // does not touch the DOM so thresholds can be tested in isolation.
-    var best = 0, second = 1, i;
-    if (probs[1] > probs[0]) { best = 1; second = 0; }
-    for (i = 2; i < probs.length; i++) {
-      if (probs[i] > probs[best]) { second = best; best = i; }
-      else if (probs[i] > probs[second]) { second = i; }
-    }
-    var margin = probs[best] - probs[second];
-    return {
-      best: best,
-      second: second,
-      top: probs[best],
-      margin: margin,
-      uncertain: probs[best] < UNCERTAIN.MIN_TOP - 1e-9 ||
-                 margin + 1e-9 < UNCERTAIN.MIN_MARGIN
-    };
-  }
+  function renderResult(probs, rejectProb) {
+    var verdict = decideVerdict(probs, rejectProb);
+    var unsupported = verdict.state === 'unsupported';
+    var uncertain = verdict.state === 'uncertain';
 
-  function renderResult(probs) {
-    var verdict = classify(probs);
-    var name = LABELS[verdict.best];
-    els.binName.textContent = name.charAt(0).toUpperCase() + name.slice(1);
-    els.binName.classList.toggle('uncertain', verdict.uncertain);
-    els.confidence.textContent = (verdict.top * 100).toFixed(1) + '%';
-    els.uncertainNote.hidden = !verdict.uncertain;
+    els.binLabel.textContent = unsupported ? 'Result' : 'Predicted bin';
+    els.binName.textContent = unsupported
+      ? 'Unsupported'
+      : LABELS[verdict.best].charAt(0).toUpperCase() + LABELS[verdict.best].slice(1);
+    els.binName.classList.toggle('unsupported', unsupported);
+    els.binName.classList.toggle('uncertain', uncertain);
+    els.confidence.textContent = unsupported
+      ? (verdict.reject * 100).toFixed(1) + '%'
+      : (verdict.top * 100).toFixed(1) + '%';
+    els.confCap.textContent = unsupported ? 'rejection confidence' : 'model confidence';
+    els.uncertainNote.hidden = !uncertain;
+    els.unsupportedNote.hidden = !unsupported;
 
     els.bars.innerHTML = '';
     LABELS.forEach(function (label, i) {
       var row = document.createElement('div');
       row.className = 'bar-row'
-        + (i === verdict.best ? ' predicted' : '')
-        + (verdict.uncertain ? ' uncertain' : '');
+        + (!unsupported && i === verdict.best ? ' predicted' : '')
+        + (uncertain ? ' uncertain' : '');
       var nameDiv = document.createElement('div');
       nameDiv.className = 'bar-label';
       nameDiv.textContent = label;
@@ -388,10 +435,11 @@
     loadImage(lastObjectUrl).then(function (img) {
       els.preview.src = lastObjectUrl;
       showImage();
-      var probsTensor = runInference(img);
-      return probsTensor.data().then(function (data) {
-        probsTensor.dispose();
-        renderResult(Array.prototype.slice.call(data));
+      var outputs = runInference(img); // dual-head: [binsTensor, rejectTensor]
+      return Promise.all([outputs[0].data(), outputs[1].data()]).then(function (datas) {
+        outputs[0].dispose();
+        outputs[1].dispose();
+        renderResult(Array.prototype.slice.call(datas[0]), datas[1][0]);
       });
     }).catch(function (err) {
       var msg = err && err.message ? err.message : String(err);
@@ -434,7 +482,7 @@
         modelReady = true;
         setDropzoneEnabled(true);
         setStatus('ready', 'Model ready',
-          'MobileNetV2 + 4-bin head loaded from web/model/ \u00b7 all inference runs locally.');
+          'MobileNetV2 + 4-bin head + rejection head loaded from web/model/ \u00b7 all inference runs locally.');
       });
     }).catch(function (err) {
       var msg = err && err.message ? err.message : String(err);
