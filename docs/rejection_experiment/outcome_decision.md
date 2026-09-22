@@ -66,3 +66,18 @@ priority order for the next iteration:
 - Threshold: the val-frozen 1% FRR operating point (reject >= 0.8774 -> "not a
   recognizable single waste item - try photographing one item at a time"),
   consistent with the current UI copy for rejected inputs.
+
+## Browser integration (Iteration 5, shipped)
+
+- `web/model/` is the TensorFlow.js export of this checkpoint (named outputs
+  `bins` [4-unit softmax] and `reject` [1-unit sigmoid], label order
+  unchanged: recyclable, organic, hazardous, general trash).
+- `web/index.html` reads both outputs and routes them through a pure
+  `decideVerdict()` layer in priority order: rejection (reject >= 0.8774 ->
+  **unsupported**) -> existing ambiguity rule (top < 0.60 or margin < 0.50 ->
+  **uncertain**) -> **supported** (bin shown normally).
+- Python <-> TensorFlow.js parity over 21 deterministic inputs (5 synthetic
+  + 16 real supported/OOD): max |Δbins| = 3.64e-6, max |Δreject| = 2.59e-6,
+  tolerance atol 2e-5 (prior browser proof measured ~5e-6; float32 noise).
+- Full check enumeration and measurements:
+  `docs/rejection_experiment/shipping_report.md`.

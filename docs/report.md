@@ -94,3 +94,42 @@ On the held-out test set the frozen-backbone transfer model reached accuracy = 0
 Real-world testing (section 4.1) revealed that this accuracy is distribution-dependent, not uniform: the model performs close to its measured test accuracy on clean single-item photos, but is unreliable and overconfident on cluttered multi-object scenes drawn from outside the training distribution.
 
 **Future work:** closer investigation of the model's real-world behavior; confidence calibration on out-of-distribution inputs (e.g., flagging predictions below a confidence threshold, or when the top prediction doesn't dominate, as "uncertain" rather than presenting a single confident bin); training data that includes multi-object/cluttered scenes to close the generalization gap.
+
+## 6. Iteration 5 - Shipped model: dual-head OOD rejection (Variant B)
+
+The overconfidence gap documented in section 4.1 is now addressed model-side.
+The artifact served by the demo from `web/model/` is exported from
+`models/checkpoints/wastelens_rej_frozen_best.keras` (Variant B) - a
+**dual-head** model - and the results panel distinguishes three states.
+
+- **Architecture:** MobileNetV2 (frozen) shared representation + two heads:
+  `bins` (4-way softmax; label order unchanged: recyclable, organic,
+  hazardous, general trash) and `reject` (sigmoid; P(input is outside the
+  supported single-item waste scope)).
+- **Classification preserved exactly:** test accuracy 0.9822 / macro-F1
+  0.9742 - identical to the single-head baseline (backbone freeze proof:
+  max_abs_diff 1.19e-07 across the bins path).
+- **Calibrated rejection threshold:** `reject >= 0.8774`, the operating
+  point frozen on the validation split at the 1% false-rejection-rate
+  target. Measured on the held-out test split: **84.26% OOD detection at
+  1.38% false-rejection rate** (rejection AUROC 0.9900). Per source at this
+  threshold: clothes 84.5%, shoes 74.5%, non-waste 95.5%, collage 21.1%.
+- **Known limitation:** multi-item collages are the documented weak spot
+  (57.8% detection even at the looser 5% FRR threshold). Rejection is not
+  perfect in either direction - some unsupported images pass through and
+  are still classified confidently (the scope disclosure in the results
+  panel still applies), and ~1.4% of supported images are falsely flagged.
+- **Three result states:** `supported` (confident bin), `uncertain`
+  (bin ambiguity - the unchanged section-4.1 rule), and `unsupported`
+  (rejection head). Rejection takes priority over the ambiguity rule,
+  matching how the operating point was validated. The states have
+  visually and semantically distinct treatments; neither `uncertain` nor
+  `unsupported` claims the image is "definitely not waste".
+
+Evidence: `docs/rejection_experiment/outcome_decision.md` (adoption
+decision), `rejection_report_frozen.md` (metrics),
+`product_test_outputs.json` (real product-output tests),
+`export_browser_proof.md` (Keras-vs-TF.js parity),
+`shipping_report.md` (Iteration 5 check enumeration). This section
+supersedes the confidence-rejection *future-work* options noted in
+sections 4.1 and 5 - they are now implemented model-side.

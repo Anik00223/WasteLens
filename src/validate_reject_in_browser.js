@@ -54,25 +54,29 @@ function structuralChecks(model) {
   gate('inputs == 1', model.inputs.length === 1);
   gate('outputs == 2 (dual-head)', model.outputs.length === 2,
        'names: ' + JSON.stringify(model.outputs.map(o => o.name)));
+  const dual = model.outputs.length === 2;
   gate('bins output is 4-unit',
        model.outputs[0].shape[model.outputs[0].shape.length - 1] === 4);
-  gate('reject output is 1-unit',
-       model.outputs[1].shape[model.outputs[1].shape.length - 1] === 1);
+  if (dual) {
+    gate('reject output is 1-unit',
+         model.outputs[1].shape[model.outputs[1].shape.length - 1] === 1);
+  }
 
   const x = tf.tensor4d(new Float32Array(1 * 224 * 224 * 3), [1, 224, 224, 3]);
   const t0 = performance.now();
-  const preds = model.predict(x);
+  const raw = model.predict(x);
+  const preds = Array.isArray(raw) ? raw : [raw];
   const dt = performance.now() - t0;
   const bins = Array.from(preds[0].dataSync());
-  const rej = Array.from(preds[1].dataSync());
+  const rej = dual && preds[1] ? Array.from(preds[1].dataSync()) : null;
   console.log('predict() returned in', dt.toFixed(1), 'ms');
   console.log('bins output (4)   =', bins.map(v => v.toFixed(5)));
-  console.log('reject output (1) =', rej[0].toFixed(6));
+  if (rej) console.log('reject output (1) =', rej[0].toFixed(6));
   gate('bins is valid 4-probability distribution',
        bins.length === 4 && bins.every(v => v >= 0 && v <= 1) &&
        Math.abs(bins.reduce((a, b) => a + b, 0) - 1) < 1e-4);
-  gate('reject in [0,1]', rej[0] >= 0 && rej[0] <= 1);
-  x.dispose(); preds[0].dispose(); preds[1].dispose();
+  if (dual) gate('reject in [0,1]', rej && rej[0] >= 0 && rej[0] <= 1);
+  x.dispose(); preds.forEach(p => p.dispose());
   return failed;
 }
 
@@ -95,31 +99,35 @@ async function runParity(model, parityDir) {
     const r = preds[1].dataSync()[0];
     for (let j = 0; j < 4; j++) maxDb = Math.max(maxDb, Math.abs(b[j] - kb[i][j]));
     maxDr = Math.max(maxDr, Math.abs(r - kr[i]));
-    console.log('  [%2d] %-34s maxdbins=%.2e  dreject=%.2e',
-                i, payload.input_names[i], maxDb, maxDr);
+    console.log('  [' + String(i).padStart(2) + '] ' +
+                String(payload.input_names[i]).padEnd(34) +
+                'max|dbins|=' + maxDb.toExponential(2) +
+                '  max|dreject|=' + maxDr.toExponential(2));
     x.dispose(); preds[0].dispose(); preds[1].dispose();
   }
-  console.log('PARITY max |dbins| = %.3e   max |dreject| = %.3e   (atol %.0e)',
-              maxDb, maxDr, PARITY_ATOL);
+  console.log('PARITY max |dbins| = ' + maxDb.toExponential(3) +
+              '   max |dreject| = ' + maxDr.toExponential(3) +
+              '   (atol ' + PARITY_ATOL.toExponential(0) + ')');
   const ok = maxDb <= PARITY_ATOL && maxDr <= PARITY_ATOL;
   console.log((ok ? 'PASS' : 'FAIL') + ' python-tfjs parity within atol');
   return ok ? 0 : 1;
 }
 
 async function runPerf(model) {
+  const outs = p => Array.isArray(p) ? p : [p];
   const x = tf.tensor4d(new Float32Array(1 * 224 * 224 * 3), [1, 224, 224, 3]);
   const t1 = performance.now();
-  const p = model.predict(x);
-  await p[0].data(); await p[1].data();
+  const p = outs(model.predict(x));
+  for (const t of p) await t.data();
   const first = performance.now() - t1;
-  p[0].dispose(); p[1].dispose();
+  p.forEach(t => t.dispose());
   let warm = 0;
   const runs = 10;
   for (let i = 0; i < runs; i++) {
     const t = performance.now();
-    const q = model.predict(x);
-    await q[0].data(); await q[1].data();
-    q[0].dispose(); q[1].dispose();
+    const q = outs(model.predict(x));
+    for (const tt of q) await tt.data();
+    q.forEach(tt => tt.dispose());
     warm += performance.now() - t;
   }
   x.dispose();
@@ -130,15 +138,20 @@ async function runPerf(model) {
     }
   }
   console.log(JSON.stringify({
-    model_ref: MODEL_REF, first_predict_ms: Math.round(first),
+    model_ref: MODEL_REF, load_ms: Math.round(LOAD_MS),
+    first_predict_ms: Math.round(first),
     warm_avg_ms: Math.round(warm / runs), warm_runs: runs,
     total_artifact_bytes: IS_URL ? null : bytes}));
   return 0;
 }
 
+let LOAD_MS = 0;  // set in main(), reported by --perf
+
 async function main() {
   console.log('loading TF.js layers model from', MODEL_REF);
+  const tLoad = performance.now();
   const model = await loadModel(MODEL_REF);
+  LOAD_MS = performance.now() - tLoad;
   let failed = structuralChecks(model);
   if (FLAGS.parity) failed += await runParity(model, FLAGS.parity);
   if (FLAGS.perf) failed += await runPerf(model);

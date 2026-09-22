@@ -24,15 +24,31 @@ docs/report.md         # Project report (methodology, per-class results, weak-cl
 
 ## Status
 
-MVP complete. The MobileNetV2 (frozen) + 4-bin head is trained (test accuracy
-0.9822, macro-F1 0.9742 — see [docs/report.md](docs/report.md)), exported to
-TensorFlow.js, and served by the single-page demo in `web/`. Predictions whose
-top bin is not clearly dominant are flagged **uncertain** in the demo
-(motivated by the real-world testing findings in docs/report.md, section 4.1).
-Real-inference validation (`src/validate_realworld.py` →
-`docs/realworld_validation.md`) confirmed the flag detects *ambiguity between
-bins* only — out-of-distribution images still return ~100% confidence — so the
-results panel also discloses the single-item-photo scope limitation.
+MVP complete — **shipping the dual-head OOD rejection model (Iteration 5)**.
+The MobileNetV2 (frozen) backbone serves two heads exported to TensorFlow.js:
+the 4-bin classifier (test accuracy 0.9822, macro-F1 0.9742 — see
+[docs/report.md](docs/report.md)) and a calibrated rejection head. The demo
+renders three distinct result states:
+
+- **supported** — a confident bin prediction, shown normally;
+- **uncertain** — within scope but the bin prediction is ambiguous
+  (existing rule: top < 0.60 or top−runner-up margin < 0.50);
+- **unsupported** — the rejection head scores the image as outside the
+  supported single-item waste scope at the calibrated threshold
+  (`reject >= 0.8774`).
+
+At that threshold the rejection head measured **84.3% OOD detection at a
+1.38% false-rejection rate** on the held-out test split (rejection AUROC
+0.9900; see [docs/rejection_experiment/outcome_decision.md](docs/rejection_experiment/outcome_decision.md)).
+Rejection is **not perfect**: multi-item collages are the documented weak
+spot (21.1% detection at the shipped threshold), and ~1.4% of supported
+images are flagged — so the results panel keeps the single-item-photo scope
+disclosure. `uncertain` (bin ambiguity) and `unsupported` (out of scope)
+are deliberately separate states with distinct copy.
+
+Real-inference validation: `src/validate_realworld.py` →
+`docs/realworld_validation.md` (single-head baseline) and
+`docs/rejection_experiment/realworld_validation_frozen.md` (shipped dual-head).
 
 ## Out of Scope (for now)
 

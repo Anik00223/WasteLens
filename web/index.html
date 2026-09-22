@@ -474,12 +474,15 @@
     }).then(function (loaded) {
       model = loaded;
       // Warm-up pass so the first real inference is fast.
+      // Dual-head predict() returns an ARRAY of tensors — unwrap it.
       var warm = tf.tidy(function () {
         return model.predict(tf.zeros([1, IMG_SIZE[0], IMG_SIZE[1], 3]));
       });
-      return warm.data().then(function () {
-        warm.dispose();
-        modelReady = true;
+      var warmTensors = Array.isArray(warm) ? warm : [warm];
+      return Promise.all(warmTensors.map(function (t) { return t.data(); }))
+        .then(function () {
+          warmTensors.forEach(function (t) { t.dispose(); });
+          modelReady = true;
         setDropzoneEnabled(true);
         setStatus('ready', 'Model ready',
           'MobileNetV2 + 4-bin head + rejection head loaded from web/model/ \u00b7 all inference runs locally.');

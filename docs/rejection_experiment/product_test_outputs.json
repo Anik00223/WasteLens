@@ -1,6 +1,6 @@
 {
  "model": "models/checkpoints/wastelens_rej_frozen_best.keras",
- "created_utc": "2026-09-22 17:25:40 UTC",
+ "created_utc": "2026-09-22 19:12:08 UTC",
  "reject_threshold": 0.8774,
  "cases": [
   {
@@ -174,30 +174,30 @@
   {
    "id": "clothes_miss_0",
    "group": "ood_clothes_miss",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes5220.jpg",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes4265.jpg",
    "ground_truth": "unsupported",
    "expected": null,
    "bins": [
-    0.8593005537986755,
-    0.12023316323757172,
-    7.251281931530684e-05,
-    0.020393799990415573
+    0.9716350436210632,
+    6.64302604036493e-07,
+    1.4104243462043087e-07,
+    0.028364157304167747
    ],
-   "reject": 0.9925520420074463
+   "reject": 0.8750556707382202
   },
   {
    "id": "clothes_miss_1",
    "group": "ood_clothes_miss",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes4837.jpg",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes4957.jpg",
    "ground_truth": "unsupported",
    "expected": null,
    "bins": [
-    0.7166858911514282,
-    0.0023186143953353167,
-    0.002427773317322135,
-    0.27856770157814026
+    0.4593100845813751,
+    1.7752441635821015e-05,
+    6.402033613994718e-05,
+    0.5406081676483154
    ],
-   "reject": 0.9917001128196716
+   "reject": 0.8733335733413696
   },
   {
    "id": "shoes_0",
@@ -244,30 +244,30 @@
   {
    "id": "shoes_miss_0",
    "group": "ood_shoes_miss",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes269.jpg",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes87.jpg",
    "ground_truth": "unsupported",
    "expected": null,
    "bins": [
-    0.9996967315673828,
-    1.875007728813216e-05,
-    1.233860302818357e-06,
-    0.00028333556838333607
+    0.5148846507072449,
+    0.44807878136634827,
+    0.006291429046541452,
+    0.03074520267546177
    ],
-   "reject": 0.9799226522445679
+   "reject": 0.8574248552322388
   },
   {
    "id": "shoes_miss_1",
    "group": "ood_shoes_miss",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes1459.jpg",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes743.jpg",
    "ground_truth": "unsupported",
    "expected": null,
    "bins": [
-    0.9545016288757324,
-    0.0405053049325943,
-    0.004381366539746523,
-    0.0006116432487033308
+    0.9226828217506409,
+    0.04215832054615021,
+    0.0012224033707752824,
+    0.03393631801009178
    ],
-   "reject": 0.979466438293457
+   "reject": 0.832514226436615
   },
   {
    "id": "nonwaste_0",
@@ -314,30 +314,16 @@
   {
    "id": "nonwaste_miss_0",
    "group": "ood_nonwaste_miss",
-   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_5_0321.png",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_1_0369.png",
    "ground_truth": "unsupported",
    "expected": null,
    "bins": [
-    0.9193835258483887,
-    0.08060012757778168,
-    1.1345715620336705e-06,
-    1.5190115846053232e-05
+    0.22642596065998077,
+    8.492107008351013e-05,
+    0.7734733819961548,
+    1.5766994692967273e-05
    ],
-   "reject": 0.9963587522506714
-  },
-  {
-   "id": "nonwaste_miss_1",
-   "group": "ood_nonwaste_miss",
-   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_8_0366.png",
-   "ground_truth": "unsupported",
-   "expected": null,
-   "bins": [
-    0.9670517444610596,
-    0.03129790723323822,
-    0.001649814541451633,
-    5.477724585034593e-07
-   ],
-   "reject": 0.9963261485099792
+   "reject": 0.846977710723877
   },
   {
    "id": "collage_0",
@@ -417,11 +403,11 @@
    "expected": null,
    "bins": [
     0.9999998807907104,
-    3.9388073247437205e-08,
-    2.3959456640909593e-10,
-    1.0207429568254156e-07
+    3.938747283882549e-08,
+    2.3959181860711e-10,
+    1.0207352119095958e-07
    ],
-   "reject": 0.0030583299230784178
+   "reject": 0.003058321075513959
   },
   {
    "id": "synth_ood_1",
@@ -431,11 +417,11 @@
    "expected": null,
    "bins": [
     0.9999480247497559,
-    1.5940704756189916e-08,
-    5.1647115469677374e-05,
-    2.984155571539304e-07
+    1.5940642583700537e-08,
+    5.164696995052509e-05,
+    2.984144202855532e-07
    ],
-   "reject": 0.04685905575752258
+   "reject": 0.04685896262526512
   },
   {
    "id": "synth_ood_2",
@@ -445,11 +431,11 @@
    "expected": null,
    "bins": [
     0.9999778270721436,
-    3.149379494971072e-07,
-    2.1723661120631732e-05,
-    1.198858541329173e-07
+    3.1493735264120915e-07,
+    2.1723682948504575e-05,
+    1.1988596781975502e-07
    ],
-   "reject": 0.046167001128196716
+   "reject": 0.04616694152355194
   },
   {
    "id": "synth_ood_3",
@@ -459,11 +445,11 @@
    "expected": null,
    "bins": [
     0.996650755405426,
-    6.406493412214331e-06,
-    0.00328631023876369,
-    5.6556986237410456e-05
+    6.406517968571279e-06,
+    0.0032863165251910686,
+    5.6557149946456775e-05
    ],
-   "reject": 0.22749510407447815
+   "reject": 0.22749491035938263
   },
   {
    "id": "synth_ood_4",
@@ -473,11 +459,11 @@
    "expected": null,
    "bins": [
     0.999995231628418,
-    1.758453471722987e-08,
-    2.134828491762164e-06,
-    2.6254413114656927e-06
+    1.7584635969569717e-08,
+    2.134834630851401e-06,
+    2.6254613203491317e-06
    ],
-   "reject": 0.030254481360316277
+   "reject": 0.030254539102315903
   }
  ]
 }

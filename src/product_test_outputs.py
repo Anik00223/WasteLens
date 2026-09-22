@@ -66,10 +66,19 @@ def predict_batch(model, paths: list[str]) -> tuple[np.ndarray, np.ndarray]:
 
 
 def first_n(cases: list[dict], pred, n: int) -> tuple[list[dict], list[dict]]:
-    """Split cases into the first n satisfying pred, and the rest."""
+    """First n cases satisfying pred; the rest are GENUINE non-matches.
+
+    (Everything after the nth hit with pred true still goes to `rest` only
+    when pred is false - so `rest` really are below-threshold misses, not
+    merely "items ranked after the first n hits".)
+    """
     hit, rest = [], []
     for c in cases:
-        (hit if len(hit) < n and pred(c) else rest).append(c)
+        if pred(c):
+            if len(hit) < n:
+                hit.append(c)
+        else:
+            rest.append(c)
     return hit, rest
 
 

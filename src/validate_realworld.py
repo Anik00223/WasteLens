@@ -24,12 +24,26 @@
 # REPRODUCIBILITY:
 #   - Same checkpoint, same seed-42 stratified split as training (train.py).
 #   - Sampling seed fixed (SAMPLE_SEED) -> identical example set every run.
+#   - Works with BOTH model contracts:
+#       * single-head baseline (softmax-only): outputs and numbers unchanged;
+#       * dual-head Variant B (bins + reject): every record additionally
+#         carries the rejection probability and the shipped three-state
+#         decision (unsupported gate first, then the uncertainty rule),
+#         threshold REJECT_THRESHOLD mirrored from web/index.html (0.8774,
+#         calibrated in docs/rejection_experiment/rejection_metrics_frozen.json
+#         val-frozen operating point "0.01").
 #
-# Run from the repo root:  python src/validate_realworld.py
-# Outputs: docs/realworld_validation.json + docs/realworld_validation.md
+# Run from the repo root:
+#   py -3.13 -W ignore src/validate_realworld.py
+#   py -3.13 -W ignore src/validate_realworld.py ^
+#       --model models/checkpoints/wastelens_rej_frozen_best.keras --tag _frozen
+# Outputs: docs/realworld_validation{TAG}.json + .md
+#   (a non-empty --tag lands in docs/rejection_experiment/ next to the other
+#    rejection-experiment artifacts; empty tag keeps the historical paths).
 
 from __future__ import annotations
 
+import argparse
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -40,8 +54,17 @@ import tensorflow as tf
 import train as wl  # identical pipeline -> identical seed-42 split
 
 DEFAULT_MODEL = Path("models/checkpoints/wastelens_ep09.keras")
-OUT_JSON = Path("docs/realworld_validation.json")
-OUT_MD = Path("docs/realworld_validation.md")
+
+
+def out_paths(tag: str) -> tuple[Path, Path]:
+    """Output paths for --tag: '' keeps docs/realworld_validation.{json,md};
+    any tag (e.g. '_frozen') lands in docs/rejection_experiment/ next to the
+    other rejection-experiment artifacts."""
+    if tag:
+        base = Path("docs/rejection_experiment") / f"realworld_validation{tag}"
+    else:
+        base = Path("docs") / "realworld_validation"
+    return base.with_suffix(".json"), base.with_suffix(".md")
 
 SAMPLE_SEED = 2026        # sampling of test rows (split itself is seed=42)
 PER_BIN_SAMPLES = 8       # stratified in-distribution sample size
@@ -50,6 +73,12 @@ OOD_THRESHOLD = 4         # pre-registered decision rule (out of 5 probes)
 # Mirror of web/index.html UNCERTAIN - kept in sync deliberately.
 UNCERTAIN = {"MIN_TOP": 0.60, "MIN_MARGIN": 0.50}
 EPS = 1e-9  # same fp guard as the web implementation
+
+# Mirror of web/index.html REJECT_THRESHOLD - shipped dual-head operating
+# point (rejection_metrics_frozen.json, val-frozen op point "0.01"):
+# 84.3% OOD detection @ 1.38% false-rejection rate on the real unsupported
+# eval sets. Only consulted when the loaded model actually has a reject head.
+REJECT_THRESHOLD = 0.8774
 
 
 def classify_rule(probs: list[float]) -> dict:
@@ -129,13 +158,32 @@ def ood_probes() -> list[tuple[str, np.ndarray]]:
 
 # --- Inference ---------------------------------------------------------------
 
-def predict_paths(model, rows: list[tuple[Path, int]]) -> np.ndarray:
+def split_outputs(out) -> tuple[np.ndarray, np.ndarray | None]:
+    """Normalize model.predict output -> (bins, reject).
+
+    The single-head baseline returns a plain (N, 4) array; the dual-head
+    Variant B checkpoint returns a dict with named outputs
+    {'bins': ..., 'reject': ...} (reject shape (N, 1), sigmoid P(unsupported)).
+    reject is None for single-head models.
+    """
+    if isinstance(out, dict):
+        return out["bins"], out["reject"]
+    if isinstance(out, (list, tuple)) and len(out) == 2:
+        return out[0], out[1]
+    return out, None
+
+
+def predict_paths(model, rows: list[tuple[Path, int]]):
     ds = wl.make_dataset(rows, training=False)  # order preserved
-    return model.predict(ds, verbose=0)
+    return split_outputs(model.predict(ds, verbose=0))
 
 
-def predict_array(model, arr01: np.ndarray) -> np.ndarray:
-    return model.predict(_to_model_input(arr01), verbose=0)[0]
+def predict_array(model, arr01: np.ndarray):
+    """-> (probs[4], reject or None) for one image (batch size 1)."""
+    bins, rej = split_outputs(model.predict(_to_model_input(arr01), verbose=0))
+    probs = [float(p) for p in np.asarray(bins)[0]]
+    reject = None if rej is None else float(np.asarray(rej).ravel()[0])
+    return probs, reject
 
 
 # --- Records and summaries ---------------------------------------------------
@@ -145,43 +193,60 @@ def round_verdict(verdict: dict) -> dict:
             for k, v in verdict.items()}
 
 
+def decide_state(probs: list[float], reject: float | None) -> str:
+    """Shipped three-state decision (mirror of web/index.html decideVerdict):
+    the rejection gate has priority, then the existing uncertainty rule."""
+    if reject is not None and reject >= REJECT_THRESHOLD:
+        return "unsupported"
+    return "uncertain" if classify_rule(probs)["uncertain"] else "supported"
+
+
 def build_records(model, sampled) -> list[dict]:
     records = []
     for bin_name in wl.BINS:
         rows = sampled[bin_name]
         if not rows:
             continue
-        probs_batch = predict_paths(model, rows)
-        for (path, true_idx), probs in zip(rows, probs_batch):
+        probs_batch, rej_batch = predict_paths(model, rows)
+        for i, ((path, true_idx), probs) in enumerate(zip(rows, probs_batch)):
             probs_list = [float(p) for p in probs]
-            records.append({
+            record = {
                 "set": "in_distribution",
                 "true_bin": bin_name,
                 "file": Path(path).name,
                 "probs": [round(p, 6) for p in probs_list],
                 **round_verdict(classify_rule(probs_list)),
-            })
+            }
+            if rej_batch is not None:
+                reject = float(np.asarray(rej_batch).ravel()[i])
+                record["reject"] = round(reject, 6)
+                record["state"] = decide_state(probs_list, reject)
+            records.append(record)
     return records
 
 
 def probe_records(model) -> list[dict]:
     records = []
     for name, arr in ood_probes():
-        probs = [float(p) for p in predict_array(model, arr)]
-        records.append({
+        probs, reject = predict_array(model, arr)
+        record = {
             "set": "ood_probe",
             "true_bin": "n/a (not a waste image)",
             "file": name,
             "probs": [round(p, 6) for p in probs],
             **round_verdict(classify_rule(probs)),
-        })
+        }
+        if reject is not None:
+            record["reject"] = round(reject, 6)
+            record["state"] = decide_state(probs, reject)
+        records.append(record)
     return records
 
 
 def summarize(records: list[dict]) -> dict:
     tops = [r["top"] for r in records]
     margins = [r["margin"] for r in records]
-    return {
+    summary = {
         "n": len(records),
         "flagged_uncertain": int(sum(r["uncertain"] for r in records)),
         "top_ge_95pct": int(sum(t >= 0.95 for t in tops)),
@@ -193,6 +258,15 @@ def summarize(records: list[dict]) -> dict:
         "margin_min": round(min(margins), 6),
         "margin_median": round(float(np.median(margins)), 6),
     }
+    if records and "reject" in records[0]:
+        # Dual-head only - keeps the single-head payload byte-identical.
+        summary["rejected"] = int(sum(r["state"] == "unsupported"
+                                      for r in records))
+        summary["states"] = {
+            s: int(sum(r["state"] == s for r in records))
+            for s in ("supported", "uncertain", "unsupported")
+        }
+    return summary
 
 
 # --- Report ------------------------------------------------------------------
@@ -206,6 +280,11 @@ def render_md(payload: dict) -> str:
     probes = [r for r in payload["examples"] if r["set"] == "ood_probe"]
     s_id, s_ood = payload["summary_in_distribution"], payload["summary_ood"]
     ood_flagged = s_ood["flagged_uncertain"]
+    # Dual-head payloads carry reject+state on every record; single-head stays
+    # byte-identical to the historical report.
+    dual = bool(in_dist) and "reject" in in_dist[0]
+    rej_cols = " | reject | state" if dual else ""
+    rej_sep = "---:|---" if dual else "---"
 
     lines = [
         "# WasteLens - Real-World Uncertainty & OOD Validation",
@@ -226,17 +305,30 @@ def render_md(payload: dict) -> str:
         "- **Rule under test:** exactly the web demo's `classify()` "
         f"(uncertain when top < {UNCERTAIN['MIN_TOP']} or margin < "
         f"{UNCERTAIN['MIN_MARGIN']}; margin = top - runner-up).",
+    ]
+    if dual:
+        lines += [
+            f"- **Rejection gate (dual-head):** unsupported when reject >= "
+            f"{payload.get('reject_threshold', REJECT_THRESHOLD)} - applied "
+            "BEFORE the uncertainty rule (shipped three-state decision).",
+        ]
+    lines += [
         "",
         "## 2. In-distribution results",
         "",
-        "| true bin | file | predicted | top | runner-up | margin | uncertain? |",
-        "|---|---|---|---:|---:|---:|---|",
+        f"| true bin | file | predicted | top | runner-up | margin | "
+        f"uncertain?{rej_cols} |",
+        f"|---|---|---|---:|---:|---:|{rej_sep}|"
+        if not dual else
+        f"|---|---|---|---:|---:|---:|---|{rej_sep}|",
     ]
     for r in in_dist:
+        extra = (f" | {r['reject']:.4f} | {r['state']}" if dual else "")
         lines.append(
             f"| {r['true_bin']} | {r['file']} | {wl.BINS[r['pred']]} "
             f"| {pct(r['top'])} | {pct(r['runner_up'])} "
-            f"| {pct(r['margin'])} | {'YES' if r['uncertain'] else 'no'} |")
+            f"| {pct(r['margin'])} | {'YES' if r['uncertain'] else 'no'}"
+            f"{extra} |")
     lines += [
         "",
         f"**Summary:** {s_id['n']} images, {s_id['flagged_uncertain']} "
@@ -244,22 +336,44 @@ def render_md(payload: dict) -> str:
         f"top >= 99% on {s_id['top_ge_99pct']}/{s_id['n']}; "
         f"min top {pct(s_id['top_min'])}, median margin "
         f"{pct(s_id['margin_median'])}.",
+    ]
+    if dual:
+        lines.append(
+            f"**Three-state:** {s_id['states']['supported']} supported, "
+            f"{s_id['states']['uncertain']} uncertain, "
+            f"{s_id['states']['unsupported']} unsupported "
+            f"({s_id['rejected']} false rejections on supported test images; "
+            "1.38% expected at this threshold over the full test set).")
+    lines += [
         "",
         "## 3. OOD probe results",
         "",
-        "| probe | predicted | top | runner-up | margin | uncertain? |",
-        "|---|---|---:|---:|---:|---|",
+        f"| probe | predicted | top | runner-up | margin | uncertain?"
+        f"{rej_cols} |",
+        f"|---|---|---:|---:|---:|{rej_sep}|"
+        if not dual else
+        f"|---|---|---:|---:|---:|---|{rej_sep}|",
     ]
     for r in probes:
+        extra = (f" | {r['reject']:.4f} | {r['state']}" if dual else "")
         lines.append(
             f"| {r['file']} | {wl.BINS[r['pred']]} | {pct(r['top'])} "
             f"| {pct(r['runner_up'])} | {pct(r['margin'])} "
-            f"| {'YES' if r['uncertain'] else 'no'} |")
+            f"| {'YES' if r['uncertain'] else 'no'}{extra} |")
     lines += [
         "",
         f"**Summary:** {ood_flagged}/5 probes flagged uncertain; "
         f"{s_ood['top_ge_99pct']}/5 probes got top >= 99%.",
     ]
+    if dual:
+        rej_probes = sum(r.get("state") == "unsupported" for r in probes)
+        lines.append(
+            f"**Rejection head:** {rej_probes}/5 probes rejected at the "
+            f"shipped threshold {payload.get('reject_threshold', REJECT_THRESHOLD)}. "
+            "NOTE: these 5 flat synthetic probes were NOT in the rejection "
+            "training/eval sets (measured sources: clothes, shoes, nonwaste, "
+            "collage) - their reject scores here are honest measurements, not "
+            "a claim of coverage.")
     return "\n".join(lines)
 
 
@@ -269,6 +383,7 @@ def render_analysis(payload: dict) -> list[str]:
     s_ood = payload["summary_ood"]
     ood_flagged = s_ood["flagged_uncertain"]
     ood_caught = ood_flagged >= OOD_THRESHOLD
+    dual = "reject_threshold" in payload
 
     lines = [
         "",
@@ -317,6 +432,28 @@ def render_analysis(payload: dict) -> list[str]:
             "training data, calibration, or an explicit rejection head) - "
             "out of scope for a code-only iteration.",
         ]
+    if dual:
+        probes = [r for r in payload["examples"]
+                  if r["set"] == "ood_probe"]
+        rej_probes = sum(r.get("state") == "unsupported" for r in probes)
+        lines += [
+            "",
+            "## 4b. Rejection head (shipped dual-head gate)",
+            "",
+            f"At the shipped threshold (reject >= "
+            f"{payload['reject_threshold']}): {rej_probes}/5 synthetic "
+            "probes rejected.",
+            "",
+            "The gate itself was calibrated and measured on the real "
+            "unsupported eval sets, not on these flat synthetic patterns "
+            "(docs/rejection_experiment/rejection_metrics_frozen.json, "
+            f"threshold {payload['reject_threshold']}): "
+            "**84.3% OOD detection overall @ 1.38% false-rejection rate**; "
+            "per source at this operating point - clothes 84.5%, shoes "
+            "74.5%, nonwaste 95.5%, collage 21.1%. Collage detection is "
+            "the documented weak spot; do not read rejection as perfect "
+            "coverage of every out-of-scope image.",
+        ]
     lines += [
         "",
         "## 5. Conclusion",
@@ -334,17 +471,36 @@ def render_analysis(payload: dict) -> list[str]:
            "images; 'the model is uncertain' and 'the image is outside the "
            "model's supported distribution' remain different failure modes, "
            "and only the first is addressed by the current rule."),
-        "",
     ]
+    if dual:
+        lines.append(
+            "- Rejection head (shipped): unsupported gate now exists and is "
+            "measured on real OOD sources (84.3% @ 1.38% FRR) - the "
+            "uncertainty rule still only answers 'which bin?', and the "
+            "synthetic flat probes above show the two gates are not "
+            "interchangeable.")
+    lines += [""]
     return lines
 
 
 # --- Orchestration -----------------------------------------------------------
 
 def main() -> None:
+    ap = argparse.ArgumentParser(
+        description="Real-world uncertainty / OOD validation "
+                    "(single-head baseline or dual-head Variant B).")
+    ap.add_argument("--model", default=str(DEFAULT_MODEL),
+                    help=f"checkpoint path (default: {DEFAULT_MODEL})")
+    ap.add_argument("--tag", default="",
+                    help="output suffix; non-empty lands outputs in "
+                         "docs/rejection_experiment/ (e.g. '_frozen')")
+    args = ap.parse_args()
+
+    out_json, out_md = out_paths(args.tag)
+
     print("=== WasteLens real-world uncertainty / OOD validation ===\n")
-    model = tf.keras.models.load_model(DEFAULT_MODEL)
-    print(f"[1/5] Loaded checkpoint: {DEFAULT_MODEL}")
+    model = tf.keras.models.load_model(args.model)
+    print(f"[1/5] Loaded checkpoint: {args.model}")
 
     sampled = sample_test_rows()
     n_sampled = sum(len(v) for v in sampled.values())
@@ -357,9 +513,10 @@ def main() -> None:
     probes = probe_records(model)
     print(f"[4/5] OOD probe inference done ({len(probes)} probes)")
 
+    dual = bool(records) and "reject" in records[0]
     payload = {
         "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
-        "checkpoint": str(DEFAULT_MODEL),
+        "checkpoint": str(args.model),
         "rule": {"MIN_TOP": UNCERTAIN["MIN_TOP"],
                  "MIN_MARGIN": UNCERTAIN["MIN_MARGIN"], "epsilon": EPS},
         "sampling_seed": SAMPLE_SEED,
@@ -368,32 +525,45 @@ def main() -> None:
         "summary_in_distribution": summarize(records),
         "summary_ood": summarize(probes),
     }
+    if dual:
+        payload["reject_threshold"] = REJECT_THRESHOLD
 
-    OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-    OUT_JSON.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    OUT_MD.write_text(
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+    out_json.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    out_md.write_text(
         render_md(payload) + "\n".join(render_analysis(payload)),
         encoding="utf-8")
-    print(f"[5/5] Wrote {OUT_JSON} and {OUT_MD}\n")
+    print(f"[5/5] Wrote {out_json} and {out_md}\n")
 
     s_id, s_ood = payload["summary_in_distribution"], payload["summary_ood"]
     print("---- in-distribution ----")
     print(f"  n={s_id['n']}  flagged={s_id['flagged_uncertain']}  "
           f"top>=99%: {s_id['top_ge_99pct']}  min_top={pct(s_id['top_min'])}  "
           f"min_margin={pct(s_id['margin_min'])}")
+    if dual:
+        print(f"  three-state: {s_id['states']}  "
+              f"(false rejections vs 1.38% expected over 32 samples)")
     print("---- OOD probes ----")
     for r in payload["examples"]:
         if r["set"] != "ood_probe":
             continue
+        extra = (f"  reject={r['reject']:.4f} "
+                 f"-> {r['state']}" if "reject" in r else "")
         print(f"  {r['file']:<28} -> {wl.BINS[r['pred']]:<12} "
               f"top={pct(r['top']):>6}  margin={pct(r['margin']):>6}  "
-              f"uncertain={'YES' if r['uncertain'] else 'no'}")
+              f"uncertain={'YES' if r['uncertain'] else 'no'}{extra}")
     flagged = s_ood["flagged_uncertain"]
     print(f"\nPre-registered rule: OOD flagged {flagged}/5 "
           f"(threshold {OOD_THRESHOLD}) -> "
           + ("rule SURVIVES probe set"
              if flagged >= OOD_THRESHOLD else
              "rule INSUFFICIENT for OOD - UI disclosure required"))
+    if dual:
+        rej_probes = sum(r.get("state") == "unsupported"
+                         for r in payload["examples"]
+                         if r["set"] == "ood_probe")
+        print(f"Rejection head (thr {REJECT_THRESHOLD}): "
+              f"{rej_probes}/5 probes unsupported")
 
 
 if __name__ == "__main__":
