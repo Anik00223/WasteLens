@@ -20,6 +20,12 @@ const path = require('path');
 const HTML = fs.readFileSync(path.join(__dirname, '..', 'web', 'index.html'), 'utf8');
 const PRODUCT_JSON = path.join(__dirname, '..', 'docs', 'rejection_experiment',
                                'product_test_outputs.json');
+// Iteration 6: optional alternate predictions file, e.g.
+//   node src/test_decision_logic.js --predictions docs/rejection_experiment/product_test_outputs_varc.json
+// Default (no flag) is the SHIPPED production predictions file, unchanged.
+const PRED_FILE = (process.argv.includes('--predictions'))
+  ? process.argv[process.argv.indexOf('--predictions') + 1]
+  : PRODUCT_JSON;
 
 function extractDecisionBlock() {
   const begin = HTML.indexOf('// === DECISION-BEGIN');
@@ -118,13 +124,13 @@ function runUnitCases(decide) {
 }
 
 function runProductCases(decide) {
-  if (!fs.existsSync(PRODUCT_JSON)) {
+  if (!fs.existsSync(PRED_FILE)) {
     failCount++;
-    console.log('FAIL product cases: ' + PRODUCT_JSON + ' missing ' +
+    console.log('FAIL product cases: ' + PRED_FILE + ' missing ' +
                 '(run src/product_test_outputs.py first)');
     return;
   }
-  const payload = JSON.parse(fs.readFileSync(PRODUCT_JSON, 'utf8'));
+  const payload = JSON.parse(fs.readFileSync(PRED_FILE, 'utf8'));
   console.log('product cases from ' + payload.model +
               ' (threshold ' + payload.reject_threshold + '):');
 

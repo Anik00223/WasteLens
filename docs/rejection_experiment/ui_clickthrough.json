@@ -1,0 +1,134 @@
+{
+  "page": "http://127.0.0.1:8123/web/index.html",
+  "generated_utc": "2026-09-23T16:40:33.767Z",
+  "results": [
+    {
+      "step": "1 page-load (Model ready + enabled dropzone)",
+      "ok": true,
+      "observed": {
+        "statusTitle": "Model ready",
+        "dzDisabled": false,
+        "resultsHidden": true,
+        "panelVisible": false,
+        "binName": "–",
+        "unsupported": false,
+        "uncertain": false,
+        "error": "",
+        "conf": "–",
+        "bars": 0
+      }
+    },
+    {
+      "step": "2 image-upload (change event -> inference rendered)",
+      "ok": true,
+      "observed": {
+        "statusTitle": "Model ready",
+        "dzDisabled": false,
+        "resultsHidden": false,
+        "panelVisible": true,
+        "binName": "Hazardous",
+        "unsupported": false,
+        "uncertain": false,
+        "error": "",
+        "conf": "100.0%",
+        "bars": 4
+      }
+    },
+    {
+      "step": "6 supported result",
+      "ok": true,
+      "observed": {
+        "binName": "Hazardous",
+        "conf": "100.0%"
+      }
+    },
+    {
+      "step": "7 uncertain result",
+      "ok": true,
+      "observed": {
+        "uncertain": true,
+        "binName": "Recyclable"
+      }
+    },
+    {
+      "step": "8 unsupported result",
+      "ok": true,
+      "observed": {
+        "unsupported": true,
+        "statusTitle": "Model ready"
+      }
+    },
+    {
+      "step": "4 drag-and-drop (DataTransfer drop -> inference rendered)",
+      "ok": true,
+      "observed": {
+        "statusTitle": "Model ready",
+        "dzDisabled": false,
+        "resultsHidden": false,
+        "panelVisible": true,
+        "binName": "Hazardous",
+        "unsupported": false,
+        "uncertain": false,
+        "error": "",
+        "conf": "100.0%",
+        "bars": 4
+      }
+    },
+    {
+      "step": "5 keyboard activation (Enter+Space open picker)",
+      "ok": true,
+      "observed": {
+        "fileInputClicks": 2
+      }
+    },
+    {
+      "step": "3 camera capture attribute",
+      "ok": true,
+      "observed": {
+        "capture": "environment",
+        "accept": "image/*"
+      }
+    },
+    {
+      "step": "9 error state (non-image rejected inline)",
+      "ok": true,
+      "observed": {
+        "error": "That file does not look like an image. Please choose or take a photo (JPG/PNG)."
+      }
+    },
+    {
+      "step": "10 repeated inference (busy released, second result rendered)",
+      "ok": true,
+      "observed": {
+        "panelVisible": true,
+        "pageErrors": 0
+      }
+    },
+    {
+      "step": "11 mobile layout (375px, single column)",
+      "ok": true,
+      "observed": {
+        "w": 375,
+        "mq": false,
+        "dz": "flex"
+      }
+    },
+    {
+      "step": "12 desktop layout (1280px, media query active)",
+      "ok": true,
+      "observed": {
+        "w": 1280,
+        "mq": true,
+        "dz": "flex"
+      }
+    },
+    {
+      "step": "console errors during session",
+      "ok": true,
+      "observed": {
+        "pageErrors": 0
+      }
+    }
+  ],
+  "all_passed": true
+}

@@ -25,6 +25,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -43,12 +44,12 @@ MIN_TOP = 0.60              # existing web ambiguity rule (unchanged)
 MIN_MARGIN = 0.50
 
 
-def rule(bins_row, reject) -> str:
-    """Mirror of web/index.html decideVerdict (same constants)."""
+def rule(bins_row, reject, threshold: float) -> str:
+    """Mirror of web/index.html decideVerdict (threshold passed in)."""
     b = list(map(float, bins_row))
     top = max(b)
     margin = top - sorted(b)[-2]
-    if float(reject) >= REJECT_THRESHOLD:
+    if float(reject) >= threshold:
         return "unsupported"
     if top < MIN_TOP - 1e-9 or margin + 1e-9 < MIN_MARGIN:
         return "uncertain"
@@ -83,10 +84,22 @@ def first_n(cases: list[dict], pred, n: int) -> tuple[list[dict], list[dict]]:
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser(
+        description="Select real product-test cases and record the measured "
+                    "dual-head outputs + expected verdicts.")
+    ap.add_argument("--model",
+                    default="models/checkpoints/wastelens_rej_frozen_best.keras",
+                    help="dual-head checkpoint (default: shipped Variant B)")
+    ap.add_argument("--threshold", type=float, default=REJECT_THRESHOLD,
+                    help="rejection threshold (default: shipped 0.8774)")
+    ap.add_argument("--out", type=Path, default=OUT_JSON,
+                    help="output JSON (default: production product_test_"
+                         "outputs.json)")
+    args = ap.parse_args()
+    threshold = float(args.threshold)
     data = json.loads(EVAL_SETS_JSON.read_text())
-    model = tf.keras.models.load_model(
-        Path("models/checkpoints/wastelens_rej_frozen_best.keras"))
-    print("[1/4] Loaded Variant B checkpoint")
+    model = tf.keras.models.load_model(Path(args.model))
+    print(f"[1/4] Loaded checkpoint {args.model} (threshold {threshold})")
 
     cases: list[dict] = []
 
@@ -97,11 +110,11 @@ def main() -> None:
     bins_s, rej_s = predict_batch(model, [r[0] for r in sample])
     confident, ambiguous, false_rej = [], [], []
     for (path, y), b, r in zip(sample, bins_s, rej_s):
-        st = rule(b, r)
+        st = rule(b, r, threshold)
         item = {"path": path, "bins": [float(v) for v in b],
                 "reject": float(r), "true_bin": wl.BINS[y]}
-        if r >= REJECT_THRESHOLD:
-            false_rej.append(item)          # measured false rejection (1.38%)
+        if r >= threshold:
+            false_rej.append(item)   # measured false rejection (rate in JSON)
         elif st == "uncertain":
             ambiguous.append(item)
         else:
@@ -128,7 +141,7 @@ def main() -> None:
         scored = sorted(zip(sample_u, bins_u, rej_u), key=lambda t: -t[2])
         items = [{"path": p, "bins": [float(v) for v in b], "reject": float(r)}
                  for p, b, r in scored]
-        hit, rest = first_n(items, lambda it: it["reject"] >= REJECT_THRESHOLD, n_want)
+        hit, rest = first_n(items, lambda it: it["reject"] >= threshold, n_want)
         cases += [{"id": f"{src}_{i}", "group": f"ood_{src}",
                    "path": it["path"], "ground_truth": "unsupported",
                    "expected": "unsupported", **{k: it[k] for k in ("bins", "reject")}}
@@ -152,17 +165,18 @@ def main() -> None:
         cases.append({
             "id": f"synth_ood_{i}", "group": "synth_ood",
             "path": name, "ground_truth": "unsupported",
-            "expected": "unsupported" if reject_p >= REJECT_THRESHOLD else None,
+            "expected": "unsupported" if reject_p >= threshold else None,
             "bins": bins_p, "reject": reject_p})
         print(f"        {name}: reject={reject_p:.4f} -> "
-              f"{'unsupported' if reject_p >= REJECT_THRESHOLD else 'NOT rejected (measured)'}")
+              f"{'unsupported' if reject_p >= threshold else 'NOT rejected (measured)'}")
 
-    OUT_JSON.write_text(json.dumps({
-        "model": "models/checkpoints/wastelens_rej_frozen_best.keras",
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(json.dumps({
+        "model": str(args.model),
         "created_utc": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
-        "reject_threshold": REJECT_THRESHOLD,
+        "reject_threshold": threshold,
         "cases": cases}, indent=1) + "\n", encoding="utf-8")
-    print(f"[4/4] wrote {len(cases)} cases -> {OUT_JSON}")
+    print(f"[4/4] wrote {len(cases)} cases -> {args.out}")
 
 
 if __name__ == "__main__":
