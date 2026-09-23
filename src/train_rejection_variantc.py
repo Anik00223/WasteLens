@@ -62,10 +62,12 @@ import train as wl
 import train_rejection as tr
 
 BASE_CHECKPOINT = Path("models/checkpoints/wastelens_ep09.keras")
+# Iteration 6's output path (kept as documentation of that run's artifacts;
+# Iteration 7+ pass --out-tag / --out and derive names inside run_training()).
 OUT_CKPT = Path("models/checkpoints/wastelens_rej_varc_best.keras")
 OUT_DIR = Path("docs/rejection_experiment")
-HISTORY_CSV = OUT_DIR / "variantc_history.csv"
-CONFIG_JSON = OUT_DIR / "variantc_training_config.json"
+# Iteration 7: per-run artifact names are derived from --out-tag inside
+# run_training() (empty tag reproduces the Iteration-6 names above).
 
 BACKBONE_NAME = "mobilenetv2_1.00_224"
 EPOCHS = tr.EPOCHS          # 10 - unchanged
@@ -168,7 +170,19 @@ def unfreeze_proof(data, base_ckpt=BASE_CHECKPOINT):
 
 
 def run_training(data, smoke=False, epochs=None,
-                 bins_weight: float = DEFAULT_BINS_WEIGHT):
+                 bins_weight: float = DEFAULT_BINS_WEIGHT,
+                 out_tag: str = "", base_ckpt=None, out_ckpt_path=None):
+    # Iteration 7: out_tag isolates a new run's artifacts (checkpoints,
+    # history, config) from previous iterations' evidence. Empty tag keeps
+    # the original Iteration-6 names.
+    # Iteration 7 fix: --model/--out are now honored (they were accepted but
+    # ignored in Iteration 6); defaults reproduce the original behaviour.
+    tag = out_tag
+    base_ckpt = Path(base_ckpt) if base_ckpt else BASE_CHECKPOINT
+    out_ckpt = (Path(out_ckpt_path) if out_ckpt_path else
+                Path(f"models/checkpoints/wastelens_rej_varc{tag}_best.keras"))
+    history_csv = OUT_DIR / f"variantc{tag}_history.csv"
+    config_json = OUT_DIR / f"variantc{tag}_training_config.json"
     tr_pack = tr.assemble(data, "train", smoke)
     va_pack = tr.assemble(data, "val", smoke)
     tr_ds = tr.make_weighted_ds(*tr_pack[:5], training=True)
@@ -180,13 +194,13 @@ def run_training(data, smoke=False, epochs=None,
     print(f"      val:   {va_pack[5]} supported + {va_pack[6]} unsupported = "
           f"{n_va} images ({math.ceil(n_va / wl.BATCH_SIZE)} val steps)")
     n_epochs = int(epochs) if epochs else EPOCHS
-    model = build_varc_dual(bins_weight=bins_weight)
+    model = build_varc_dual(base_ckpt, bins_weight=bins_weight)
     trainable = int(sum(np.prod(w.shape) for w in model.trainable_weights))
     frozen = int(sum(np.prod(w.shape) for w in model.non_trainable_weights))
     print(f"      trainable params: {trainable:,}  (fc_256 + predictions + "
           f"reject; backbone frozen)")
     print(f"      frozen params:    {frozen:,}")
-    proof = unfreeze_proof(data)
+    proof = unfreeze_proof(data, base_ckpt=base_ckpt)
     print(f"      unfreeze proof: backbone_bit_identical="
           f"{proof['backbone_weights_bit_identical']}  "
           f"initial_bins_bit_exact={proof['initial_bins_bit_exact']}  "
@@ -196,11 +210,11 @@ def run_training(data, smoke=False, epochs=None,
 
     ckpt_dir = Path("models/checkpoints")
     ckpt_every = tf.keras.callbacks.ModelCheckpoint(
-        str(ckpt_dir / "wastelens_rej_varc_{epoch:02d}.keras"),
+        str(ckpt_dir / f"wastelens_rej_varc{tag}_{{epoch:02d}}.keras"),
         monitor=MONITOR, save_best_only=False, verbose=0)
     ckpt_best = tf.keras.callbacks.ModelCheckpoint(
-        str(OUT_CKPT), monitor=MONITOR, save_best_only=True, verbose=1)
-    tb = tr.maybe_tensorboard(OUT_DIR / "variantc_tensorboard") \
+        str(out_ckpt), monitor=MONITOR, save_best_only=True, verbose=1)
+    tb = tr.maybe_tensorboard(OUT_DIR / f"variantc{tag}_tensorboard") \
         if hasattr(tr, "maybe_tensorboard") else []
     t0 = time.time()
     hist = model.fit(tr_ds,
@@ -212,7 +226,7 @@ def run_training(data, smoke=False, epochs=None,
                      verbose=1)
     dt = time.time() - t0
     keys = list(hist.history.keys())
-    with HISTORY_CSV.open("w", newline="") as f:
+    with history_csv.open("w", newline="") as f:
         w = csv.writer(f)
         w.writerow(keys)
         for i in range(len(hist.history[keys[0]])):
@@ -231,9 +245,10 @@ def run_training(data, smoke=False, epochs=None,
         "generated_utc": datetime.now(timezone.utc).strftime(
             "%Y-%m-%d %H:%M:%S UTC"),
         "variant": "C (backbone frozen; fc_256 + predictions + reject "
-                   "trainable; bins loss weight 2.0)",
-        "base_checkpoint": str(BASE_CHECKPOINT),
-        "out_checkpoint": str(OUT_CKPT),
+                   f"trainable; bins loss weight {float(bins_weight)})"
+                   + (f" [run tag: {tag}]" if tag else ""),
+        "base_checkpoint": str(base_ckpt),
+        "out_checkpoint": str(out_ckpt),
         "epochs": n_epochs, "seed": SEED, "monitor": MONITOR,
         "optimizer": "Adam(1e-3) [unchanged from A/B]",
         "loss_weights": {"bins": float(bins_weight), "reject": 1.0},
@@ -250,12 +265,13 @@ def run_training(data, smoke=False, epochs=None,
         "best_val_bins_acc": val_bins_acc,
         "best_val_reject_acc": val_rej_acc,
     }
-    CONFIG_JSON.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
+    config_json.write_text(json.dumps(cfg, indent=2) + "\n",
+                           encoding="utf-8")
     print(f"      best epoch: {best_epoch}  "
           f"val_loss: {np.min(hist.history['val_loss']):.4f}  "
           f"val_bins_acc: {val_bins_acc:.4f}  "
           f"val_rej_acc: {val_rej_acc:.4f}  elapsed {dt:.0f}s  "
-          f"config->{CONFIG_JSON}")
+          f"config->{config_json}")
     print("      done.")
 
 
@@ -268,14 +284,18 @@ def main():
                     "predictions + reject trainable, bins loss weight 2.0.")
     ap.add_argument("--model", default=str(BASE_CHECKPOINT),
                     help="baseline checkpoint (default: %(default)s)")
-    ap.add_argument("--out", default=str(OUT_CKPT),
-                    help="best-checkpoint output path (default: %(default)s)")
+    ap.add_argument("--out", default=None,
+                    help="best-checkpoint output path (default: derived from "
+                         "--out-tag, e.g. wastelens_rej_varc7_best.keras)")
     ap.add_argument("--epochs", type=int, default=EPOCHS,
                     help="training epochs (default: %(default)s)")
     ap.add_argument("--bins-weight", type=float, default=DEFAULT_BINS_WEIGHT,
                     help="bins loss weight (default: %(default)s)")
     ap.add_argument("--smoke", action="store_true",
                     help="96-image smoke run for a fast syntax/pipeline check")
+    ap.add_argument("--out-tag", default="",
+                    help="artifact tag isolating this run's outputs "
+                         "(e.g. '7' -> wastelens_rej_varc7_*.keras)")
     args = ap.parse_args()
 
     print("WasteLens - Iteration 6 Variant C "
@@ -291,7 +311,8 @@ def main():
           f"train / {len(data['splits']['val'])} val / "
           f"{len(data['splits']['test'])} test")
     run_training(data, smoke=args.smoke, epochs=args.epochs,
-                 bins_weight=args.bins_weight)
+                 bins_weight=args.bins_weight, out_tag=args.out_tag,
+                 base_ckpt=args.model, out_ckpt_path=args.out)
 
 
 if __name__ == "__main__":

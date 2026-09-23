@@ -1,0 +1,20 @@
+{
+  "model": "models/checkpoints/wastelens_rej_varc7_03.keras",
+  "threshold": 0.8774,
+  "threshold_note": "Variant B shipped operating point (val-frozen 1% FRR point of Variant B); NEVER re-tuned for Variant C",
+  "test_frr": 0.004866180048661801,
+  "ood_detect": 0.9876160990712074,
+  "per_source_detect": {
+    "clothes": 0.99375,
+    "shoes": 0.9697986577181208,
+    "collage": 0.9111111111111111,
+    "nonwaste": 0.9973333333333333
+  },
+  "variantb_supported_val": {
+    "supported_val_bins_acc": 0.9829406986190089,
+    "supported_val_macro_f1": 0.9773099585599586,
+    "supported_val_mean_reject": 0.09145062416791916,
+    "n_images": 1231
+  },
+  "command": "inline python: score supported_test + test_unsup with varc7_03, threshold 0.8774"
+}

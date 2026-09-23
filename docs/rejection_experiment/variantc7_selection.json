@@ -1,0 +1,132 @@
+{
+  "rule": "lowest val_loss among epochs with supported-val bins acc >= 0.9822 * 0.98",
+  "floor": 0.962556,
+  "per_epoch": [
+    {
+      "epoch": 1,
+      "checkpoint": "models\\checkpoints\\wastelens_rej_varc7_01.keras",
+      "val_loss": 0.07948020845651627,
+      "history_val_bins_acc_mixed": 0.7301737666130066,
+      "exists": true,
+      "supported_val_bins_acc": 0.9658813972380179,
+      "supported_val_macro_f1": 0.9533407999123503,
+      "supported_val_mean_reject": 0.016134275123476982,
+      "n_images": 1231
+    },
+    {
+      "epoch": 2,
+      "checkpoint": "models\\checkpoints\\wastelens_rej_varc7_02.keras",
+      "val_loss": 0.09947867691516876,
+      "history_val_bins_acc_mixed": 0.8060031533241272,
+      "exists": true,
+      "supported_val_bins_acc": 0.9634443541835905,
+      "supported_val_macro_f1": 0.9503949137468025,
+      "supported_val_mean_reject": 0.02028338983654976,
+      "n_images": 1231
+    },
+    {
+      "epoch": 3,
+      "checkpoint": "models\\checkpoints\\wastelens_rej_varc7_03.keras",
+      "val_loss": 0.06917386502027512,
+      "history_val_bins_acc_mixed": 0.7390205264091492,
+      "exists": true,
+      "supported_val_bins_acc": 0.9756295694557271,
+      "supported_val_macro_f1": 0.9667863554792344,
+      "supported_val_mean_reject": 0.020592091605067253,
+      "n_images": 1231
+    },
+    {
+      "epoch": 4,
+      "checkpoint": "models\\checkpoints\\wastelens_rej_varc7_04.keras",
+      "val_loss": 0.08705700188875198,
+      "history_val_bins_acc_mixed": 0.7661927342414856,
+      "exists": true,
+      "supported_val_bins_acc": 0.9642567018683996,
+      "supported_val_macro_f1": 0.9509764942157475,
+      "supported_val_mean_reject": 0.024854134768247604,
+      "n_images": 1231
+    },
+    {
+      "epoch": 5,
+      "checkpoint": "models\\checkpoints\\wastelens_rej_varc7_05.keras",
+      "val_loss": 0.13201411068439484,
+      "history_val_bins_acc_mixed": 0.8546603322029114,
+      "exists": true,
+      "supported_val_bins_acc": 0.9805036555645816,
+      "supported_val_macro_f1": 0.970232107918965,
+      "supported_val_mean_reject": 0.0039847115986049175,
+      "n_images": 1231
+    },
+    {
+      "epoch": 6,
+      "checkpoint": "models\\checkpoints\\wastelens_rej_varc7_06.keras",
+      "val_loss": 0.09116747975349426,
+      "history_val_bins_acc_mixed": 0.8110584616661072,
+      "exists": true,
+      "supported_val_bins_acc": 0.9780666125101544,
+      "supported_val_macro_f1": 0.9685558762066242,
+      "supported_val_mean_reject": 0.007644129451364279,
+      "n_images": 1231
+    },
+    {
+      "epoch": 7,
+      "checkpoint": "models\\checkpoints\\wastelens_rej_varc7_07.keras",
+      "val_loss": 0.11451839655637741,
+      "history_val_bins_acc_mixed": 0.7744075655937195,
+      "exists": true,
+      "supported_val_bins_acc": 0.9764419171405362,
+      "supported_val_macro_f1": 0.966210710741799,
+      "supported_val_mean_reject": 0.008912738412618637,
+      "n_images": 1231
+    },
+    {
+      "epoch": 8,
+      "checkpoint": "models\\checkpoints\\wastelens_rej_varc7_08.keras",
+      "val_loss": 0.13458676636219025,
+      "history_val_bins_acc_mixed": 0.7368088364601135,
+      "exists": true,
+      "supported_val_bins_acc": 0.9764419171405362,
+      "supported_val_macro_f1": 0.9662528623116202,
+      "supported_val_mean_reject": 0.005567409098148346,
+      "n_images": 1231
+    },
+    {
+      "epoch": 9,
+      "checkpoint": "models\\checkpoints\\wastelens_rej_varc7_09.keras",
+      "val_loss": 0.11046060919761658,
+      "history_val_bins_acc_mixed": 0.8477092981338501,
+      "exists": true,
+      "supported_val_bins_acc": 0.9740048740861088,
+      "supported_val_macro_f1": 0.9671831412925115,
+      "supported_val_mean_reject": 0.009751160629093647,
+      "n_images": 1231
+    },
+    {
+      "epoch": 10,
+      "checkpoint": "models\\checkpoints\\wastelens_rej_varc7_10.keras",
+      "val_loss": 0.11421015858650208,
+      "history_val_bins_acc_mixed": 0.9213269948959351,
+      "exists": true,
+      "supported_val_bins_acc": 0.9788789601949635,
+      "supported_val_macro_f1": 0.9691499467976513,
+      "supported_val_mean_reject": 0.00845363549888134,
+      "n_images": 1231
+    }
+  ],
+  "eligible_epochs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "selected_epoch": 3,
+  "generated_utc": "2026-09-23 18:17:17 UTC",
+  "selected_checkpoint": "models\\checkpoints\\wastelens_rej_varc7_03.keras",
+  "selection_reason": "epoch 3: lowest val_loss (0.069174) among epochs meeting the floor (supported-val bins acc 0.9756 >= 0.962556); eligible epochs were [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+}
