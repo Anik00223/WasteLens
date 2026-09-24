@@ -51,15 +51,31 @@ import argparse
 import csv
 import json
 import math
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+
+# Iteration 8 - LOOP 3 (reproducibility): must be set BEFORE TensorFlow is
+# imported so the deterministic-kernel switch is active for the whole process.
+# setdefault() keeps any explicit override from the caller's environment.
+os.environ.setdefault("TF_DETERMINISTIC_OPS", "1")
 
 import numpy as np
 import tensorflow as tf
 
 import train as wl
 import train_rejection as tr
+
+# Iteration 8: op-level determinism, enabled once at import (TF requires this
+# before ops are created). Recorded in the training config; kept best-effort so
+# a platform without a deterministic kernel fails loudly at fit time instead of
+# silently degrading.
+OP_DETERMINISM_ERROR = None
+try:
+    tf.config.experimental.enable_op_determinism()
+except Exception as exc:  # pragma: no cover - defensive, recorded in config
+    OP_DETERMINISM_ERROR = f"{type(exc).__name__}: {exc}"
 
 BASE_CHECKPOINT = Path("models/checkpoints/wastelens_ep09.keras")
 # Iteration 6's output path (kept as documentation of that run's artifacts;
@@ -171,18 +187,29 @@ def unfreeze_proof(data, base_ckpt=BASE_CHECKPOINT):
 
 def run_training(data, smoke=False, epochs=None,
                  bins_weight: float = DEFAULT_BINS_WEIGHT,
-                 out_tag: str = "", base_ckpt=None, out_ckpt_path=None):
+                 out_tag: str = "", base_ckpt=None, out_ckpt_path=None,
+                 train_seed=None, deterministic: bool = True):
     # Iteration 7: out_tag isolates a new run's artifacts (checkpoints,
     # history, config) from previous iterations' evidence. Empty tag keeps
     # the original Iteration-6 names.
     # Iteration 7 fix: --model/--out are now honored (they were accepted but
     # ignored in Iteration 6); defaults reproduce the original behaviour.
+    # Iteration 8: train_seed controls ONLY model initialization, dropout and
+    # training-time shuffling; the DATASET seed stays tr.SEED (42) so the
+    # frozen dataset is byte-identical across seeds. deterministic=True turns
+    # on op-level determinism (already enabled at import) and seeds EVERYTHING
+    # BEFORE the model is constructed - the Iteration-6/7 code seeded after
+    # construction, which left weight init unseeded and explains the observed
+    # run-to-run spread.
     tag = out_tag
+    seed = int(train_seed) if train_seed is not None else SEED
     base_ckpt = Path(base_ckpt) if base_ckpt else BASE_CHECKPOINT
     out_ckpt = (Path(out_ckpt_path) if out_ckpt_path else
                 Path(f"models/checkpoints/wastelens_rej_varc{tag}_best.keras"))
     history_csv = OUT_DIR / f"variantc{tag}_history.csv"
     config_json = OUT_DIR / f"variantc{tag}_training_config.json"
+    if deterministic:
+        tf.keras.utils.set_random_seed(seed)   # python/random, numpy, tf global
     tr_pack = tr.assemble(data, "train", smoke)
     va_pack = tr.assemble(data, "val", smoke)
     tr_ds = tr.make_weighted_ds(*tr_pack[:5], training=True)
@@ -194,6 +221,8 @@ def run_training(data, smoke=False, epochs=None,
     print(f"      val:   {va_pack[5]} supported + {va_pack[6]} unsupported = "
           f"{n_va} images ({math.ceil(n_va / wl.BATCH_SIZE)} val steps)")
     n_epochs = int(epochs) if epochs else EPOCHS
+    print(f"      train seed: {seed} (data seed stays {tr.SEED})  "
+          f"deterministic: {deterministic}")
     model = build_varc_dual(base_ckpt, bins_weight=bins_weight)
     trainable = int(sum(np.prod(w.shape) for w in model.trainable_weights))
     frozen = int(sum(np.prod(w.shape) for w in model.non_trainable_weights))
@@ -205,8 +234,10 @@ def run_training(data, smoke=False, epochs=None,
           f"{proof['backbone_weights_bit_identical']}  "
           f"initial_bins_bit_exact={proof['initial_bins_bit_exact']}  "
           f"max_abs_diff={proof['initial_max_abs_diff']:.2e}")
-    # Reproducibility: fix TF/global seeds (data seeds were already fixed).
-    tf.keras.utils.set_random_seed(SEED)
+    if deterministic:
+        # Re-seed before fit so training-time dropout/shuffling start from the
+        # same stream regardless of how much RNG the construction steps used.
+        tf.keras.utils.set_random_seed(seed)
 
     ckpt_dir = Path("models/checkpoints")
     ckpt_every = tf.keras.callbacks.ModelCheckpoint(
@@ -249,7 +280,19 @@ def run_training(data, smoke=False, epochs=None,
                    + (f" [run tag: {tag}]" if tag else ""),
         "base_checkpoint": str(base_ckpt),
         "out_checkpoint": str(out_ckpt),
-        "epochs": n_epochs, "seed": SEED, "monitor": MONITOR,
+        "epochs": n_epochs, "seed": seed, "monitor": MONITOR,
+        # Iteration 8 reproducibility block (LOOP 3).
+        "data_seed": int(tr.SEED),
+        "train_seed": int(seed),
+        "seed_note": "train_seed controls init/dropout/shuffle only; the "
+                     "dataset seed stays 42 so all runs see the same frozen "
+                     "splits, collages, probes and class weights",
+        "deterministic": bool(deterministic),
+        "op_determinism_requested": True,
+        "tf_deterministic_ops_env": os.environ.get("TF_DETERMINISTIC_OPS"),
+        "tf_enable_onednn_opts_env": os.environ.get("TF_ENABLE_ONEDNN_OPTS"),
+        "op_determinism_error": OP_DETERMINISM_ERROR,
+        "seed_before_construction": bool(deterministic),
         "optimizer": "Adam(1e-3) [unchanged from A/B]",
         "loss_weights": {"bins": float(bins_weight), "reject": 1.0},
         "loss_weights_note": "bins weight is THE changed knob vs Variant A "
@@ -296,6 +339,14 @@ def main():
     ap.add_argument("--out-tag", default="",
                     help="artifact tag isolating this run's outputs "
                          "(e.g. '7' -> wastelens_rej_varc7_*.keras)")
+    ap.add_argument("--train-seed", type=int, default=None,
+                    help="seed for init/dropout/shuffle (default: 42 = SEED); "
+                         "the dataset seed stays 42 either way")
+    ap.add_argument("--no-deterministic", dest="deterministic",
+                    action="store_false",
+                    help="seed nothing up front (legacy Iteration-6/7 "
+                         "behaviour); off by default")
+    ap.set_defaults(deterministic=True)
     args = ap.parse_args()
 
     print("WasteLens - Iteration 6 Variant C "
@@ -304,6 +355,9 @@ def main():
     print(f"      out checkpoint  : {args.out}")
     print(f"      epochs          : {args.epochs}")
     print(f"      bins loss weight: {args.bins_weight}")
+    print(f"      train seed      : "
+          f"{args.train_seed if args.train_seed is not None else SEED}")
+    print(f"      deterministic   : {args.deterministic}")
     print(f"      smoke           : {args.smoke}")
     print("      data ...")
     data = tr.build_datasets()
@@ -312,7 +366,8 @@ def main():
           f"{len(data['splits']['test'])} test")
     run_training(data, smoke=args.smoke, epochs=args.epochs,
                  bins_weight=args.bins_weight, out_tag=args.out_tag,
-                 base_ckpt=args.model, out_ckpt_path=args.out)
+                 base_ckpt=args.model, out_ckpt_path=args.out,
+                 train_seed=args.train_seed, deterministic=args.deterministic)
 
 
 if __name__ == "__main__":

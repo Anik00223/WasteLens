@@ -1,0 +1,11 @@
+{
+  "what": "Iteration-8 determinism probe: two INDEPENDENT processes, same train seed 42, identical args (--smoke)",
+  "seeded_before_construction": true,
+  "tf_deterministic_ops_env": "1",
+  "op_determinism_error": null,
+  "sha256_A": "bc993f40382950b19470b3204c3cc964b9e4bd096cd792a080d31dbd48732996",
+  "sha256_B": "bc993f40382950b19470b3204c3cc964b9e4bd096cd792a080d31dbd48732996",
+  "byte_identical": true,
+  "note": "probe artifacts deleted; this record + the two config JSONs content are the evidence",
+  "generated_utc": "2026-09-24 15:51:56 UTC"
+}
