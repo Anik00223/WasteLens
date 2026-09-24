@@ -3,9 +3,11 @@
 // Iteration 5 decision-layer tests. Two parts:
 //   1. Unit tests: extracts the === DECISION-BEGIN/END === block verbatim from
 //      web/index.html and exercises decideVerdict boundaries (threshold edges,
-//      priority over uncertainty, malformed inputs).
+//      priority over uncertainty, malformed inputs). Iteration 8: the
+//      threshold boundary is read FROM the extracted block and the shipped
+//      constant is pinned, so the test cannot silently drift from the page.
 //   2. Product tests: replays every case in
-//      docs/rejection_experiment/product_test_outputs.json (REAL Variant B
+//      docs/rejection_experiment/product_test_outputs.json (REAL shipped-model
 //      Keras outputs on real experiment images) through the SAME extracted
 //      decideVerdict and asserts the expected states.
 //
@@ -36,9 +38,10 @@ function extractDecisionBlock() {
   return HTML.slice(begin, end);
 }
 
-function makeDecide() {
+function makeDecision() {
   const block = extractDecisionBlock();
-  return new Function(block + '\nreturn decideVerdict;')();
+  return new Function(
+    block + '\nreturn { decide: decideVerdict, threshold: REJECT_THRESHOLD };')();
 }
 
 let passCount = 0;
@@ -70,19 +73,24 @@ function expectThrows(name, fn) {
   }
 }
 
-function runUnitCases(decide) {
+function runUnitCases(decide, SHIPPED_THRESHOLD) {
   const dominant = [0.98, 0.01, 0.005, 0.005];      // top 0.98, margin 0.97
   const ambiguous = [0.55, 0.25, 0.10, 0.10];       // top < 0.60 -> uncertain
   const weakMargin = [0.55, 0.20, 0.15, 0.10];      // top >= 0.60? no: 0.55 < 0.60
   const marginCase = [0.45, 0.25, 0.20, 0.10];      // top 0.45 < 0.60 -> uncertain
 
-  // --- rejection threshold boundary (explicit, per the iteration brief) ---
-  check('unit: reject exactly at 0.8774 -> unsupported',
-        decide(dominant, 0.8774).state, 'unsupported');
-  check('unit: reject just above 0.8774 -> unsupported',
-        decide(dominant, 0.87740001).state, 'unsupported');
-  check('unit: reject just below 0.8774 (dominant bins) -> supported',
-        decide(dominant, 0.87739999).state, 'supported');
+  // --- rejection threshold boundary ---
+  // Iteration 8: the boundary is taken FROM the shipped decision block (so the
+  // test can never drift from web/index.html) and the shipped constant itself
+  // is pinned to the documented Iteration-8 calibration value.
+  check('unit: shipped REJECT_THRESHOLD is the documented Iteration-8 constant',
+        SHIPPED_THRESHOLD, 0.0702);
+  check('unit: reject exactly at the shipped threshold -> unsupported',
+        decide(dominant, SHIPPED_THRESHOLD).state, 'unsupported');
+  check('unit: reject just above the shipped threshold -> unsupported',
+        decide(dominant, SHIPPED_THRESHOLD + 1e-8).state, 'unsupported');
+  check('unit: reject just below the shipped threshold (dominant bins) -> supported',
+        decide(dominant, SHIPPED_THRESHOLD - 1e-8).state, 'supported');
 
   // --- uncertainty boundaries (existing rule, unchanged semantics) ---
   check('unit: top exactly MIN_TOP, margin exactly MIN_MARGIN -> supported',
@@ -166,9 +174,11 @@ function runProductCases(decide) {
 
 function main() {
   console.log('extracting decision block from web/index.html ...');
-  const decide = makeDecide();
+  const decision = makeDecision();
+  const decide = decision.decide;
+  console.log('shipped REJECT_THRESHOLD = ' + decision.threshold);
   console.log('--- unit cases ---');
-  runUnitCases(decide);
+  runUnitCases(decide, decision.threshold);
   console.log('--- product cases ---');
   runProductCases(decide);
   console.log('---');

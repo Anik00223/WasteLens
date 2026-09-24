@@ -1,6 +1,6 @@
 {
   "page": "http://127.0.0.1:8123/web/index.html",
-  "generated_utc": "2026-09-24T18:32:39.221Z",
+  "generated_utc": "2026-09-24T18:36:56.713Z",
   "results": [
     {
       "step": "1 page-load (Model ready + enabled dropzone)",
@@ -45,7 +45,10 @@
     {
       "step": "7 uncertain result",
       "ok": true,
-      "observed": "skipped: no ambiguous case staged"
+      "observed": {
+        "uncertain": true,
+        "binName": "Hazardous"
+      }
     },
     {
       "step": "8 unsupported result",

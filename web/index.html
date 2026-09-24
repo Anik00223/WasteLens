@@ -241,17 +241,19 @@
   // === DECISION-BEGIN (pure logic; extracted verbatim by src/test_decision_logic.js) ===
   var UNCERTAIN = { MIN_TOP: 0.60, MIN_MARGIN: 0.50 };
 
-  // Model-side rejection (Iteration 4, Variant B): the dual-head model adds a
-  // sigmoid 'reject' output = P(image is OUTSIDE the supported single-item
-  // waste scope) (y_rej = 1 for unsupported inputs in src/train_rejection.py).
+  // Model-side rejection (Iteration 4/8, shipped Variant C): the dual-head
+  // model adds a sigmoid 'reject' output = P(image is OUTSIDE the supported
+  // single-item waste scope) (y_rej = 1 for unsupported inputs in
+  // src/train_rejection.py).
   // REJECT_THRESHOLD is the calibrated operating point frozen on the val
-  // split at the 1% false-rejection-rate target
-  // (docs/rejection_experiment/rejection_metrics_frozen.json, op point "0.01":
-  // threshold 0.8774 -> measured on test: 84.26% OOD detection at 1.38% FRR;
-  // per-source at THIS point: clothes 84.5%, shoes 74.5%, nonwaste 95.5%,
-  // collage 21.1%).
+  // split at the 1% false-rejection-rate target. Iteration 8 (fixed-budget
+  // Variant C, protocol candidate = seed 42, epoch 10) re-calibrated it:
+  // docs/rejection_experiment/rejection_metrics_varc8s42.json, op point "0.01":
+  // threshold 0.0702 -> measured on the untouched test set: 99.64% OOD
+  // detection at 1.78% FRR; per-source at THIS point: clothes 99.9%,
+  // shoes 99.0%, nonwaste 99.9%, collage 97.8% (100% at the 5% point).
   // Do not change it without re-running the calibration.
-  var REJECT_THRESHOLD = 0.8774;
+  var REJECT_THRESHOLD = 0.0702;
 
   // Pure decision layer: rejection first (its operating point was validated on
   // supported inputs only), then the existing ambiguity rule. DOM-free so the

@@ -1,0 +1,42 @@
+{
+ "purpose": "UI click-through fixtures MEASURED through the shipped page (browser runtime) for the Iteration-8 shipped model",
+ "supported": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery1.jpg",
+ "uncertain": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery708.jpg",
+ "ood": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes1244.jpg",
+ "browser_measured_states": {
+  "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery1.jpg": {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery1.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "100.0%",
+   "error": ""
+  },
+  "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery708.jpg": {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery708.jpg",
+   "state": "uncertain",
+   "binName": "Hazardous",
+   "conf": "70.4%",
+   "error": ""
+  },
+  "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes1244.jpg": {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes1244.jpg",
+   "state": "unsupported",
+   "binName": "Unsupported",
+   "conf": "100.0%",
+   "error": ""
+  }
+ },
+ "runtime_boundary_evidence": [
+  {
+   "image": "battery163.jpg",
+   "keras_verdict": "uncertain (margin 0.3455)",
+   "browser_verdict": "supported (81.3%)"
+  },
+  {
+   "image": "battery781.jpg",
+   "keras_verdict": "uncertain (margin 0.3962)",
+   "browser_verdict": "supported (78.6%)"
+  }
+ ],
+ "note": "battery708 is uncertain in BOTH runtimes and is used as the staged uncertain fixture; the other two show the documented narrow runtime difference for near-boundary ambiguity"
+}

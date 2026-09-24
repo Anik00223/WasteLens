@@ -12,6 +12,7 @@
  *  10 repeated inference       11 mobile layout    12 desktop layout
  *
  * Usage: node src/ui_clickthrough.js [pageUrl] [--chrome <path>] [--keep]
+ *                                   [--out-tag <tag>] [--fixtures <json>]
  */
 'use strict';
 const { spawn } = require('child_process');
@@ -30,6 +31,16 @@ const PAGE_URL = process.argv[2] && !process.argv[2].startsWith('--')
 const keepFlag = process.argv.includes('--keep');
 const chromeArgIdx = process.argv.indexOf('--chrome');
 const CHROME = chromeArgIdx > 0 ? process.argv[chromeArgIdx + 1] : null;
+// Iteration 8: optional evidence tag so a CANDIDATE run cannot overwrite the
+// production evidence (default: production names, unchanged behaviour).
+const tagIdx = process.argv.indexOf('--out-tag');
+const OUT_TAG = tagIdx > 0 ? process.argv[tagIdx + 1] : '';
+const TAGGED = OUT_TAG ? '_' + OUT_TAG : '';
+// Iteration 8: --scan <json> {images:[paths]} drives the real page over a list
+// of images and reports each rendered state; --scan-out writes the record.
+const scanIdx = process.argv.indexOf('--scan');
+const scanOutIdx = process.argv.indexOf('--scan-out');
+const scanOut = scanOutIdx > 0 ? process.argv[scanOutIdx + 1] : null;
 
 function fail(msg) { console.error('ui_clickthrough: ' + msg); process.exit(2); }
 
@@ -101,7 +112,7 @@ async function startChrome() {
 const REPO = path.resolve(__dirname, '..');
 const FIX_DIR = path.join(REPO, 'scratch', 'ui_fixtures');
 const OUT_JSON = path.join(REPO, 'docs', 'rejection_experiment',
-  'ui_clickthrough.json');
+  `ui_clickthrough${TAGGED}.json`);
 const results = [];
 let pageErrors = 0;
 const consoleLog = [];
@@ -157,24 +168,50 @@ async function screenshot(sid, file) {
 
 async function main() {
   fs.mkdirSync(FIX_DIR, { recursive: true });
-  // pick deterministic fixtures from the PRODUCTION replay file (real
-  // Variant-B outputs, measured in Iteration 5)
-  const prod = JSON.parse(fs.readFileSync(path.join(
-    REPO, 'docs', 'rejection_experiment', 'product_test_outputs.json'),
-    'utf8'));
-  const pick = (id) => {
-    const c = prod.cases.find(x => x.id === id);
-    if (!c) return null;
-    const ext = path.extname(c.path) || '.jpg';
-    const dest = path.join(FIX_DIR, c.id + ext);
-    fs.copyFileSync(c.path, dest);
+  // Iteration 8: --fixtures <json> stages MEASURED fixtures for a specific
+  // model ({"supported": path, "uncertain": path, "ood": path}); without it the
+  // harness keeps its default: deterministic fixtures from the production
+  // replay file (real shipped-model outputs).
+  const fixIdx = process.argv.indexOf('--fixtures');
+  const stageFromPath = (srcPath, id) => {
+    if (!srcPath || !fs.existsSync(srcPath)) return null;
+    const ext = path.extname(srcPath) || '.jpg';
+    const dest = path.join(FIX_DIR, id + ext);
+    fs.copyFileSync(srcPath, dest);
     return { url: 'http://127.0.0.1:8123/scratch/ui_fixtures/' +
-                   path.basename(dest), expect: c.expected, id: c.id };
+                   path.basename(dest), id: id };
   };
-  const sup = pick('sup_conf_0');
-  const unc = pick('sup_amb_0');
-  const ood = pick('clothes_0');
-  if (!sup || !ood) fail('could not stage fixtures from product replay file');
+  let sup, unc, ood;
+  if (fixIdx > 0) {
+    const fx = JSON.parse(fs.readFileSync(process.argv[fixIdx + 1], 'utf8'));
+    const p = (v) => (typeof v === 'string' ? v : (v && v.path));
+    sup = p(fx.supported) ? stageFromPath(p(fx.supported), 'fx_supported') : null;
+    unc = p(fx.uncertain) ? stageFromPath(p(fx.uncertain), 'fx_uncertain') : null;
+    ood = p(fx.ood) ? stageFromPath(p(fx.ood), 'fx_ood') : null;
+    console.log('fixtures: ' + JSON.stringify({
+      supported: !!sup, uncertain: !!unc, ood: !!ood,
+      source: process.argv[fixIdx + 1] }));
+    if (!sup || !ood) fail('--fixtures needs at least supported + ood paths');
+  } else {
+    // pick deterministic fixtures from the PRODUCTION replay file (real
+    // shipped-model outputs, regenerated whenever the shipped model changes)
+    const prod = JSON.parse(fs.readFileSync(path.join(
+      REPO, 'docs', 'rejection_experiment', 'product_test_outputs.json'),
+      'utf8'));
+    const pick = (id) => {
+      const c = prod.cases.find(x => x.id === id);
+      if (!c) return null;
+      const ext = path.extname(c.path) || '.jpg';
+      const dest = path.join(FIX_DIR, c.id + ext);
+      fs.copyFileSync(c.path, dest);
+      return { url: 'http://127.0.0.1:8123/scratch/ui_fixtures/' +
+                     path.basename(dest), expect: c.expected, id: c.id };
+    };
+    sup = pick('sup_conf_0');
+    unc = pick('sup_amb_0');
+    ood = pick('clothes_0');
+    if (!sup || !ood) fail('could not stage fixtures from product replay file');
+  }
 
   const { child, profile, wsUrl } = await startChrome();
   let sid = null;
@@ -213,6 +250,56 @@ async function main() {
         `dz: (document.getElementById('dropzone')||{}).className})`, sid);
       console.log('PROBE: ' + JSON.stringify(s));
       console.log('CONSOLE: ' + JSON.stringify(consoleLog, null, 2));
+      try { child.kill(); } catch {}
+      return;
+    }
+
+    // Iteration 8: --scan <json> uploads a list of real images through the REAL
+    // page pipeline and reports the state the shipped page renders for each.
+    // Used to select UI fixtures from the RUNTIME's own measured behaviour
+    // (browser decode+resize differs slightly from the Keras eval pipeline, so
+    // borderline ambiguity cases must be measured in the browser).
+    if (scanIdx > 0) {
+      // wait for the model exactly like the real flow does, otherwise the
+      // first upload races the model load and is silently dropped
+      await waitFor(
+        `document.getElementById('dropzone') && ` +
+        `!document.getElementById('dropzone').classList.contains('disabled')`,
+        sid, 45000);
+      const list = JSON.parse(fs.readFileSync(process.argv[scanIdx + 1], 'utf8'));
+      const rows = [];
+      for (const item of list.images) {
+        const staged = stageFromPath(item, path.basename(item));
+        if (!staged) { rows.push({ image: item, state: 'missing' }); continue; }
+        await evalIn(`(${UPLOAD_SNIPPET})('${staged.url}', 'scan.jpg')`, sid);
+        // wait for EITHER a rendered result or an inline error (robust scan:
+        // a decode failure is recorded, not thrown)
+        await waitFor(
+          `document.getElementById('resultError').textContent.length > 0 || ` +
+          `(!document.getElementById('results').hidden && ` +
+          `!document.getElementById('resultPanel').hidden && ` +
+          `document.getElementById('bars').children.length === 4)`,
+          sid, 20000).catch(() => {});
+        await sleep(150);
+        const st = await evalIn(STATE_SNIPPET, sid);
+        rows.push({ image: item,
+                    state: st.error ? 'error'
+                      : st.unsupported ? 'unsupported'
+                      : st.uncertain ? 'uncertain'
+                      : (st.panelVisible && st.bars === 4 ? 'supported'
+                                                          : 'no-result'),
+                    binName: st.binName, conf: st.conf, error: st.error });
+        console.log(JSON.stringify(rows[rows.length - 1]));
+      }
+      const counts = {};
+      rows.forEach(r => { counts[r.state || 'error'] = (counts[r.state || 'error'] || 0) + 1; });
+      console.log('SCAN SUMMARY: ' + JSON.stringify(counts));
+      if (scanOut) {
+        fs.writeFileSync(scanOut, JSON.stringify(
+          { page: PAGE_URL, generated_utc: new Date().toISOString(),
+            results: rows, summary: counts }, null, 1));
+        console.log('wrote ' + scanOut);
+      }
       try { child.kill(); } catch {}
       return;
     }
@@ -327,7 +414,7 @@ async function main() {
     record('11 mobile layout (375px, single column)',
       s11.w <= 400 && !s11.mq && s11.dz !== 'none', s11);
     await screenshot(sid, path.join(REPO, 'docs', 'rejection_experiment',
-      'ui_clickthrough_mobile.jpeg'));
+      `ui_clickthrough_mobile${TAGGED}.jpeg`));
 
     await send('Emulation.setDeviceMetricsOverride',
       { width: 1280, height: 800, deviceScaleFactor: 1, mobile: false }, sid);
@@ -339,7 +426,7 @@ async function main() {
     record('12 desktop layout (1280px, media query active)',
       s12.w >= 1200 && s12.mq && s12.dz !== 'none', s12);
     await screenshot(sid, path.join(REPO, 'docs', 'rejection_experiment',
-      'ui_clickthrough_desktop.jpeg'));
+      `ui_clickthrough_desktop${TAGGED}.jpeg`));
 
     record('console errors during session', pageErrors === 0,
       { pageErrors });

@@ -2,9 +2,13 @@
 #
 # PURPOSE:
 #   Deterministically select real product-test cases from the Iteration-4 eval
-#   sets, run them through the SHIPPED Variant B Keras model, and write
+#   sets, run them through the SHIPPED dual-head Keras model, and write
 #   docs/rejection_experiment/product_test_outputs.json for
 #   src/test_decision_logic.js to replay through the exact web decision logic.
+#
+#   SHIPPED MODEL (Iteration 8): Variant C, fixed-budget protocol candidate =
+#   seed 42, epoch 10 (models/checkpoints/wastelens_rej_shipped_best.keras is
+#   the stable alias for it), threshold 0.0702 = its val-frozen 1% FRR point.
 #
 #   Expected states come from the MEASURED model outputs (never assumptions):
 #   - supported_confident: supported-test images the measured model treats as
@@ -39,7 +43,8 @@ from validate_realworld import ood_probes, predict_array
 
 EVAL_SETS_JSON = Path("docs/rejection_experiment/eval_sets.json")
 OUT_JSON = Path("docs/rejection_experiment/product_test_outputs.json")
-REJECT_THRESHOLD = 0.8774   # shipped operating point (op "0.01", val-frozen)
+REJECT_THRESHOLD = 0.0702   # shipped operating point (Iteration 8, op "0.01",
+                            # val-frozen on the shipped Variant C candidate)
 MIN_TOP = 0.60              # existing web ambiguity rule (unchanged)
 MIN_MARGIN = 0.50
 
@@ -88,10 +93,11 @@ def main() -> None:
         description="Select real product-test cases and record the measured "
                     "dual-head outputs + expected verdicts.")
     ap.add_argument("--model",
-                    default="models/checkpoints/wastelens_rej_frozen_best.keras",
-                    help="dual-head checkpoint (default: shipped Variant B)")
+                    default="models/checkpoints/wastelens_rej_shipped_best.keras",
+                    help="dual-head checkpoint (default: shipped Variant C "
+                         "candidate, Iteration 8)")
     ap.add_argument("--threshold", type=float, default=REJECT_THRESHOLD,
-                    help="rejection threshold (default: shipped 0.8774)")
+                    help="rejection threshold (default: shipped 0.0702)")
     ap.add_argument("--out", type=Path, default=OUT_JSON,
                     help="output JSON (default: production product_test_"
                          "outputs.json)")

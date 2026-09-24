@@ -1,6 +1,6 @@
 {
-  "page": "http://127.0.0.1:8123/web/index.html",
-  "generated_utc": "2026-09-24T18:32:39.221Z",
+  "page": "http://127.0.0.1:8123/scratch/ui_varc8s42/index.html",
+  "generated_utc": "2026-09-24T18:27:02.754Z",
   "results": [
     {
       "step": "1 page-load (Model ready + enabled dropzone)",
@@ -44,8 +44,11 @@
     },
     {
       "step": "7 uncertain result",
-      "ok": true,
-      "observed": "skipped: no ambiguous case staged"
+      "ok": false,
+      "observed": {
+        "uncertain": false,
+        "binName": "Recyclable"
+      }
     },
     {
       "step": "8 unsupported result",
@@ -127,5 +130,5 @@
       }
     }
   ],
-  "all_passed": true
+  "all_passed": false
 }

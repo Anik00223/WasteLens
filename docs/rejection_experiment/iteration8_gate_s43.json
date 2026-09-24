@@ -1,0 +1,33 @@
+{
+  "protocol": "Iteration 8 fixed-budget final-epoch Variant C",
+  "rule": "Fixed budget: 10 epochs, no early stopping, NO selection - the candidate is epoch 10. Validation classification gate: supported-val bins accuracy >= 0.9829 - 0.25pp = 0.9804 (floor computed in code). Test tolerance vs Variant B: accuracy >= 0.9822 - 0.005 and macro-F1 >= 0.9742 - 0.005. Rejection must improve: OOD @1% FRR >= 0.9 (B: 0.8426) and collage @5% FRR >= 0.75 (B: 0.5778). BOTH seeds must clear the validation floor; no seed is discarded or swapped.",
+  "constants": {
+    "baseline_val_acc": 0.9829,
+    "tolerance_pp": 0.25,
+    "min_val_acc": 0.9804,
+    "baseline_test": {
+      "accuracy": 0.9822,
+      "macro_f1": 0.9742
+    },
+    "test_acc_tolerance": 0.005,
+    "test_f1_tolerance": 0.005,
+    "min_ood_at_1pct": 0.9,
+    "min_collage_at_5pct": 0.75,
+    "epoch_budget": 10,
+    "candidate_epoch": 10
+  },
+  "seed_label": "43",
+  "model": "models\\checkpoints\\wastelens_rej_varc8s43_10.keras",
+  "validation": {
+    "supported_val_bins_acc": 0.9861900893582454,
+    "supported_val_macro_f1": 0.9800937154147622,
+    "supported_val_mean_reject": 0.006736274342983961,
+    "n_images": 1231,
+    "floor": 0.9804,
+    "baseline": 0.9829,
+    "tolerance_pp": 0.25,
+    "pass": true,
+    "margin_pp": 0.579,
+    "verdict": "PASS - candidate may be evaluated on test"
+  }
+}

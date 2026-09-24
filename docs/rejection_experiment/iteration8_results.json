@@ -1,0 +1,280 @@
+{
+  "protocol": "Iteration 8 fixed-budget final-epoch Variant C",
+  "rule": "Fixed budget: 10 epochs, no early stopping, NO selection - the candidate is epoch 10. Validation classification gate: supported-val bins accuracy >= 0.9829 - 0.25pp = 0.9804 (floor computed in code). Test tolerance vs Variant B: accuracy >= 0.9822 - 0.005 and macro-F1 >= 0.9742 - 0.005. Rejection must improve: OOD @1% FRR >= 0.9 (B: 0.8426) and collage @5% FRR >= 0.75 (B: 0.5778). BOTH seeds must clear the validation floor; no seed is discarded or swapped.",
+  "generated_utc": "2026-09-24 18:37:17 UTC",
+  "baselines": {
+    "variant_b_val_acc": 0.9829,
+    "variant_b_ood_at_1pct_frr": 0.8426,
+    "variant_b_collage_at_5pct_frr": 0.5778,
+    "registered_min_ood_at_1pct": 0.9,
+    "registered_min_collage_at_5pct": 0.75
+  },
+  "seed_checks": {
+    "validation_floor_pass": {
+      "42": true,
+      "43": true
+    },
+    "test_classification_pass": {
+      "42": true,
+      "43": true
+    },
+    "rejection_bar_pass": {
+      "42": true,
+      "43": true
+    }
+  },
+  "per_seed": {
+    "42": {
+      "gate_json": "docs\\rejection_experiment\\iteration8_gate_s42.json",
+      "metrics_json": "docs\\rejection_experiment\\rejection_metrics_varc8s42.json",
+      "model": "models\\checkpoints\\wastelens_rej_varc8s42_10.keras",
+      "validation": {
+        "supported_val_bins_acc": 0.983753046303818,
+        "supported_val_macro_f1": 0.9780391963634129,
+        "supported_val_mean_reject": 0.004657251760363579,
+        "n_images": 1231,
+        "floor": 0.9804,
+        "baseline": 0.9829,
+        "tolerance_pp": 0.25,
+        "pass": true,
+        "margin_pp": 0.3353,
+        "verdict": "PASS - candidate may be evaluated on test"
+      },
+      "test": {
+        "test_accuracy": 0.981346309813463,
+        "test_macro_f1": 0.972132471386473,
+        "accuracy_delta_pp": -0.0854,
+        "macro_f1_delta_pp": -0.2068,
+        "classification_pass": true,
+        "ood_at_1pct_frr": 0.9963880288957688,
+        "ood_pass": true,
+        "collage_at_5pct_frr": 1.0,
+        "collage_pass": true,
+        "pass": true
+      },
+      "auroc": 0.9996601876333407,
+      "auprc": 0.9997866092943841,
+      "ood_at_1pct_frr": 0.9963880288957688,
+      "ood_at_5pct_frr": 0.9984520123839009,
+      "collage_at_1pct_frr": 0.9777777777777777,
+      "collage_at_5pct_frr": 1.0,
+      "per_source_ood_at_5pct": {
+        "clothes": 1.0,
+        "shoes": 0.9932885906040269,
+        "collage": 1.0,
+        "nonwaste": 0.9986666666666667
+      },
+      "calibration": {
+        "threshold_at_1pct": 0.07018820941448212,
+        "val_frr_at_1pct": 0.010560519902518278,
+        "test_frr_at_1pct": 0.017842660178426603,
+        "threshold_at_5pct": 0.0028878916054964066,
+        "val_frr_at_5pct": 0.050365556458164096,
+        "test_frr_at_5pct": 0.0770478507704785,
+        "protocol": "same as Variants A/B/C: threshold = val quantile at each FRR target, frozen on supported-val, applied unchanged to the untouched test set"
+      },
+      "per_bin": {
+        "recyclable": {
+          "p": 0.9823113207547169,
+          "r": 0.9928486293206198,
+          "f1": 0.9875518672199171
+        },
+        "organic": {
+          "p": 0.9863945578231292,
+          "r": 0.9797297297297297,
+          "f1": 0.9830508474576272
+        },
+        "hazardous": {
+          "p": 0.9710144927536232,
+          "r": 0.9436619718309859,
+          "f1": 0.9571428571428572
+        },
+        "general trash": {
+          "p": 0.98,
+          "r": 0.9423076923076923,
+          "f1": 0.9607843137254902
+        }
+      },
+      "confusion_matrix": [
+        [
+          833,
+          2,
+          2,
+          2
+        ],
+        [
+          3,
+          145,
+          0,
+          0
+        ],
+        [
+          8,
+          0,
+          134,
+          0
+        ],
+        [
+          4,
+          0,
+          2,
+          98
+        ]
+      ]
+    },
+    "43": {
+      "gate_json": "docs\\rejection_experiment\\iteration8_gate_s43.json",
+      "metrics_json": "docs\\rejection_experiment\\rejection_metrics_varc8s43.json",
+      "model": "models\\checkpoints\\wastelens_rej_varc8s43_10.keras",
+      "validation": {
+        "supported_val_bins_acc": 0.9861900893582454,
+        "supported_val_macro_f1": 0.9800937154147622,
+        "supported_val_mean_reject": 0.006736274342983961,
+        "n_images": 1231,
+        "floor": 0.9804,
+        "baseline": 0.9829,
+        "tolerance_pp": 0.25,
+        "pass": true,
+        "margin_pp": 0.579,
+        "verdict": "PASS - candidate may be evaluated on test"
+      },
+      "test": {
+        "test_accuracy": 0.9797242497972425,
+        "test_macro_f1": 0.9710675082724288,
+        "accuracy_delta_pp": -0.2476,
+        "macro_f1_delta_pp": -0.3132,
+        "classification_pass": true,
+        "ood_at_1pct_frr": 0.9969040247678018,
+        "ood_pass": true,
+        "collage_at_5pct_frr": 1.0,
+        "collage_pass": true,
+        "pass": true
+      },
+      "auroc": 0.9995886261620368,
+      "auprc": 0.9997513121717846,
+      "ood_at_1pct_frr": 0.9969040247678018,
+      "ood_at_5pct_frr": 0.9984520123839009,
+      "collage_at_1pct_frr": 0.9888888888888889,
+      "collage_at_5pct_frr": 1.0,
+      "per_source_ood_at_5pct": {
+        "clothes": 1.0,
+        "shoes": 0.9932885906040269,
+        "collage": 1.0,
+        "nonwaste": 0.9986666666666667
+      },
+      "calibration": {
+        "threshold_at_1pct": 0.14630873501300812,
+        "val_frr_at_1pct": 0.010560519902518278,
+        "test_frr_at_1pct": 0.015409570154095702,
+        "threshold_at_5pct": 0.003961588256061077,
+        "val_frr_at_5pct": 0.050365556458164096,
+        "test_frr_at_5pct": 0.06082725060827251,
+        "protocol": "same as Variants A/B/C: threshold = val quantile at each FRR target, frozen on supported-val, applied unchanged to the untouched test set"
+      },
+      "per_bin": {
+        "recyclable": {
+          "p": 0.9880239520958084,
+          "r": 0.9833134684147795,
+          "f1": 0.985663082437276
+        },
+        "organic": {
+          "p": 0.9797297297297297,
+          "r": 0.9797297297297297,
+          "f1": 0.9797297297297297
+        },
+        "hazardous": {
+          "p": 0.9645390070921985,
+          "r": 0.9577464788732394,
+          "f1": 0.9611307420494699
+        },
+        "general trash": {
+          "p": 0.9357798165137615,
+          "r": 0.9807692307692307,
+          "f1": 0.9577464788732394
+        }
+      },
+      "confusion_matrix": [
+        [
+          825,
+          3,
+          4,
+          7
+        ],
+        [
+          3,
+          145,
+          0,
+          0
+        ],
+        [
+          6,
+          0,
+          136,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          102
+        ]
+      ]
+    }
+  },
+  "seed_consistency": {
+    "both_seeds_pass_validation_floor": true,
+    "test_accuracy": {
+      "mean": 0.9805352798053528,
+      "min": 0.9797242497972425,
+      "max": 0.981346309813463,
+      "spread": 0.0016220600162205612,
+      "values": [
+        0.981346309813463,
+        0.9797242497972425
+      ]
+    },
+    "test_macro_f1": {
+      "mean": 0.971599989829451,
+      "min": 0.9710675082724288,
+      "max": 0.972132471386473,
+      "spread": 0.0010649631140441373,
+      "values": [
+        0.972132471386473,
+        0.9710675082724288
+      ]
+    },
+    "auroc": {
+      "mean": 0.9996244068976887,
+      "min": 0.9995886261620368,
+      "max": 0.9996601876333407,
+      "spread": 7.156147130393808e-05,
+      "values": [
+        0.9996601876333407,
+        0.9995886261620368
+      ]
+    },
+    "ood_at_1pct_frr": {
+      "mean": 0.9966460268317854,
+      "min": 0.9963880288957688,
+      "max": 0.9969040247678018,
+      "spread": 0.0005159958720329927,
+      "values": [
+        0.9963880288957688,
+        0.9969040247678018
+      ]
+    },
+    "collage_at_5pct_frr": {
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0,
+      "spread": 0.0,
+      "values": [
+        1.0,
+        1.0
+      ]
+    },
+    "note": "no seed is discarded; spread is reported, not averaged away"
+  },
+  "outcome": "A",
+  "outcome_reason": "both seeds clear the validation floor and all registered test-side conditions -> eligible to ship the protocol-defined epoch-10 candidate"
+}

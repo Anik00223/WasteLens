@@ -1,0 +1,123 @@
+{
+ "page": "http://127.0.0.1:8123/web/index.html",
+ "generated_utc": "2026-09-24T18:36:30.318Z",
+ "results": [
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery163.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "81.3%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery708.jpg",
+   "state": "uncertain",
+   "binName": "Hazardous",
+   "conf": "70.4%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery781.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "78.6%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery1.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "100.0%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery10.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "100.0%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery100.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "99.8%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery101.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "100.0%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery102.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "87.8%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery103.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "100.0%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery104.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "100.0%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery105.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "100.0%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery106.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "100.0%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery107.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "100.0%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery108.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "100.0%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\battery\\battery109.jpg",
+   "state": "supported",
+   "binName": "Hazardous",
+   "conf": "100.0%",
+   "error": ""
+  },
+  {
+   "image": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes1244.jpg",
+   "state": "unsupported",
+   "binName": "Unsupported",
+   "conf": "100.0%",
+   "error": ""
+  }
+ ],
+ "summary": {
+  "supported": 14,
+  "uncertain": 1,
+  "unsupported": 1
+ }
+}

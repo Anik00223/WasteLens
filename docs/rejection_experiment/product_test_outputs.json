@@ -1,7 +1,7 @@
 {
- "model": "models/checkpoints/wastelens_rej_frozen_best.keras",
- "created_utc": "2026-09-22 19:12:08 UTC",
- "reject_threshold": 0.8774,
+ "model": "models/checkpoints/wastelens_rej_shipped_best.keras",
+ "created_utc": "2026-09-24 18:31:16 UTC",
+ "reject_threshold": 0.0702,
  "cases": [
   {
    "id": "sup_conf_0",
@@ -10,12 +10,12 @@
    "ground_truth": "hazardous",
    "expected": "supported",
    "bins": [
-    8.145245260493539e-07,
-    1.719055564564087e-09,
-    0.9999991655349731,
-    5.351880605353188e-10
+    8.714373840590373e-12,
+    1.6109203463127305e-17,
+    1.0,
+    4.710502459687965e-20
    ],
-   "reject": 0.00245272577740252
+   "reject": 4.0360026432040286e-10
   },
   {
    "id": "sup_conf_1",
@@ -24,12 +24,12 @@
    "ground_truth": "hazardous",
    "expected": "supported",
    "bins": [
-    1.393437543129039e-07,
-    1.4516096769057185e-07,
-    0.9999997615814209,
-    7.138377888793457e-09
+    1.2631046208966268e-10,
+    1.5367627309581522e-11,
+    1.0,
+    5.894256437100065e-13
    ],
-   "reject": 0.0021466559264808893
+   "reject": 8.298802072204126e-07
   },
   {
    "id": "sup_conf_2",
@@ -38,12 +38,12 @@
    "ground_truth": "hazardous",
    "expected": "supported",
    "bins": [
-    3.87448108085664e-06,
-    7.682326774727244e-09,
-    0.9999960660934448,
-    1.1387889936598228e-10
+    9.140869678958552e-07,
+    4.654679419680008e-12,
+    0.9999990463256836,
+    7.55429179510055e-17
    ],
-   "reject": 0.0031747734174132347
+   "reject": 0.0001238216063939035
   },
   {
    "id": "sup_conf_3",
@@ -52,82 +52,68 @@
    "ground_truth": "organic",
    "expected": "supported",
    "bins": [
-    6.222243769116176e-07,
-    0.9999985694885254,
-    6.388733027051785e-07,
-    7.914778166195902e-08
+    3.527282910198437e-09,
+    1.0,
+    1.6029638727488305e-09,
+    4.320243381789046e-12
    ],
-   "reject": 0.020646777004003525
+   "reject": 2.2581998564419337e-06
   },
   {
    "id": "sup_conf_4",
+   "group": "supported_confident",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\biological\\biological46.jpg",
+   "ground_truth": "organic",
+   "expected": "supported",
+   "bins": [
+    0.8496140241622925,
+    0.14898581802845,
+    0.0014001440722495317,
+    4.764022509817778e-12
+   ],
+   "reject": 1.8401112811261555e-06
+  },
+  {
+   "id": "sup_conf_5",
    "group": "supported_confident",
    "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\biological\\biological796.jpg",
    "ground_truth": "organic",
    "expected": "supported",
    "bins": [
-    2.9230506015665014e-08,
+    1.9020603234803923e-13,
     1.0,
-    5.2685127371887575e-09,
-    4.430828967616485e-11
+    1.1245968349268831e-14,
+    6.176296038064738e-19
    ],
-   "reject": 0.009019086137413979
+   "reject": 3.2833458174508223e-09
   },
   {
-   "id": "sup_conf_5",
+   "id": "sup_conf_6",
    "group": "supported_confident",
    "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\brown-glass\\brown-glass242.jpg",
    "ground_truth": "recyclable",
    "expected": "supported",
    "bins": [
-    0.9999997615814209,
-    7.255886202983675e-08,
-    7.504281995807105e-08,
-    3.0543598206200784e-10
+    1.0,
+    3.0005193479582665e-15,
+    5.584892899708482e-13,
+    3.235287075965327e-16
    ],
-   "reject": 0.028551895171403885
+   "reject": 4.2745095925056376e-06
   },
   {
-   "id": "sup_conf_6",
+   "id": "sup_conf_7",
    "group": "supported_confident",
    "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\brown-glass\\brown-glass543.jpg",
    "ground_truth": "recyclable",
    "expected": "supported",
    "bins": [
-    0.9999998807907104,
-    1.4635329392831409e-08,
-    1.245678049599519e-07,
-    1.245839764685286e-09
+    1.0,
+    5.194470206618465e-15,
+    3.391575189706027e-15,
+    2.646034866909952e-12
    ],
-   "reject": 0.00011171144433319569
-  },
-  {
-   "id": "sup_conf_7",
-   "group": "supported_confident",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\cardboard\\cardboard352.jpg",
-   "ground_truth": "recyclable",
-   "expected": "supported",
-   "bins": [
-    0.9999799728393555,
-    6.095534672567737e-07,
-    2.5387596025439052e-08,
-    1.943929419212509e-05
-   ],
-   "reject": 0.14064519107341766
-  },
-  {
-   "id": "sup_amb_0",
-   "group": "supported_ambiguous",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\biological\\biological46.jpg",
-   "ground_truth": "organic",
-   "expected": "uncertain",
-   "bins": [
-    0.3827627897262573,
-    0.6171534061431885,
-    8.386850822716951e-05,
-    4.209173454228221e-09
-   ],
-   "reject": 0.4693383276462555
+   "reject": 7.206055840924819e-08
   },
   {
    "id": "clothes_0",
@@ -136,82 +122,54 @@
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.9784107208251953,
-    0.0009232572629116476,
-    1.4629290490120184e-06,
-    0.020664524286985397
+    0.9999138116836548,
+    2.8019294404657558e-06,
+    3.008652493807773e-10,
+    8.340310887433589e-05
    ],
-   "reject": 0.9959803223609924
+   "reject": 1.0
   },
   {
    "id": "clothes_1",
    "group": "ood_clothes",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes2594.jpg",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes1472.jpg",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.9910891056060791,
-    0.00728644011542201,
-    0.00018438904953654855,
-    0.001440047868527472
+    0.4059165418148041,
+    8.28284996146067e-08,
+    1.700232489521003e-11,
+    0.5940834283828735
    ],
-   "reject": 0.9951985478401184
+   "reject": 1.0
   },
   {
    "id": "clothes_2",
    "group": "ood_clothes",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes2368.jpg",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes1884.jpg",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.9998975992202759,
-    3.274860864621587e-05,
-    2.06409276870545e-06,
-    6.759550160495564e-05
+    1.0,
+    3.676443816047481e-09,
+    1.8714534089081525e-10,
+    1.9295416653353215e-10
    ],
-   "reject": 0.9944558143615723
-  },
-  {
-   "id": "clothes_miss_0",
-   "group": "ood_clothes_miss",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes4265.jpg",
-   "ground_truth": "unsupported",
-   "expected": null,
-   "bins": [
-    0.9716350436210632,
-    6.64302604036493e-07,
-    1.4104243462043087e-07,
-    0.028364157304167747
-   ],
-   "reject": 0.8750556707382202
-  },
-  {
-   "id": "clothes_miss_1",
-   "group": "ood_clothes_miss",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\clothes\\clothes4957.jpg",
-   "ground_truth": "unsupported",
-   "expected": null,
-   "bins": [
-    0.4593100845813751,
-    1.7752441635821015e-05,
-    6.402033613994718e-05,
-    0.5406081676483154
-   ],
-   "reject": 0.8733335733413696
+   "reject": 1.0
   },
   {
    "id": "shoes_0",
    "group": "ood_shoes",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes494.jpg",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes1001.jpg",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.9999451637268066,
-    3.896522321156226e-05,
-    5.09972232975997e-06,
-    1.0778754585771821e-05
+    0.05547193065285683,
+    0.3267175257205963,
+    2.5525084765831707e-06,
+    0.617807924747467
    ],
-   "reject": 0.9956958889961243
+   "reject": 1.0
   },
   {
    "id": "shoes_1",
@@ -220,180 +178,138 @@
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.9999008178710938,
-    9.782873530639336e-05,
-    1.2761854577547638e-06,
-    2.529978004872646e-09
+    0.9999470710754395,
+    5.263362982077524e-05,
+    2.59993157669669e-07,
+    8.623427666387684e-11
    ],
-   "reject": 0.9872484803199768
+   "reject": 1.0
   },
   {
    "id": "shoes_2",
    "group": "ood_shoes",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes31.jpg",
+   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes1330.jpg",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.9606642723083496,
-    0.02762819081544876,
-    0.009730062447488308,
-    0.0019774502143263817
+    0.8986874222755432,
+    0.10086171329021454,
+    0.00018629153782967478,
+    0.00026452759630046785
    ],
-   "reject": 0.9844159483909607
-  },
-  {
-   "id": "shoes_miss_0",
-   "group": "ood_shoes_miss",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes87.jpg",
-   "ground_truth": "unsupported",
-   "expected": null,
-   "bins": [
-    0.5148846507072449,
-    0.44807878136634827,
-    0.006291429046541452,
-    0.03074520267546177
-   ],
-   "reject": 0.8574248552322388
-  },
-  {
-   "id": "shoes_miss_1",
-   "group": "ood_shoes_miss",
-   "path": "C:\\Users\\dasa8\\.cache\\kagglehub\\datasets\\mostafaabla\\garbage-classification\\versions\\1\\garbage_classification\\shoes\\shoes743.jpg",
-   "ground_truth": "unsupported",
-   "expected": null,
-   "bins": [
-    0.9226828217506409,
-    0.04215832054615021,
-    0.0012224033707752824,
-    0.03393631801009178
-   ],
-   "reject": 0.832514226436615
+   "reject": 1.0
   },
   {
    "id": "nonwaste_0",
    "group": "ood_nonwaste",
-   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_6_0318.png",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_0_0300.png",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.6408934593200684,
-    0.3591001629829407,
-    6.448241492762463e-06,
-    4.188130120486022e-10
+    0.9835842251777649,
+    0.0027430702466517687,
+    0.01367271225899458,
+    5.2781206960617055e-08
    ],
-   "reject": 0.9992070198059082
+   "reject": 1.0
   },
   {
    "id": "nonwaste_1",
    "group": "ood_nonwaste",
-   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_5_0357.png",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_0_0318.png",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.9999326467514038,
-    6.5692285716068e-05,
-    1.6398115576521377e-06,
-    2.6756106663583523e-08
+    0.23402705788612366,
+    0.6680473685264587,
+    0.030163543298840523,
+    0.06776201725006104
    ],
-   "reject": 0.9980847239494324
+   "reject": 1.0
   },
   {
    "id": "nonwaste_2",
    "group": "ood_nonwaste",
-   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_1_0315.png",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_0_0336.png",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.780366837978363,
-    0.040889278054237366,
-    0.1787431836128235,
-    6.879661782477342e-07
+    0.9786533117294312,
+    0.00011817178165074438,
+    0.021228497847914696,
+    6.963901455492305e-09
    ],
-   "reject": 0.9971573948860168
-  },
-  {
-   "id": "nonwaste_miss_0",
-   "group": "ood_nonwaste_miss",
-   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\cifar_pngs\\cifar_trva_1_0369.png",
-   "ground_truth": "unsupported",
-   "expected": null,
-   "bins": [
-    0.22642596065998077,
-    8.492107008351013e-05,
-    0.7734733819961548,
-    1.5766994692967273e-05
-   ],
-   "reject": 0.846977710723877
+   "reject": 1.0
   },
   {
    "id": "collage_0",
    "group": "ood_collage",
-   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_4item_024.jpg",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_4item_018.jpg",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.9999985694885254,
-    1.3717864248974365e-06,
-    8.290225728124767e-10,
-    3.3715075176132814e-10
+    0.9992988109588623,
+    3.039893314848996e-08,
+    0.0007012004498392344,
+    1.354236389694563e-09
    ],
-   "reject": 0.9542338252067566
+   "reject": 1.0
   },
   {
    "id": "collage_1",
    "group": "ood_collage",
-   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_4item_026.jpg",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_2item_018.jpg",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.9997227787971497,
-    0.00026690048980526626,
-    2.979634928124142e-06,
-    7.3261662691948e-06
+    0.9983371496200562,
+    1.0262461991317195e-09,
+    0.0016628685407340527,
+    5.128772406770565e-10
    ],
-   "reject": 0.9517004489898682
+   "reject": 0.9999990463256836
   },
   {
    "id": "collage_2",
    "group": "ood_collage",
-   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_4item_016.jpg",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_4item_012.jpg",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.9974728226661682,
-    0.002526132157072425,
-    8.630632919448544e-08,
-    8.803051514405524e-07
+    0.008100761100649834,
+    5.402556979561268e-08,
+    0.9856050610542297,
+    0.006294086575508118
    ],
-   "reject": 0.9364665746688843
+   "reject": 0.9999990463256836
   },
   {
    "id": "collage_3",
    "group": "ood_collage",
-   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_6item_004.jpg",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_2item_002.jpg",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.9999117851257324,
-    2.6104658900294453e-05,
-    3.553152782842517e-05,
-    2.6566547603579238e-05
+    6.000723078614101e-05,
+    1.599168020227637e-09,
+    0.9998950958251953,
+    4.493108644965105e-05
    ],
-   "reject": 0.9286434054374695
+   "reject": 0.9999985098838806
   },
   {
    "id": "collage_4",
    "group": "ood_collage",
-   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_4item_000.jpg",
+   "path": "C:\\Users\\dasa8\\AppData\\Local\\Temp\\wastelens_rejection_data\\coll\\collage_va_2item_036.jpg",
    "ground_truth": "unsupported",
    "expected": "unsupported",
    "bins": [
-    0.5439115762710571,
-    0.45608413219451904,
-    4.216131856082939e-06,
-    2.1845673714437908e-08
+    0.9747227430343628,
+    3.130790275918116e-07,
+    0.025048231706023216,
+    0.0002286829985678196
    ],
-   "reject": 0.8979136347770691
+   "reject": 0.9999982714653015
   },
   {
    "id": "synth_ood_0",
@@ -402,26 +318,26 @@
    "ground_truth": "unsupported",
    "expected": null,
    "bins": [
-    0.9999998807907104,
-    3.938747283882549e-08,
-    2.3959181860711e-10,
-    1.0207352119095958e-07
+    1.0,
+    1.4355096972229475e-13,
+    5.536443916909297e-17,
+    8.594173630365463e-16
    ],
-   "reject": 0.003058321075513959
+   "reject": 0.05406016856431961
   },
   {
    "id": "synth_ood_1",
    "group": "synth_ood",
    "path": "flat color field (#161b23)",
    "ground_truth": "unsupported",
-   "expected": null,
+   "expected": "unsupported",
    "bins": [
-    0.9999480247497559,
-    1.5940642583700537e-08,
-    5.164696995052509e-05,
-    2.984144202855532e-07
+    0.9999943971633911,
+    3.0838653852782727e-09,
+    5.587603936874075e-06,
+    1.6909158517819378e-08
    ],
-   "reject": 0.04685896262526512
+   "reject": 0.5774913430213928
   },
   {
    "id": "synth_ood_2",
@@ -430,40 +346,40 @@
    "ground_truth": "unsupported",
    "expected": null,
    "bins": [
-    0.9999778270721436,
-    3.1493735264120915e-07,
-    2.1723682948504575e-05,
-    1.1988596781975502e-07
+    1.0,
+    5.369008362898775e-11,
+    5.312906381504945e-08,
+    2.01793681590956e-12
    ],
-   "reject": 0.04616694152355194
+   "reject": 0.006188598461449146
   },
   {
    "id": "synth_ood_3",
    "group": "synth_ood",
    "path": "horizontal gradient",
    "ground_truth": "unsupported",
-   "expected": null,
+   "expected": "unsupported",
    "bins": [
-    0.996650755405426,
-    6.406517968571279e-06,
-    0.0032863165251910686,
-    5.6557149946456775e-05
+    0.9973984956741333,
+    7.534295036748517e-07,
+    0.002542495494708419,
+    5.827079439768568e-05
    ],
-   "reject": 0.22749491035938263
+   "reject": 0.9999189972877502
   },
   {
    "id": "synth_ood_4",
    "group": "synth_ood",
    "path": "blank white frame",
    "ground_truth": "unsupported",
-   "expected": null,
+   "expected": "unsupported",
    "bins": [
-    0.999995231628418,
-    1.7584635969569717e-08,
-    2.134834630851401e-06,
-    2.6254613203491317e-06
+    0.9999992847442627,
+    2.7877871122683473e-09,
+    6.097343998590077e-07,
+    7.012469893652451e-08
    ],
-   "reject": 0.030254539102315903
+   "reject": 0.13314571976661682
   }
  ]
 }

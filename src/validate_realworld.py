@@ -26,12 +26,13 @@
 #   - Sampling seed fixed (SAMPLE_SEED) -> identical example set every run.
 #   - Works with BOTH model contracts:
 #       * single-head baseline (softmax-only): outputs and numbers unchanged;
-#       * dual-head Variant B (bins + reject): every record additionally
+#       * dual-head shipped model (bins + reject): every record additionally
 #         carries the rejection probability and the shipped three-state
 #         decision (unsupported gate first, then the uncertainty rule),
-#         threshold REJECT_THRESHOLD mirrored from web/index.html (0.8774,
-#         calibrated in docs/rejection_experiment/rejection_metrics_frozen.json
-#         val-frozen operating point "0.01").
+#         threshold REJECT_THRESHOLD mirrored from web/index.html (0.0702,
+#         Iteration-8 val-frozen operating point "0.01" of the shipped
+#         Variant C candidate,
+#         docs/rejection_experiment/rejection_metrics_varc8s42.json).
 #
 # Run from the repo root:
 #   py -3.13 -W ignore src/validate_realworld.py
@@ -75,10 +76,18 @@ UNCERTAIN = {"MIN_TOP": 0.60, "MIN_MARGIN": 0.50}
 EPS = 1e-9  # same fp guard as the web implementation
 
 # Mirror of web/index.html REJECT_THRESHOLD - shipped dual-head operating
-# point (rejection_metrics_frozen.json, val-frozen op point "0.01"):
-# 84.3% OOD detection @ 1.38% false-rejection rate on the real unsupported
-# eval sets. Only consulted when the loaded model actually has a reject head.
-REJECT_THRESHOLD = 0.8774
+# point. Iteration 8 shipped Variant C (fixed-budget seed-42 epoch-10
+# candidate); the val-frozen 1% FRR point was re-calibrated to 0.0702, which
+# measured 99.64% OOD detection @ 1.78% false-rejection rate on the untouched
+# test set (rejection_metrics_varc8s42.json, op point "0.01"). Only consulted
+# when the loaded model actually has a reject head.
+REJECT_THRESHOLD = 0.0702
+
+# Shipped operating-point measurements (Iteration 8, Variant C seed-42 epoch
+# 10, val-frozen 1% FRR point) - used in generated prose so the docs cannot
+# quote a stale variant's numbers.
+SHIPPED_OOD_PCT = 99.64
+SHIPPED_TEST_FRR_PCT = 1.78
 
 
 def classify_rule(probs: list[float]) -> dict:
@@ -343,7 +352,8 @@ def render_md(payload: dict) -> str:
             f"{s_id['states']['uncertain']} uncertain, "
             f"{s_id['states']['unsupported']} unsupported "
             f"({s_id['rejected']} false rejections on supported test images; "
-            "1.38% expected at this threshold over the full test set).")
+            f"{SHIPPED_TEST_FRR_PCT:.2f}% measured at this threshold over the "
+            "full test set).")
     lines += [
         "",
         "## 3. OOD probe results",
@@ -446,13 +456,14 @@ def render_analysis(payload: dict) -> list[str]:
             "",
             "The gate itself was calibrated and measured on the real "
             "unsupported eval sets, not on these flat synthetic patterns "
-            "(docs/rejection_experiment/rejection_metrics_frozen.json, "
+            "(docs/rejection_experiment/rejection_metrics_varc8s42.json, "
             f"threshold {payload['reject_threshold']}): "
-            "**84.3% OOD detection overall @ 1.38% false-rejection rate**; "
-            "per source at this operating point - clothes 84.5%, shoes "
-            "74.5%, nonwaste 95.5%, collage 21.1%. Collage detection is "
-            "the documented weak spot; do not read rejection as perfect "
-            "coverage of every out-of-scope image.",
+            f"**{SHIPPED_OOD_PCT:.2f}% OOD detection overall @ "
+            f"{SHIPPED_TEST_FRR_PCT:.2f}% false-rejection rate**; per source at "
+            "this operating point - clothes 99.9%, shoes 99.0%, nonwaste "
+            "99.9%, collage 97.8%. Flat synthetic patterns are still the "
+            "documented weak spot; do not read rejection as perfect coverage "
+            "of every out-of-scope image.",
         ]
     lines += [
         "",
@@ -475,7 +486,8 @@ def render_analysis(payload: dict) -> list[str]:
     if dual:
         lines.append(
             "- Rejection head (shipped): unsupported gate now exists and is "
-            "measured on real OOD sources (84.3% @ 1.38% FRR) - the "
+            f"measured on real OOD sources ({SHIPPED_OOD_PCT:.2f}% @ "
+            f"{SHIPPED_TEST_FRR_PCT:.2f}% FRR) - the "
             "uncertainty rule still only answers 'which bin?', and the "
             "synthetic flat probes above show the two gates are not "
             "interchangeable.")
@@ -542,7 +554,8 @@ def main() -> None:
           f"min_margin={pct(s_id['margin_min'])}")
     if dual:
         print(f"  three-state: {s_id['states']}  "
-              f"(false rejections vs 1.38% expected over 32 samples)")
+              f"(false rejections vs {SHIPPED_TEST_FRR_PCT:.2f}% measured over 32 "
+        "samples)")
     print("---- OOD probes ----")
     for r in payload["examples"]:
         if r["set"] != "ood_probe":

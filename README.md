@@ -35,16 +35,21 @@ renders three distinct result states:
   (existing rule: top < 0.60 or top−runner-up margin < 0.50);
 - **unsupported** — the rejection head scores the image as outside the
   supported single-item waste scope at the calibrated threshold
-  (`reject >= 0.8774`).
+  (`reject >= 0.0702`).
 
-At that threshold the rejection head measured **84.3% OOD detection at a
-1.38% false-rejection rate** on the held-out test split (rejection AUROC
-0.9900; see [docs/rejection_experiment/outcome_decision.md](docs/rejection_experiment/outcome_decision.md)).
-Rejection is **not perfect**: multi-item collages are the documented weak
-spot (21.1% detection at the shipped threshold), and ~1.4% of supported
-images are flagged — so the results panel keeps the single-item-photo scope
-disclosure. `uncertain` (bin ambiguity) and `unsupported` (out of scope)
-are deliberately separate states with distinct copy.
+At that threshold the shipped rejection head (Iteration 8, Variant C —
+fixed-budget epoch-10 candidate) measured **99.64% OOD detection at a 1.78%
+false-rejection rate** on the held-out test split (rejection AUROC 0.9997;
+collage detection 97.8% at the shipped threshold / 100% at the 5% point; see
+[docs/rejection_experiment/iteration8_report.md](docs/rejection_experiment/iteration8_report.md)
+and [docs/rejection_experiment/outcome_decision.md](docs/rejection_experiment/outcome_decision.md)
+for the earlier Variant B record). Rejection is **not perfect**: flat
+synthetic patterns are still not rejected (documented in
+`docs/rejection_experiment/realworld_validation_frozen.md`), multi-item
+collages are weaker than single-item OOD at the 1% point (97.8%), and ~1.8%
+of supported images are flagged — so the results panel keeps the
+single-item-photo scope disclosure. `uncertain` (bin ambiguity) and
+`unsupported` (out of scope) are deliberately separate states with distinct copy.
 
 Real-inference validation: `src/validate_realworld.py` →
 `docs/realworld_validation.md` (single-head baseline) and

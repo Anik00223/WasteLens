@@ -4,9 +4,9 @@
  "convertedBy": "wastelens-export_tfjs (tf 2.21.0)",
  "modelTopology": {
   "class_name": "Functional",
-  "name": "wastelens_reject_frozen",
+  "name": "wastelens_reject_varc",
   "config": {
-   "name": "wastelens_reject_frozen",
+   "name": "wastelens_reject_varc",
    "trainable": true,
    "layers": [
     {
@@ -6971,7 +6971,7 @@
      "name": "gap",
      "config": {
       "name": "gap",
-      "trainable": false,
+      "trainable": true,
       "dtype": "float32",
       "data_format": "channels_last",
       "keepdims": false
@@ -6991,7 +6991,7 @@
      "name": "dropout_1",
      "config": {
       "name": "dropout_1",
-      "trainable": false,
+      "trainable": true,
       "dtype": "float32",
       "rate": 0.2,
       "seed": null,
@@ -7012,7 +7012,7 @@
      "name": "fc_256",
      "config": {
       "name": "fc_256",
-      "trainable": false,
+      "trainable": true,
       "dtype": "float32",
       "units": 256,
       "activation": "relu",
@@ -7054,7 +7054,7 @@
      "name": "dropout_2",
      "config": {
       "name": "dropout_2",
-      "trainable": false,
+      "trainable": true,
       "dtype": "float32",
       "rate": 0.2,
       "seed": null,
@@ -7075,7 +7075,7 @@
      "name": "predictions",
      "config": {
       "name": "predictions",
-      "trainable": false,
+      "trainable": true,
       "dtype": "float32",
       "units": 4,
       "activation": "softmax",

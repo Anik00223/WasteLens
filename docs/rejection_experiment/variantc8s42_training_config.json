@@ -1,0 +1,55 @@
+{
+  "generated_utc": "2026-09-24 16:29:37 UTC",
+  "variant": "C (backbone frozen; fc_256 + predictions + reject trainable; bins loss weight 2.0) [run tag: 8s42]",
+  "base_checkpoint": "models\\checkpoints\\wastelens_ep09.keras",
+  "out_checkpoint": "models\\checkpoints\\wastelens_rej_varc8s42_best.keras",
+  "epochs": 10,
+  "seed": 42,
+  "monitor": "val_loss",
+  "data_seed": 42,
+  "train_seed": 42,
+  "seed_note": "train_seed controls init/dropout/shuffle only; the dataset seed stays 42 so all runs see the same frozen splits, collages, probes and class weights",
+  "deterministic": true,
+  "op_determinism_requested": true,
+  "tf_deterministic_ops_env": "1",
+  "tf_enable_onednn_opts_env": null,
+  "op_determinism_error": null,
+  "seed_before_construction": true,
+  "optimizer": "Adam(1e-3) [unchanged from A/B]",
+  "loss_weights": {
+    "bins": 2.0,
+    "reject": 1.0
+  },
+  "loss_weights_note": "bins weight is THE changed knob vs Variant A (A used 1.0/1.0); all other hyperparameters inherited unchanged",
+  "bins_class_weights": {
+    "0": 0.3675831202046036,
+    "1": 2.0859941944847606,
+    "2": 2.17107250755287,
+    "3": 2.9451844262295084
+  },
+  "unfreeze_proof": {
+    "method": "backbone weights bit-compared + 16-image bins-output comparison at initialization (before training)",
+    "backbone_weights_bit_identical": true,
+    "initial_bins_bit_exact": true,
+    "initial_max_abs_diff": 0.0,
+    "trainable_params": 329221,
+    "frozen_params": 2257984,
+    "trainable_tensors": [
+      "fc_256/kernel",
+      "fc_256/bias",
+      "predictions/kernel",
+      "predictions/bias",
+      "reject/kernel",
+      "reject/bias"
+    ]
+  },
+  "trainable_params": 329221,
+  "frozen_params": 2257984,
+  "train_images": 14218,
+  "val_images": 3165,
+  "elapsed_seconds": 1881.84,
+  "best_epoch": 8,
+  "best_val_loss": 0.08530361205339432,
+  "best_val_bins_acc": 0.7763032913208008,
+  "best_val_reject_acc": 0.9946287274360657
+}
