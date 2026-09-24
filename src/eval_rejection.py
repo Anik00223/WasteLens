@@ -81,7 +81,11 @@ def main() -> None:
         all_ood = np.concatenate(list(test_u.values()))
         op_table[k] = {"threshold": t, "per_source": det,
                        "ood_detect": float(np.mean(all_ood >= t)),
-                       "id_frr": float(np.mean(sup_test_rej >= t))}
+                       "id_frr": float(np.mean(sup_test_rej >= t)),
+                       # Iteration 8: the empirical VALIDATION FRR at the frozen
+                       # threshold (the target is f by construction; this makes
+                       # the achieved value explicit instead of implied).
+                       "val_frr": float(np.mean(sup_val_rej >= t))}
     y_sc = np.concatenate([sup_test_rej] + list(test_u.values()))
     y_tr = np.concatenate(
         [np.zeros_like(sup_test_rej)] +
@@ -107,11 +111,11 @@ def main() -> None:
     L += ["", "## Rejection (thresholds frozen on VAL)",
           f"AUROC={metrics['rejection']['auroc']:.4f} "
           f"AUPRC={metrics['rejection']['auprc']:.4f}", "",
-          "| FRR target | thr | OOD detect | test FRR |",
-          "|---|---|---|---|"]
+          "| FRR target | thr | val FRR | OOD detect | test FRR |",
+          "|---|---|---|---|---|"]
     for k, op in op_table.items():
-        L.append(f"| {k} | {op['threshold']:.4f} | {op['ood_detect']:.4f} | "
-                 f"{op['id_frr']:.4f} |")
+        L.append(f"| {k} | {op['threshold']:.4f} | {op['val_frr']:.4f} | "
+                 f"{op['ood_detect']:.4f} | {op['id_frr']:.4f} |")
     L += ["", "### Per-source OOD detection @5% FRR target",
           "| source | detect |", "|---|---|"]
     for s, v in op_table["0.05"]["per_source"].items():
