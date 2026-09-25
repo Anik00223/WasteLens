@@ -1,0 +1,716 @@
+{
+  "generated_utc": "2026-09-25 17:07",
+  "checkpoint": "models/checkpoints/wastelens_rej_shipped_best.keras",
+  "rule": {
+    "MIN_TOP": 0.6,
+    "MIN_MARGIN": 0.5,
+    "epsilon": 1e-09
+  },
+  "sampling_seed": 2026,
+  "per_bin_samples": 8,
+  "examples": [
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "cardboard186.jpg",
+      "probs": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pred": 0,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "metal676.jpg",
+      "probs": [
+        0.000301,
+        0.0,
+        0.999699,
+        0.0
+      ],
+      "pred": 2,
+      "top": 0.999699,
+      "runner_up": 0.000301,
+      "margin": 0.999399,
+      "uncertain": false,
+      "reject": 2e-06,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "paper409.jpg",
+      "probs": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pred": 0,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "plastic254.jpg",
+      "probs": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pred": 0,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.000389,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "plastic752.jpg",
+      "probs": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pred": 0,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 0.999999,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "plastic80.jpg",
+      "probs": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pred": 0,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.00013,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "plastic818.jpg",
+      "probs": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pred": 0,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "recyclable",
+      "file": "white-glass307.jpg",
+      "probs": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pred": 0,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological316.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological317.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.000122,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological375.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological441.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological709.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological744.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological906.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "organic",
+      "file": "biological948.jpg",
+      "probs": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "pred": 1,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery134.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "pred": 2,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 1e-06,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery187.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "pred": 2,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery205.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "pred": 2,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery645.jpg",
+      "probs": [
+        8e-05,
+        0.0,
+        0.99992,
+        0.0
+      ],
+      "pred": 2,
+      "top": 0.99992,
+      "runner_up": 8e-05,
+      "margin": 0.99984,
+      "uncertain": false,
+      "reject": 1e-06,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery732.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "pred": 2,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 4e-06,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery839.jpg",
+      "probs": [
+        0.995918,
+        0.0,
+        0.004082,
+        0.0
+      ],
+      "pred": 0,
+      "top": 0.995918,
+      "runner_up": 0.004082,
+      "margin": 0.991837,
+      "uncertain": false,
+      "reject": 0.000354,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery846.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "pred": 2,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "hazardous",
+      "file": "battery880.jpg",
+      "probs": [
+        6e-06,
+        0.0,
+        0.999994,
+        0.0
+      ],
+      "pred": 2,
+      "top": 0.999994,
+      "runner_up": 6e-06,
+      "margin": 0.999987,
+      "uncertain": false,
+      "reject": 0.0,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash102.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "pred": 3,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 2e-06,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash223.jpg",
+      "probs": [
+        0.004089,
+        7.9e-05,
+        0.993256,
+        0.002575
+      ],
+      "pred": 2,
+      "top": 0.993256,
+      "runner_up": 0.004089,
+      "margin": 0.989166,
+      "uncertain": false,
+      "reject": 0.022438,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash381.jpg",
+      "probs": [
+        0.000153,
+        0.009837,
+        0.000644,
+        0.989366
+      ],
+      "pred": 3,
+      "top": 0.989366,
+      "runner_up": 0.009837,
+      "margin": 0.979529,
+      "uncertain": false,
+      "reject": 2.5e-05,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash440.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "pred": 3,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.000427,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash553.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "pred": 3,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.000864,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash571.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "pred": 3,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 1e-06,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash603.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "pred": 3,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 4.7e-05,
+      "state": "supported"
+    },
+    {
+      "set": "in_distribution",
+      "true_bin": "general trash",
+      "file": "trash667.jpg",
+      "probs": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "pred": 3,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 1.4e-05,
+      "state": "supported"
+    },
+    {
+      "set": "ood_probe",
+      "true_bin": "n/a (not a waste image)",
+      "file": "gray noise (static)",
+      "probs": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pred": 0,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.05406,
+      "state": "supported"
+    },
+    {
+      "set": "ood_probe",
+      "true_bin": "n/a (not a waste image)",
+      "file": "flat color field (#161b23)",
+      "probs": [
+        0.999994,
+        0.0,
+        6e-06,
+        0.0
+      ],
+      "pred": 0,
+      "top": 0.999994,
+      "runner_up": 6e-06,
+      "margin": 0.999989,
+      "uncertain": false,
+      "reject": 0.577493,
+      "state": "unsupported"
+    },
+    {
+      "set": "ood_probe",
+      "true_bin": "n/a (not a waste image)",
+      "file": "checkerboard 8px",
+      "probs": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pred": 0,
+      "top": 1.0,
+      "runner_up": 0.0,
+      "margin": 1.0,
+      "uncertain": false,
+      "reject": 0.006189,
+      "state": "supported"
+    },
+    {
+      "set": "ood_probe",
+      "true_bin": "n/a (not a waste image)",
+      "file": "horizontal gradient",
+      "probs": [
+        0.997398,
+        1e-06,
+        0.002542,
+        5.8e-05
+      ],
+      "pred": 0,
+      "top": 0.997398,
+      "runner_up": 0.002542,
+      "margin": 0.994856,
+      "uncertain": false,
+      "reject": 0.999919,
+      "state": "unsupported"
+    },
+    {
+      "set": "ood_probe",
+      "true_bin": "n/a (not a waste image)",
+      "file": "blank white frame",
+      "probs": [
+        0.999999,
+        0.0,
+        1e-06,
+        0.0
+      ],
+      "pred": 0,
+      "top": 0.999999,
+      "runner_up": 1e-06,
+      "margin": 0.999999,
+      "uncertain": false,
+      "reject": 0.133146,
+      "state": "unsupported"
+    }
+  ],
+  "summary_in_distribution": {
+    "n": 32,
+    "flagged_uncertain": 0,
+    "top_ge_95pct": 32,
+    "top_ge_99pct": 31,
+    "margin_lt_050": 0,
+    "top_min": 0.989366,
+    "top_median": 1.0,
+    "top_max": 1.0,
+    "margin_min": 0.979529,
+    "margin_median": 1.0,
+    "rejected": 0,
+    "states": {
+      "supported": 32,
+      "uncertain": 0,
+      "unsupported": 0
+    }
+  },
+  "summary_ood": {
+    "n": 5,
+    "flagged_uncertain": 0,
+    "top_ge_95pct": 5,
+    "top_ge_99pct": 5,
+    "margin_lt_050": 0,
+    "top_min": 0.997398,
+    "top_median": 0.999999,
+    "top_max": 1.0,
+    "margin_min": 0.994856,
+    "margin_median": 0.999999,
+    "rejected": 3,
+    "states": {
+      "supported": 2,
+      "uncertain": 0,
+      "unsupported": 3
+    }
+  },
+  "reject_threshold": 0.0702
+}
