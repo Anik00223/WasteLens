@@ -1,0 +1,771 @@
+{
+  "generated_utc": "2026-09-26 15:29:16 UTC",
+  "protocol": "docs/rejection_experiment/iteration10_adaptation_protocol.md \u00a73",
+  "method": "path comparison + SHA-256 (adaptation vs 131 fresh files, verified against the committed manifest) + MD5 (adaptation vs original test pools incl. CIFAR-10 test batch)",
+  "counts": {
+    "adapt_train": 75,
+    "adapt_val": 19,
+    "fresh_files": 131,
+    "original_test_files": 3171
+  },
+  "adapt_files": [
+    {
+      "local_name": "adapt-supported__Button_cells__01.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__01.jpg",
+      "sha256_manifest": "89460ead4dffb0d3108aef8edf26ef2890ef4782a44146ef268a4521610d396c",
+      "sha256_disk": "89460ead4dffb0d3108aef8edf26ef2890ef4782a44146ef268a4521610d396c"
+    },
+    {
+      "local_name": "adapt-supported__Button_cells__02.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__02.jpg",
+      "sha256_manifest": "93f9aa1a95a8fbc7a03e8cccfff67aeb036d8787c988426393e3c8e43f543432",
+      "sha256_disk": "93f9aa1a95a8fbc7a03e8cccfff67aeb036d8787c988426393e3c8e43f543432"
+    },
+    {
+      "local_name": "adapt-supported__Button_cells__03.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__03.jpg",
+      "sha256_manifest": "8f1fc1c415087a0ac36dfb1e02fe44c43e8dbc0e28a65520e42a2fc0174eb2ee",
+      "sha256_disk": "8f1fc1c415087a0ac36dfb1e02fe44c43e8dbc0e28a65520e42a2fc0174eb2ee"
+    },
+    {
+      "local_name": "adapt-supported__Button_cells__04.png",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__04.png",
+      "sha256_manifest": "efcec50933f1144aa79b2a12cd9618373d22cbffdb56a3fb1258bf6f3dc9e757",
+      "sha256_disk": "efcec50933f1144aa79b2a12cd9618373d22cbffdb56a3fb1258bf6f3dc9e757"
+    },
+    {
+      "local_name": "adapt-supported__Cardboard_boxes__00.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__00.jpg",
+      "sha256_manifest": "ef406659855a8c451177bf0580d9dd3b16a181656386f9905df9f7a9c4715b0d",
+      "sha256_disk": "ef406659855a8c451177bf0580d9dd3b16a181656386f9905df9f7a9c4715b0d"
+    },
+    {
+      "local_name": "adapt-supported__Cardboard_boxes__01.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__01.jpg",
+      "sha256_manifest": "de2c62130c41f31fbd37e901674b142649f0c2e0f76103e6e70ca593bf2fa0f8",
+      "sha256_disk": "de2c62130c41f31fbd37e901674b142649f0c2e0f76103e6e70ca593bf2fa0f8"
+    },
+    {
+      "local_name": "adapt-supported__Cardboard_boxes__02.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__02.jpg",
+      "sha256_manifest": "881bb9b8dd5f50ca9fb35dab4eb673cb575c9233bc22b76393c6c97dfa3cb472",
+      "sha256_disk": "881bb9b8dd5f50ca9fb35dab4eb673cb575c9233bc22b76393c6c97dfa3cb472"
+    },
+    {
+      "local_name": "adapt-supported__Cardboard_boxes__03.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__03.jpg",
+      "sha256_manifest": "7cd7ac9fd54ff739787837822158731bf5544b7e3ba5ffcd14d33e9efa93f16c",
+      "sha256_disk": "7cd7ac9fd54ff739787837822158731bf5544b7e3ba5ffcd14d33e9efa93f16c"
+    },
+    {
+      "local_name": "adapt-supported__Cardboard_boxes__04.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__04.jpg",
+      "sha256_manifest": "1a3a5bbe2dcffc7fb96e5471f865822d80c2261185346062b5222dcecace6d93",
+      "sha256_disk": "1a3a5bbe2dcffc7fb96e5471f865822d80c2261185346062b5222dcecace6d93"
+    },
+    {
+      "local_name": "adapt-supported__Cardboard_boxes__05.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__05.jpg",
+      "sha256_manifest": "0d1dbedefcb7cf7026a87b383d532bc1a8be2a855aa9114d40c9229d56c52757",
+      "sha256_disk": "0d1dbedefcb7cf7026a87b383d532bc1a8be2a855aa9114d40c9229d56c52757"
+    },
+    {
+      "local_name": "adapt-supported__Compost__00.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__00.jpg",
+      "sha256_manifest": "8e7e49abdb386dc3b7d9a7588c2258e82b8d9f95e7efeac147d0ce0f062903a0",
+      "sha256_disk": "8e7e49abdb386dc3b7d9a7588c2258e82b8d9f95e7efeac147d0ce0f062903a0"
+    },
+    {
+      "local_name": "adapt-supported__Compost__01.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__01.jpg",
+      "sha256_manifest": "91daeba1f9166ab1d2c6e0f83f35cd72d51374eaffb7fb5a13d0712abb601508",
+      "sha256_disk": "91daeba1f9166ab1d2c6e0f83f35cd72d51374eaffb7fb5a13d0712abb601508"
+    },
+    {
+      "local_name": "adapt-supported__Compost__02.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__02.jpg",
+      "sha256_manifest": "fb0fe5e80cc412a59c2b07aa63140faff21f4d8fb2a767da941acbadce7dbd1c",
+      "sha256_disk": "fb0fe5e80cc412a59c2b07aa63140faff21f4d8fb2a767da941acbadce7dbd1c"
+    },
+    {
+      "local_name": "adapt-supported__Compost__03.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__03.jpg",
+      "sha256_manifest": "14921f0faa536ff687a638b4b642262a8de796942e57aae3d196d54c5742ddd9",
+      "sha256_disk": "14921f0faa536ff687a638b4b642262a8de796942e57aae3d196d54c5742ddd9"
+    },
+    {
+      "local_name": "adapt-supported__Compost__04.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__04.jpg",
+      "sha256_manifest": "a7a081ffd67bcf677c046a21e453720f0fd678e5d023672aacff2282830266cc",
+      "sha256_disk": "a7a081ffd67bcf677c046a21e453720f0fd678e5d023672aacff2282830266cc"
+    },
+    {
+      "local_name": "adapt-supported__Compost__05.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__05.jpg",
+      "sha256_manifest": "8ff0aeff3a7fc2dc7ebe468b365f61996f46412a3325b7a1ff7bd19c5687ac28",
+      "sha256_disk": "8ff0aeff3a7fc2dc7ebe468b365f61996f46412a3325b7a1ff7bd19c5687ac28"
+    },
+    {
+      "local_name": "adapt-supported__Compost__06.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__06.jpg",
+      "sha256_manifest": "0bea8c947e49ab95e36ea43b47bb89db5bf9955a5d51ba69cadb329cec778476",
+      "sha256_disk": "0bea8c947e49ab95e36ea43b47bb89db5bf9955a5d51ba69cadb329cec778476"
+    },
+    {
+      "local_name": "adapt-supported__Compost__07.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__07.jpg",
+      "sha256_manifest": "17e03f83d5ad3656c83f68b8c1dd58359786548be68e59c50d887d641cbd55cb",
+      "sha256_disk": "17e03f83d5ad3656c83f68b8c1dd58359786548be68e59c50d887d641cbd55cb"
+    },
+    {
+      "local_name": "adapt-supported__Food_waste__00.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__00.jpg",
+      "sha256_manifest": "b06432f17eacedc357240a152feb69404779a5cf94cddafaa6ca1d48aaed3d62",
+      "sha256_disk": "b06432f17eacedc357240a152feb69404779a5cf94cddafaa6ca1d48aaed3d62"
+    },
+    {
+      "local_name": "adapt-supported__Food_waste__01.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__01.jpg",
+      "sha256_manifest": "f016c2d058c99df1677a650da5bbfc8f8a62f5cf2dd6cf32e8bae627260d7957",
+      "sha256_disk": "f016c2d058c99df1677a650da5bbfc8f8a62f5cf2dd6cf32e8bae627260d7957"
+    },
+    {
+      "local_name": "adapt-supported__Food_waste__02.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__02.jpg",
+      "sha256_manifest": "13fa3f5e4c486bfd3fdbc6a954c63af36fca8c879f9a611c96b7dd81a8de805f",
+      "sha256_disk": "13fa3f5e4c486bfd3fdbc6a954c63af36fca8c879f9a611c96b7dd81a8de805f"
+    },
+    {
+      "local_name": "adapt-supported__Food_waste__03.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__03.jpg",
+      "sha256_manifest": "c0022ac1b3e7c0622e628b0e7ec4f7fcacaa267eb729774373c3666fd38bef0b",
+      "sha256_disk": "c0022ac1b3e7c0622e628b0e7ec4f7fcacaa267eb729774373c3666fd38bef0b"
+    },
+    {
+      "local_name": "adapt-supported__Food_waste__04.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__04.jpg",
+      "sha256_manifest": "2447968baf12c61fb32b571c9df01841ad8eae04420b2b262868a55146d50f2a",
+      "sha256_disk": "2447968baf12c61fb32b571c9df01841ad8eae04420b2b262868a55146d50f2a"
+    },
+    {
+      "local_name": "adapt-supported__Food_waste__05.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__05.jpg",
+      "sha256_manifest": "1952907536d56945e098deef83d7b7b9890cad3472d5eee58302908cad4722b0",
+      "sha256_disk": "1952907536d56945e098deef83d7b7b9890cad3472d5eee58302908cad4722b0"
+    },
+    {
+      "local_name": "adapt-supported__Food_waste__06.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__06.jpg",
+      "sha256_manifest": "7cc9013b26d703d92ad9c74942ebc1e1f5d29c57a622a83380ed15247befaa3c",
+      "sha256_disk": "7cc9013b26d703d92ad9c74942ebc1e1f5d29c57a622a83380ed15247befaa3c"
+    },
+    {
+      "local_name": "adapt-supported__Food_waste__07.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__07.jpg",
+      "sha256_manifest": "100f0ef6815a7b18974b6397dbd733c28b58f07069c67617d973363327d33271",
+      "sha256_disk": "100f0ef6815a7b18974b6397dbd733c28b58f07069c67617d973363327d33271"
+    },
+    {
+      "local_name": "adapt-supported__Lead-acid_batteries__00.png",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__00.png",
+      "sha256_manifest": "916d971259ea82339292f5d15482d1e401aa38702203042e8642529c23469312",
+      "sha256_disk": "916d971259ea82339292f5d15482d1e401aa38702203042e8642529c23469312"
+    },
+    {
+      "local_name": "adapt-supported__Lead-acid_batteries__01.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__01.jpg",
+      "sha256_manifest": "dd0196ddc4a2d918fa893367d75ff1b7c8f54e9251a7a3fad12e83f4bb8fd0e7",
+      "sha256_disk": "dd0196ddc4a2d918fa893367d75ff1b7c8f54e9251a7a3fad12e83f4bb8fd0e7"
+    },
+    {
+      "local_name": "adapt-supported__Lead-acid_batteries__02.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__02.jpg",
+      "sha256_manifest": "9cb20b7e5652269b350882b4267ba2cf5a3b5a2811feb65a572fca91aa2b8aec",
+      "sha256_disk": "9cb20b7e5652269b350882b4267ba2cf5a3b5a2811feb65a572fca91aa2b8aec"
+    },
+    {
+      "local_name": "adapt-supported__Lead-acid_batteries__04.png",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__04.png",
+      "sha256_manifest": "d71cb79c555386365ac376d6cd5ba1df429fb38944a718db373d991452d01017",
+      "sha256_disk": "d71cb79c555386365ac376d6cd5ba1df429fb38944a718db373d991452d01017"
+    },
+    {
+      "local_name": "adapt-supported__Lead-acid_batteries__05.png",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__05.png",
+      "sha256_manifest": "86d68f191f619f908cfcdc6182c286e458d995f6205282e465104b7a672db2d9",
+      "sha256_disk": "86d68f191f619f908cfcdc6182c286e458d995f6205282e465104b7a672db2d9"
+    },
+    {
+      "local_name": "adapt-supported__Litter__01.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__01.jpg",
+      "sha256_manifest": "ffbb7837c1f5faef10dc68bd084d5085c22fd82cc33e1581bba803531bcdd745",
+      "sha256_disk": "ffbb7837c1f5faef10dc68bd084d5085c22fd82cc33e1581bba803531bcdd745"
+    },
+    {
+      "local_name": "adapt-supported__Litter__02.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__02.jpg",
+      "sha256_manifest": "b1f18c16999b3d250d8e1f1eb2c6f663c2ec2c0d9a7631ac59551b150886a03d",
+      "sha256_disk": "b1f18c16999b3d250d8e1f1eb2c6f663c2ec2c0d9a7631ac59551b150886a03d"
+    },
+    {
+      "local_name": "adapt-supported__Litter__03.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__03.jpg",
+      "sha256_manifest": "995f459192ffbf345176d7d3ff0f6788d8a3cba96dec98c0d71c4b190307a1e7",
+      "sha256_disk": "995f459192ffbf345176d7d3ff0f6788d8a3cba96dec98c0d71c4b190307a1e7"
+    },
+    {
+      "local_name": "adapt-supported__Litter__04.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__04.jpg",
+      "sha256_manifest": "2c34b757de84709a4a2d854af6e56c36c73d6cef506b35165868ac2a517b98e2",
+      "sha256_disk": "2c34b757de84709a4a2d854af6e56c36c73d6cef506b35165868ac2a517b98e2"
+    },
+    {
+      "local_name": "adapt-supported__Litter__05.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__05.jpg",
+      "sha256_manifest": "cf1c4918ddc30b977304d9e635807f23d602e8ad2e9dd647e8ffa6cb7ea2f706",
+      "sha256_disk": "cf1c4918ddc30b977304d9e635807f23d602e8ad2e9dd647e8ffa6cb7ea2f706"
+    },
+    {
+      "local_name": "adapt-supported__Litter__06.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__06.jpg",
+      "sha256_manifest": "32a510e61a315d1ce333c35b0c909fab6c14935c7a602e17a068311579cad5ef",
+      "sha256_disk": "32a510e61a315d1ce333c35b0c909fab6c14935c7a602e17a068311579cad5ef"
+    },
+    {
+      "local_name": "adapt-supported__Litter__07.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__07.jpg",
+      "sha256_manifest": "f7c3b29f8d9f98e77850770be9b45d3be168cc3cdf51296d4ed2ebd2e5b775f6",
+      "sha256_disk": "f7c3b29f8d9f98e77850770be9b45d3be168cc3cdf51296d4ed2ebd2e5b775f6"
+    },
+    {
+      "local_name": "adapt-supported__Paper_towels__00.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__00.jpg",
+      "sha256_manifest": "48b2e914066f7b9a401a71d027d87ec86ba37eca14db7209c819032b51498654",
+      "sha256_disk": "48b2e914066f7b9a401a71d027d87ec86ba37eca14db7209c819032b51498654"
+    },
+    {
+      "local_name": "adapt-supported__Paper_towels__03.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__03.jpg",
+      "sha256_manifest": "b921ea5573540affb946043b5619e212739cace870a7c4d4b8c5184ec0f9bb95",
+      "sha256_disk": "b921ea5573540affb946043b5619e212739cace870a7c4d4b8c5184ec0f9bb95"
+    },
+    {
+      "local_name": "adapt-supported__Paper_towels__05.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__05.jpg",
+      "sha256_manifest": "cacff0618466250bd3904e6eeb77c1ce3c7e3d67325d6eb633aa63b9be5d6b2e",
+      "sha256_disk": "cacff0618466250bd3904e6eeb77c1ce3c7e3d67325d6eb633aa63b9be5d6b2e"
+    },
+    {
+      "local_name": "adapt-supported__Paper_towels__07.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__07.jpg",
+      "sha256_manifest": "2d48e3ecdd7325f104349a09ed0941da4ffdd3b78c9ee6a64c37e0ca97b2e405",
+      "sha256_disk": "2d48e3ecdd7325f104349a09ed0941da4ffdd3b78c9ee6a64c37e0ca97b2e405"
+    },
+    {
+      "local_name": "adapt-supported__Plastic_bottles__00.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__00.jpg",
+      "sha256_manifest": "00c3d3528f816a2000ace046e1e5860007f9d07a688c6a8cc53c5c7645959cc6",
+      "sha256_disk": "00c3d3528f816a2000ace046e1e5860007f9d07a688c6a8cc53c5c7645959cc6"
+    },
+    {
+      "local_name": "adapt-supported__Plastic_bottles__01.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__01.jpg",
+      "sha256_manifest": "f7c828480ee8e959776628471d01c3f001fbae3fc60ffd13db553d15e0b2c8ed",
+      "sha256_disk": "f7c828480ee8e959776628471d01c3f001fbae3fc60ffd13db553d15e0b2c8ed"
+    },
+    {
+      "local_name": "adapt-supported__Plastic_bottles__03.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__03.jpg",
+      "sha256_manifest": "32e5dd1c6f4ea9ce63ba52efe1aaec35d6b8862136061dd7f4507b6d320da11d",
+      "sha256_disk": "32e5dd1c6f4ea9ce63ba52efe1aaec35d6b8862136061dd7f4507b6d320da11d"
+    },
+    {
+      "local_name": "adapt-supported__Plastic_bottles__04.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__04.jpg",
+      "sha256_manifest": "84080f76d8618056be7aa1e84cb6d9ff57b0f417e54036d3e119a80b46043987",
+      "sha256_disk": "84080f76d8618056be7aa1e84cb6d9ff57b0f417e54036d3e119a80b46043987"
+    },
+    {
+      "local_name": "adapt-supported__Plastic_bottles__06.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__06.jpg",
+      "sha256_manifest": "a2cea86b33deae744f0f8cf607439a08b1147f80245beb6003da69fc3898c886",
+      "sha256_disk": "a2cea86b33deae744f0f8cf607439a08b1147f80245beb6003da69fc3898c886"
+    },
+    {
+      "local_name": "adapt-supported__Plastic_bottles__07.jpg",
+      "role": "supported",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__07.jpg",
+      "sha256_manifest": "b7089323fe42566052ece4e72b2ba4205ebe77b0a06f1fb8e89080731f6c234a",
+      "sha256_disk": "b7089323fe42566052ece4e72b2ba4205ebe77b0a06f1fb8e89080731f6c234a"
+    },
+    {
+      "local_name": "adapt-supported__Button_cells__00.jpg",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__00.jpg",
+      "sha256_manifest": "d1f37cadf8cf11ea11fbab2091c3c9ee998c3173ec006b06715a7f88c4e11648",
+      "sha256_disk": "d1f37cadf8cf11ea11fbab2091c3c9ee998c3173ec006b06715a7f88c4e11648"
+    },
+    {
+      "local_name": "adapt-supported__Button_cells__05.png",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__05.png",
+      "sha256_manifest": "3b6be32a87cb2e25a07fe43e66242ee7d15b2a8e5d5c4b26991d87b90becfc03",
+      "sha256_disk": "3b6be32a87cb2e25a07fe43e66242ee7d15b2a8e5d5c4b26991d87b90becfc03"
+    },
+    {
+      "local_name": "adapt-supported__Cardboard_boxes__06.jpg",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__06.jpg",
+      "sha256_manifest": "e15f059a4e8234d27e601e5b5ddba21a09b20eae72cedfcf13db62d2aba04b98",
+      "sha256_disk": "e15f059a4e8234d27e601e5b5ddba21a09b20eae72cedfcf13db62d2aba04b98"
+    },
+    {
+      "local_name": "adapt-supported__Cardboard_boxes__07.jpg",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__07.jpg",
+      "sha256_manifest": "8410f6855ee65c6cfc059304dd579727bd10e4eab6a0ddfb1def08654224f086",
+      "sha256_disk": "8410f6855ee65c6cfc059304dd579727bd10e4eab6a0ddfb1def08654224f086"
+    },
+    {
+      "local_name": "adapt-supported__Lead-acid_batteries__03.jpg",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__03.jpg",
+      "sha256_manifest": "97f8df8f8380181ad1a5c94b3fd67d91404ae95cc70960549ed6da9576a6a8ce",
+      "sha256_disk": "97f8df8f8380181ad1a5c94b3fd67d91404ae95cc70960549ed6da9576a6a8ce"
+    },
+    {
+      "local_name": "adapt-supported__Litter__00.jpg",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__00.jpg",
+      "sha256_manifest": "9639d2ad1e7a64ae64ac5a3c14b24ffe5bf07885a5ea1f5c6e7113a5410b8c5e",
+      "sha256_disk": "9639d2ad1e7a64ae64ac5a3c14b24ffe5bf07885a5ea1f5c6e7113a5410b8c5e"
+    },
+    {
+      "local_name": "adapt-supported__Paper_towels__01.jpg",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__01.jpg",
+      "sha256_manifest": "3b5ff13c959d9bcf06aae0ec0604269ffcea76d2ba0a0c8a3b7e4f8a5406b7bc",
+      "sha256_disk": "3b5ff13c959d9bcf06aae0ec0604269ffcea76d2ba0a0c8a3b7e4f8a5406b7bc"
+    },
+    {
+      "local_name": "adapt-supported__Paper_towels__02.jpg",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__02.jpg",
+      "sha256_manifest": "c2e33fe9da3d916dbe5ea51cfb91aa775214387c03ed9bb4b3b6f5c446fefa9a",
+      "sha256_disk": "c2e33fe9da3d916dbe5ea51cfb91aa775214387c03ed9bb4b3b6f5c446fefa9a"
+    },
+    {
+      "local_name": "adapt-supported__Paper_towels__04.jpg",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__04.jpg",
+      "sha256_manifest": "c325159e1788f6dbfcfefbd5bc656a8bdea507e91050ffc99f998dd92873cec9",
+      "sha256_disk": "c325159e1788f6dbfcfefbd5bc656a8bdea507e91050ffc99f998dd92873cec9"
+    },
+    {
+      "local_name": "adapt-supported__Paper_towels__06.jpg",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__06.jpg",
+      "sha256_manifest": "e065436d58ea1363a5689461d5582299e25f098c63374d7182374fd265fb5f81",
+      "sha256_disk": "e065436d58ea1363a5689461d5582299e25f098c63374d7182374fd265fb5f81"
+    },
+    {
+      "local_name": "adapt-supported__Plastic_bottles__02.jpg",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__02.jpg",
+      "sha256_manifest": "03a28e7d2cc41094b48cb945ad69c16a8832ed7132c1ee68fc682c85c269500d",
+      "sha256_disk": "03a28e7d2cc41094b48cb945ad69c16a8832ed7132c1ee68fc682c85c269500d"
+    },
+    {
+      "local_name": "adapt-supported__Plastic_bottles__05.jpg",
+      "role": "supported",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__05.jpg",
+      "sha256_manifest": "0c1d77b8300a9fd7208ff7fbccda3f5f4d731954a5deba3ad399d6dd0c3a73a9",
+      "sha256_disk": "0c1d77b8300a9fd7208ff7fbccda3f5f4d731954a5deba3ad399d6dd0c3a73a9"
+    },
+    {
+      "local_name": "adapt-ood__Computer_keyboards__01.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__01.jpg",
+      "sha256_manifest": "992b58fdd3846f14b09e164682840ec6638cca863554ab96ec98550f422c451d",
+      "sha256_disk": "992b58fdd3846f14b09e164682840ec6638cca863554ab96ec98550f422c451d"
+    },
+    {
+      "local_name": "adapt-ood__Computer_keyboards__02.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__02.jpg",
+      "sha256_manifest": "0d89624622df2d97bb92bcced11a29bdf1ec76b50a58e1038fdc0bba1fe599d5",
+      "sha256_disk": "0d89624622df2d97bb92bcced11a29bdf1ec76b50a58e1038fdc0bba1fe599d5"
+    },
+    {
+      "local_name": "adapt-ood__Computer_keyboards__03.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__03.jpg",
+      "sha256_manifest": "9454799d93fc76bca0a36e5729f29ef2fc6cb59119761c3c2cf7396a5eda915b",
+      "sha256_disk": "9454799d93fc76bca0a36e5729f29ef2fc6cb59119761c3c2cf7396a5eda915b"
+    },
+    {
+      "local_name": "adapt-ood__Computer_keyboards__05.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__05.jpg",
+      "sha256_manifest": "0efb0b0117c957bebafd4a6f25fa326278f1e26df7d2a64f2c1129c17d61bf96",
+      "sha256_disk": "0efb0b0117c957bebafd4a6f25fa326278f1e26df7d2a64f2c1129c17d61bf96"
+    },
+    {
+      "local_name": "adapt-ood__Parks__00.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Parks__00.jpg",
+      "sha256_manifest": "40f0c55354895dc4df099c5a8d20b82a7a8fa67e05e7b2155f0a3d3d207a4662",
+      "sha256_disk": "40f0c55354895dc4df099c5a8d20b82a7a8fa67e05e7b2155f0a3d3d207a4662"
+    },
+    {
+      "local_name": "adapt-ood__Parks__01.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Parks__01.jpg",
+      "sha256_manifest": "b3bd81fb90cd21c277edac143af1380d06c948f3a76db9c182fc76cb559caadc",
+      "sha256_disk": "b3bd81fb90cd21c277edac143af1380d06c948f3a76db9c182fc76cb559caadc"
+    },
+    {
+      "local_name": "adapt-ood__Parks__02.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Parks__02.jpg",
+      "sha256_manifest": "5521a084b31ea8e4d4b97c1b571cc9f5e9ee95cf7b36a93451b4da1da0d89dc5",
+      "sha256_disk": "5521a084b31ea8e4d4b97c1b571cc9f5e9ee95cf7b36a93451b4da1da0d89dc5"
+    },
+    {
+      "local_name": "adapt-ood__Parks__03.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Parks__03.jpg",
+      "sha256_manifest": "f4693a0658866eac36a5a3a7ca30678fdb38b16de4645e39a378429b283c2d3a",
+      "sha256_disk": "f4693a0658866eac36a5a3a7ca30678fdb38b16de4645e39a378429b283c2d3a"
+    },
+    {
+      "local_name": "adapt-ood__Shirts__00.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__00.jpg",
+      "sha256_manifest": "d563e6521e3fe05969e147b1b893421b5463002cf6e0629fa039ad7ec14cd900",
+      "sha256_disk": "d563e6521e3fe05969e147b1b893421b5463002cf6e0629fa039ad7ec14cd900"
+    },
+    {
+      "local_name": "adapt-ood__Shirts__01.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__01.jpg",
+      "sha256_manifest": "3ae785d26b08977511cf7931d4c960b7309395bcc87265dfed6bf65b19f69ef1",
+      "sha256_disk": "3ae785d26b08977511cf7931d4c960b7309395bcc87265dfed6bf65b19f69ef1"
+    },
+    {
+      "local_name": "adapt-ood__Shirts__02.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__02.jpg",
+      "sha256_manifest": "6b6fb5c15e6cf46530b11f5d5fbbd519dc58936a473d14a97eea327b1f034c03",
+      "sha256_disk": "6b6fb5c15e6cf46530b11f5d5fbbd519dc58936a473d14a97eea327b1f034c03"
+    },
+    {
+      "local_name": "adapt-ood__Shirts__03.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__03.jpg",
+      "sha256_manifest": "d4fe85b7a92c67105c6e8cde46bfbfcbbf44975752acc8631551059799ed6831",
+      "sha256_disk": "d4fe85b7a92c67105c6e8cde46bfbfcbbf44975752acc8631551059799ed6831"
+    },
+    {
+      "local_name": "adapt-ood__Shirts__04.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__04.jpg",
+      "sha256_manifest": "abad406189211dc5d2504b2f1b0e913d117f590ba4b59674e58ab5cb79320e30",
+      "sha256_disk": "abad406189211dc5d2504b2f1b0e913d117f590ba4b59674e58ab5cb79320e30"
+    },
+    {
+      "local_name": "adapt-ood__Shirts__05.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__05.jpg",
+      "sha256_manifest": "01e9b7ac84924febc34a6bfeaf53154db1e3d1564c426134958b898bedf4a713",
+      "sha256_disk": "01e9b7ac84924febc34a6bfeaf53154db1e3d1564c426134958b898bedf4a713"
+    },
+    {
+      "local_name": "adapt-ood__Shoes__00.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__00.jpg",
+      "sha256_manifest": "6e0feca1bcfd206c50d684abba9216dc100d6194311fc7b88b0ebc6c6387a064",
+      "sha256_disk": "6e0feca1bcfd206c50d684abba9216dc100d6194311fc7b88b0ebc6c6387a064"
+    },
+    {
+      "local_name": "adapt-ood__Shoes__01.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__01.jpg",
+      "sha256_manifest": "655dac89cf03e08daf8b3425c53479fa0c707b7e8a3e32850982e939ca2c6bf9",
+      "sha256_disk": "655dac89cf03e08daf8b3425c53479fa0c707b7e8a3e32850982e939ca2c6bf9"
+    },
+    {
+      "local_name": "adapt-ood__Shoes__03.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__03.jpg",
+      "sha256_manifest": "690e75aa387ca397c9c3e007a12b346be34c8fac0b22f4832c3c3b6ad29741e8",
+      "sha256_disk": "690e75aa387ca397c9c3e007a12b346be34c8fac0b22f4832c3c3b6ad29741e8"
+    },
+    {
+      "local_name": "adapt-ood__Shoes__04.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__04.jpg",
+      "sha256_manifest": "a27a85f9bdd98e55660c68de3ae047c33930903c9888f1ac9701bd066a50250b",
+      "sha256_disk": "a27a85f9bdd98e55660c68de3ae047c33930903c9888f1ac9701bd066a50250b"
+    },
+    {
+      "local_name": "adapt-ood__Shoes__05.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__05.jpg",
+      "sha256_manifest": "fe3cd27f65b3750b7489141f0dd89ee43e2957b1334027dd1af09be8681b3697",
+      "sha256_disk": "fe3cd27f65b3750b7489141f0dd89ee43e2957b1334027dd1af09be8681b3697"
+    },
+    {
+      "local_name": "adapt-ood__Toy_robots__00.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__00.jpg",
+      "sha256_manifest": "12426f4779faba45b4192d5c5c6ef779e29213e7a4219404045d2ccd8cb1e6c9",
+      "sha256_disk": "12426f4779faba45b4192d5c5c6ef779e29213e7a4219404045d2ccd8cb1e6c9"
+    },
+    {
+      "local_name": "adapt-ood__Toy_robots__02.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__02.jpg",
+      "sha256_manifest": "13de0f4003f655743b183bfe8136415594993f66996b677754728520aed142aa",
+      "sha256_disk": "13de0f4003f655743b183bfe8136415594993f66996b677754728520aed142aa"
+    },
+    {
+      "local_name": "adapt-ood__Toy_robots__03.jpg",
+      "role": "ood",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__03.jpg",
+      "sha256_manifest": "196cc645d9ee6a685530e1f89cfe80f23bafa1d935541993e60cb3f35f7b766f",
+      "sha256_disk": "196cc645d9ee6a685530e1f89cfe80f23bafa1d935541993e60cb3f35f7b766f"
+    },
+    {
+      "local_name": "adapt-ood__Computer_keyboards__00.jpg",
+      "role": "ood",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__00.jpg",
+      "sha256_manifest": "c5b901f6861c5d1c35e8a244e18b04a3d95b5a6efbc6168b01a819cd42c6e1d0",
+      "sha256_disk": "c5b901f6861c5d1c35e8a244e18b04a3d95b5a6efbc6168b01a819cd42c6e1d0"
+    },
+    {
+      "local_name": "adapt-ood__Computer_keyboards__04.jpg",
+      "role": "ood",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__04.jpg",
+      "sha256_manifest": "1753af95524a001450f507756b4d148b9d7f8c9b20410fb11842f451bb9eadf3",
+      "sha256_disk": "1753af95524a001450f507756b4d148b9d7f8c9b20410fb11842f451bb9eadf3"
+    },
+    {
+      "local_name": "adapt-ood__Shoes__02.jpg",
+      "role": "ood",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__02.jpg",
+      "sha256_manifest": "d20294614f207ec3cddbe0255aab90391e4fc103db2df3720b63390eaeca738f",
+      "sha256_disk": "d20294614f207ec3cddbe0255aab90391e4fc103db2df3720b63390eaeca738f"
+    },
+    {
+      "local_name": "adapt-ood__Toy_robots__01.jpg",
+      "role": "ood",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__01.jpg",
+      "sha256_manifest": "5392e02d4c4397b1c72bd45db458aea44ff7933c6a00004a3980eafc26aa4518",
+      "sha256_disk": "5392e02d4c4397b1c72bd45db458aea44ff7933c6a00004a3980eafc26aa4518"
+    },
+    {
+      "local_name": "adapt-ood__Toy_robots__04.jpg",
+      "role": "ood",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__04.jpg",
+      "sha256_manifest": "03f5a1cb414c994c334127ba8d903aecd2728b7901297dd767de6c4ae03c1318",
+      "sha256_disk": "03f5a1cb414c994c334127ba8d903aecd2728b7901297dd767de6c4ae03c1318"
+    },
+    {
+      "local_name": "adapt-ood__Toy_robots__05.jpg",
+      "role": "ood",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__05.jpg",
+      "sha256_manifest": "ca77cd6b207e9784ac06c26d9c395cc1fd9fe9a67f7dc8ed83634831ccb9660f",
+      "sha256_disk": "ca77cd6b207e9784ac06c26d9c395cc1fd9fe9a67f7dc8ed83634831ccb9660f"
+    },
+    {
+      "local_name": "adapt-multi__Flea_markets__00.jpg",
+      "role": "multi",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__00.jpg",
+      "sha256_manifest": "76b8bdc38ee75e0d49d197282ef44e43dfde3f906d4916e4e40a4fca9070f85d",
+      "sha256_disk": "76b8bdc38ee75e0d49d197282ef44e43dfde3f906d4916e4e40a4fca9070f85d"
+    },
+    {
+      "local_name": "adapt-multi__Flea_markets__01.jpg",
+      "role": "multi",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__01.jpg",
+      "sha256_manifest": "879acf7a5a1d2bce92446979f9e964c12ddec7e724fa6d49331d508a8e82712b",
+      "sha256_disk": "879acf7a5a1d2bce92446979f9e964c12ddec7e724fa6d49331d508a8e82712b"
+    },
+    {
+      "local_name": "adapt-multi__Flea_markets__02.jpg",
+      "role": "multi",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__02.jpg",
+      "sha256_manifest": "bcdd2c36823d7b07d3d603206c6f7c268b8d7002d8f31ba248bc301c4ad6c79b",
+      "sha256_disk": "bcdd2c36823d7b07d3d603206c6f7c268b8d7002d8f31ba248bc301c4ad6c79b"
+    },
+    {
+      "local_name": "adapt-multi__Flea_markets__04.jpg",
+      "role": "multi",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__04.jpg",
+      "sha256_manifest": "ba0ac62d896ab72dd488d998d0c61f05afa96c3b2d3fc329fe9f3d9a7ef778a4",
+      "sha256_disk": "ba0ac62d896ab72dd488d998d0c61f05afa96c3b2d3fc329fe9f3d9a7ef778a4"
+    },
+    {
+      "local_name": "adapt-multi__Flea_markets__05.jpg",
+      "role": "multi",
+      "part": "adapt-train",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__05.jpg",
+      "sha256_manifest": "a3de88efe00016737cf643c7a73485bd657e2789c9e972d873b45593d84002a6",
+      "sha256_disk": "a3de88efe00016737cf643c7a73485bd657e2789c9e972d873b45593d84002a6"
+    },
+    {
+      "local_name": "adapt-multi__Flea_markets__03.jpg",
+      "role": "multi",
+      "part": "adapt-val",
+      "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__03.jpg",
+      "sha256_manifest": "d3a12cf6dea70629e679695078060a44a9def09fa897502d9d33c764d4bcd5a4",
+      "sha256_disk": "d3a12cf6dea70629e679695078060a44a9def09fa897502d9d33c764d4bcd5a4"
+    }
+  ],
+  "path_hits": [],
+  "sha256_hits_vs_fresh": [],
+  "md5_hits_vs_original_test": [],
+  "manifest_integrity_failures": [],
+  "clean": true,
+  "notes": "The fresh benchmark files are never opened by the training path; this audit is the mechanical proof."
+}

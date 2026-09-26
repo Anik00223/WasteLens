@@ -25,7 +25,8 @@ import urllib.parse
 from datetime import datetime, timezone
 from pathlib import Path
 
-from build_fresh_set import corpus_hashes, category_files, get
+from build_fresh_set import (IMG_EXT, corpus_hashes, get, imageinfo,
+                             list_category_files, usable_title)
 
 OUT_DIR = Path("scratch/adaptation_set")
 MANIFEST = Path("docs/rejection_experiment/adaptation_set_manifest.json")
@@ -62,7 +63,11 @@ def select_and_download() -> dict:
     entries: list[dict] = []
     skipped_fresh_overlap = 0
     for group, category, n, label in CATEGORIES:
-        cands = category_files(category)
+        titles = sorted(set(list_category_files(category)))
+        ii = imageinfo(titles)
+        cands = [(t, ii[t]) for t in titles
+                 if t in ii and t.lower().endswith(IMG_EXT)
+                 and usable_title(t)]
         new_cands = [c for c in cands if c[0] not in fresh_titles]
         skipped_fresh_overlap += len(cands) - len(new_cands)
         pool = new_cands[RANK_OFFSET:RANK_OFFSET + n]
