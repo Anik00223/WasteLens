@@ -1,0 +1,195 @@
+{
+  "seed": 43,
+  "model": "models\\checkpoints\\wastelens_rej_head11s43_final.keras",
+  "model_md5": "f794062272d5d1dc02f6a55c94d522f8",
+  "equivalence_file": "docs\\rejection_experiment\\head11_rejection_equivalence.json",
+  "G1": {
+    "orig_accuracy": 0.9578264395782644,
+    "orig_macro_f1": 0.9407613554698019,
+    "pass": false,
+    "rule": "orig acc >= 0.9763 and macro-F1 >= 0.9671"
+  },
+  "G2": {
+    "fresh_accuracy": 0.5873015873015873,
+    "fresh_macro_f1": 0.5652591973244147,
+    "pass": true,
+    "rule": "fresh supported acc >= 0.55"
+  },
+  "G3": {
+    "per_bin": {
+      "recyclable": {
+        "fresh_recall": 0.7619047619047619,
+        "bar": 0.7143,
+        "in_run_baseline_recall": 0.9523809523809523,
+        "frozen_iteration10_baseline_recall": 0.9523809523809523,
+        "pass": true
+      },
+      "organic": {
+        "fresh_recall": 0.5,
+        "bar": 0.375,
+        "in_run_baseline_recall": 0.0625,
+        "frozen_iteration10_baseline_recall": 0.0625,
+        "pass": true
+      },
+      "hazardous": {
+        "fresh_recall": 0.5333333333333333,
+        "bar": 0.4,
+        "in_run_baseline_recall": 0.26666666666666666,
+        "frozen_iteration10_baseline_recall": 0.26666666666666666,
+        "pass": true
+      },
+      "general trash": {
+        "fresh_recall": 0.45454545454545453,
+        "bar": 0.2727,
+        "in_run_baseline_recall": 0.0,
+        "frozen_iteration10_baseline_recall": 0.0,
+        "pass": true
+      }
+    },
+    "pass": true,
+    "rule": "every fresh class recall >= the min over the two Iteration-10 seeds (no class may collapse)"
+  },
+  "G4": {
+    "orig_auroc": 0.9996601876333407,
+    "orig_ood_detect": 0.9963880288957688,
+    "orig_id_frr": 0.017842660178426603,
+    "fresh_ood_detect": 0.6744186046511628,
+    "fresh_auroc": 0.7526762643041713,
+    "pass": true,
+    "rule": "rejection preservation vs production \u22130.5pt: orig AUROC >= 0.99466, orig OOD detect >= 0.99139, orig ID FRR <= 0.02284, fresh OOD detect >= 0.6694, fresh AUROC >= 0.7477"
+  },
+  "G5": {
+    "fresh_frr": 0.3333333333333333,
+    "fresh_frr_bar": 0.3383,
+    "fresh_frr_pass": true,
+    "isolation_pass": true,
+    "max_abs_reject_diff": 0.0,
+    "reject_verdict_changes_at_threshold": 0,
+    "file_level_frozen_identical": true,
+    "iteration10_frr_observed_only": {
+      "42": 0.19047619047619047,
+      "43": 0.30158730158730157
+    },
+    "pass": true,
+    "rule": "fresh FRR <= 0.3383 @0.0702 AND isolation: max |\u0394reject| <= 1e-06 with 0 changed reject verdicts"
+  },
+  "G6": {
+    "generated_utc": "2026-09-27 02:33:00 UTC",
+    "protocol": "docs/rejection_experiment/iteration11_head_adaptation_protocol.md \u00a76 G6",
+    "candidate": "models/checkpoints/wastelens_rej_head11s42_final.keras",
+    "export": {
+      "dir": "scratch/tfjs_head11s42",
+      "command": "py -W ignore src/export_tfjs.py --model models/checkpoints/wastelens_rej_head11s42_final.keras --out scratch/tfjs_head11s42",
+      "format": "layers-model",
+      "top_level_layers": 8,
+      "weights": 266,
+      "shards": 3,
+      "weight_bytes": 10348820,
+      "outputs": {
+        "bins": 4,
+        "reject": 1
+      },
+      "output_names": [
+        "predictions/predictions",
+        "reject/reject"
+      ],
+      "labels_order": [
+        "recyclable",
+        "organic",
+        "hazardous",
+        "general trash"
+      ],
+      "pass": true
+    },
+    "parity_inputs": {
+      "dir": "scratch/parity_head11s42",
+      "n_inputs": 21,
+      "note": "6 synthetic + 15 real images; Keras outputs recorded in parity.json"
+    },
+    "parity_local": {
+      "command": "node src/validate_reject_in_browser.js scratch/tfjs_head11s42 --parity scratch/parity_head11s42",
+      "backend": "cpu",
+      "max_abs_bins": 3.338e-06,
+      "max_abs_reject": 1.001e-05,
+      "atol": 2e-05,
+      "structural_checks": "all PASS (1 input, 2 outputs, 4-unit bins, 1-unit reject, valid distribution, reject in [0,1])",
+      "pass": true
+    },
+    "parity_http": {
+      "command": "node src/validate_reject_in_browser.js http://127.0.0.1:8123/scratch/tfjs_head11s42/model.json --parity scratch/parity_head11s42",
+      "server": "py -m http.server 8123 (repo root, killed after the step)",
+      "max_abs_bins": 3.338e-06,
+      "max_abs_reject": 1.001e-05,
+      "atol": 2e-05,
+      "pass": true
+    },
+    "ui_clickthrough": {
+      "page": "http://127.0.0.1:8123/scratch/ui_head11s42/index.html",
+      "builder": "py -W ignore src/make_scratch_ui.py --model-json scratch/tfjs_head11s42/model.json --threshold 0.0702 --out scratch/ui_head11s42",
+      "html": "production web/index.html markup (only REJECT_THRESHOLD re-emitted as 0.070200, same value)",
+      "checks_passed": "13/13",
+      "page_errors": 0,
+      "evidence": [
+        "docs/rejection_experiment/ui_clickthrough_head11s42.json",
+        "docs/rejection_experiment/ui_clickthrough_desktop_head11s42.jpeg",
+        "docs/rejection_experiment/ui_clickthrough_mobile_head11s42.jpeg"
+      ],
+      "preprocessing": "exercised end-to-end by the click-through (upload/drag-drop -> runInference path); Python-vs-Chrome preprocessing parity for this unchanged production path was proven in Iteration 9/10 (docs/rejection_experiment/preprocess_alignment.json)",
+      "pass": true
+    },
+    "threshold": 0.0702,
+    "threshold_unchanged": true,
+    "production_state": {
+      "web_model_dir_rewritten": false,
+      "git_status_web_and_models_tfjs_model": "clean (no modifications)",
+      "shipped_alias_unchanged": true
+    },
+    "rule": "scratch TFJS export with 4-softmax + 1-sigmoid and correct label order; Python<->TF.js parity atol <= 2e-5 on bins and reject (local and HTTP); headless UI click-through on the scratch page with zero console errors; web/model/ untouched",
+    "pass": true,
+    "status": "scored"
+  },
+  "G7": {
+    "pass": null,
+    "rule": "both seeds must satisfy G2 and every other gate; decided in --summary"
+  },
+  "all_g1_g5_pass": false,
+  "in_run_baseline_remeasurement": {
+    "orig_accuracy": 0.981346309813463,
+    "orig_macro_f1": 0.972132471386473,
+    "orig_auroc": 0.9996601876333407,
+    "fresh_accuracy": 0.3968253968253968,
+    "fresh_frr": 0.3333333333333333,
+    "consistency_vs_locked": {
+      "orig_accuracy": {
+        "locked": 0.981346309813463,
+        "remeasured": 0.981346309813463,
+        "abs_diff": 0.0
+      },
+      "orig_macro_f1": {
+        "locked": 0.972132471386473,
+        "remeasured": 0.972132471386473,
+        "abs_diff": 0.0
+      },
+      "orig_auroc": {
+        "locked": 0.9996601876333407,
+        "remeasured": 0.9996601876333407,
+        "abs_diff": 0.0
+      },
+      "fresh_accuracy": {
+        "locked": 0.3968253968253968,
+        "remeasured": 0.3968253968253968,
+        "abs_diff": 0.0
+      },
+      "fresh_frr": {
+        "locked": 0.3333333333333333,
+        "remeasured": 0.3333333333333333,
+        "abs_diff": 0.0
+      }
+    }
+  },
+  "fresh_accuracy_delta_vs_locked": 0.19047619047619052,
+  "fresh_accuracy_delta_vs_iteration10": {
+    "42": 0.06349206349206349,
+    "43": 0.04761904761904767
+  }
+}

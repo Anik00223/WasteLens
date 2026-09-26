@@ -1,0 +1,123 @@
+{
+  "generated_utc": "2026-09-26 16:42:37 UTC",
+  "protocol": "docs/rejection_experiment/iteration11_head_adaptation_protocol.md",
+  "rule": "warm start models\\checkpoints\\wastelens_rej_shipped_best.keras; CLASSIFICATION-HEAD-ONLY: trainable = predictions/kernel + predictions/bias (1028 params); frozen = backbone (incl. BN stats), gap, dropouts, fc_256, reject; replayed 3:1 original:adapt mix, Adam(1e-3), batch 32, 1 epochs, candidate = FINAL epoch (no selection)",
+  "seed": 42,
+  "epochs": 1,
+  "candidate_epoch": 1,
+  "smoke": true,
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "loss_weights": {
+    "bins": 2.0,
+    "reject": 1.0
+  },
+  "batch_size": 32,
+  "img_size": [
+    224,
+    224
+  ],
+  "dataset_seed": 42,
+  "determinism": {
+    "TF_DETERMINISTIC_OPS_env": "1",
+    "enable_op_determinism_error": null,
+    "keras_set_random_seed": 42
+  },
+  "trainable_set": {
+    "paths": [
+      "predictions/bias",
+      "predictions/kernel"
+    ],
+    "params": 1028,
+    "frozen_tensor_count": 264
+  },
+  "warm_start": {
+    "checkpoint": "models\\checkpoints\\wastelens_rej_shipped_best.keras",
+    "checkpoint_md5": "8735019226412c4d67b0a17269dc38ad",
+    "checkpoint_md5_expected": "8735019226412c4d67b0a17269dc38ad",
+    "output_proof": {
+      "method": "16-image ['bins', 'reject'] output comparison vs models\\checkpoints\\wastelens_rej_shipped_best.keras at initialization (before training)",
+      "max_abs_diff": {
+        "bins": 0.0,
+        "reject": 0.0
+      },
+      "bit_exact": {
+        "bins": true,
+        "reject": true
+      }
+    },
+    "frozen_aggregate_sha256": "3d701678b58ee9b55b193d80124d4df71e5084934107d2b7f7c91994715194e8"
+  },
+  "freeze_proof_after": {
+    "frozen_identical": true,
+    "frozen_tensors_verified": 264,
+    "frozen_aggregate_sha256": "3d701678b58ee9b55b193d80124d4df71e5084934107d2b7f7c91994715194e8",
+    "bins_head_changed": [
+      "predictions/bias",
+      "predictions/kernel"
+    ],
+    "post_training_output_diff_vs_shipped": {
+      "bins": 0.0142250657081604,
+      "reject": 0.0
+    },
+    "detail_file": "docs\\rejection_experiment\\head11s42_smoke_freeze_proof.json"
+  },
+  "mix": {
+    "n_orig_supported": 5749,
+    "n_orig_unsupported": 8469,
+    "n_adapt_supported_raw": 48,
+    "n_adapt_unsupported_raw": 27,
+    "n_adapt_supported_used": 1916,
+    "n_adapt_unsupported_used": 2823,
+    "n_supported": 7665,
+    "n_unsupported": 11292,
+    "bins_class_weights": {
+      "0": 0.43680191474811947,
+      "1": 1.4418735891647856,
+      "2": 1.8768364348677766,
+      "3": 2.0649245689655173
+    },
+    "rej_weights": {
+      "supported": 1.2365949119373776,
+      "unsupported": 0.8393995749202976
+    }
+  },
+  "dataset_locks": {
+    "adapt_manifest_md5": "acae0933aca123c835c1e55396af182a",
+    "adapt_dir_file_count": 94,
+    "fresh_manifest_md5": "99540f56efb95e2c26b2b6cc9414ff5d"
+  },
+  "fresh_benchmark_reference": {
+    "path": "docs\\rejection_experiment\\fresh_set_manifest.json",
+    "md5": "99540f56efb95e2c26b2b6cc9414ff5d",
+    "note": "provenance only; this script never opens a fresh file"
+  },
+  "adapt_val_records": [
+    {
+      "adapt_val_bins_loss": 16.901371002197266,
+      "adapt_val_bins_sparse_categorical_accuracy": 0.4736842215061188,
+      "adapt_val_loss": 36.005836486816406,
+      "adapt_val_reject_binary_accuracy": 0.7368420958518982,
+      "adapt_val_reject_loss": 2.2030961513519287
+    }
+  ],
+  "final_epoch": {
+    "train_loss": 0.014411496929824352,
+    "val_loss": 0.10470027476549149,
+    "val_bins_acc": 0.8998420238494873
+  },
+  "wall_time_sec": 38.1,
+  "checkpoints": {
+    "epoch_pattern": "models\\checkpoints\\wastelens_rej_head11s42_smoke_{epoch:02d}.keras",
+    "final_epoch_file": "models\\checkpoints\\wastelens_rej_head11s42_smoke_01.keras",
+    "candidate_copy": "models\\checkpoints\\wastelens_rej_head11s42_smoke_final.keras",
+    "best_alias_copy": "models\\checkpoints\\wastelens_rej_head11s42_smoke_best.keras",
+    "md5": {
+      "wastelens_rej_head11s42_smoke_01.keras": "2926a1dd49743e74cae98df91df4dfd0",
+      "wastelens_rej_head11s42_smoke_final.keras": "2926a1dd49743e74cae98df91df4dfd0",
+      "wastelens_rej_head11s42_smoke_best.keras": "2926a1dd49743e74cae98df91df4dfd0"
+    }
+  },
+  "history_csv": "docs\\rejection_experiment\\head11s42_smoke_history.csv",
+  "promotion": "scratch artifact only - promotion is a separate, post-gate decision (protocol \u00a78)"
+}

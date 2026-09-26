@@ -1,0 +1,204 @@
+{
+  "generated_utc": "2026-09-26 21:20:46 UTC",
+  "protocol": "docs/rejection_experiment/iteration11_head_adaptation_protocol.md \u00a76 G7 / \u00a77",
+  "per_seed": {
+    "42": {
+      "model": "models\\checkpoints\\wastelens_rej_head11s42_final.keras",
+      "model_md5": "b62c75bdcae7c0094dd8270eaf9575ba",
+      "G1_pass": false,
+      "G2_pass": true,
+      "G3_pass": true,
+      "G4_pass": true,
+      "G5_pass": true,
+      "G6_pass": true,
+      "gates_scored_pass": false,
+      "fresh_accuracy": 0.6031746031746031,
+      "fresh_macro_f1": 0.5733030990173847,
+      "orig_accuracy": 0.9643146796431468,
+      "orig_macro_f1": 0.949099813230248,
+      "orig_auroc": 0.9996601876333407,
+      "fresh_frr": 0.3333333333333333,
+      "fresh_frr_isolation_pass": true,
+      "fresh_accuracy_delta_vs_iteration10": {
+        "42": 0.0793650793650793,
+        "43": 0.06349206349206349
+      }
+    },
+    "43": {
+      "model": "models\\checkpoints\\wastelens_rej_head11s43_final.keras",
+      "model_md5": "f794062272d5d1dc02f6a55c94d522f8",
+      "G1_pass": false,
+      "G2_pass": true,
+      "G3_pass": true,
+      "G4_pass": true,
+      "G5_pass": true,
+      "G6_pass": true,
+      "gates_scored_pass": false,
+      "fresh_accuracy": 0.5873015873015873,
+      "fresh_macro_f1": 0.5652591973244147,
+      "orig_accuracy": 0.9578264395782644,
+      "orig_macro_f1": 0.9407613554698019,
+      "orig_auroc": 0.9996601876333407,
+      "fresh_frr": 0.3333333333333333,
+      "fresh_frr_isolation_pass": true,
+      "fresh_accuracy_delta_vs_iteration10": {
+        "42": 0.06349206349206349,
+        "43": 0.04761904761904767
+      }
+    }
+  },
+  "g7_seed_consistency": {
+    "rule": "both seeds must satisfy G2 and every other gate (numerically); disagreement on G2 = Outcome B",
+    "both_seeds_present": true,
+    "g6_status": "scored",
+    "g2_pass_disagreement": false,
+    "outcome_a_contention_g1_g5": false,
+    "both_seeds_pass_g1_g6": false,
+    "metric_mean_and_spread": {
+      "orig_accuracy": {
+        "mean": 0.9610705596107056,
+        "spread": 0.006488240064882356,
+        "values": {
+          "42": 0.9643146796431468,
+          "43": 0.9578264395782644
+        }
+      },
+      "orig_macro_f1": {
+        "mean": 0.9449305843500249,
+        "spread": 0.00833845776044606,
+        "values": {
+          "42": 0.949099813230248,
+          "43": 0.9407613554698019
+        }
+      },
+      "orig_auroc": {
+        "mean": 0.9996601876333407,
+        "spread": 0.0,
+        "values": {
+          "42": 0.9996601876333407,
+          "43": 0.9996601876333407
+        }
+      },
+      "fresh_accuracy": {
+        "mean": 0.5952380952380952,
+        "spread": 0.015873015873015817,
+        "values": {
+          "42": 0.6031746031746031,
+          "43": 0.5873015873015873
+        }
+      },
+      "fresh_macro_f1": {
+        "mean": 0.5692811481708997,
+        "spread": 0.00804390169297009,
+        "values": {
+          "42": 0.5733030990173847,
+          "43": 0.5652591973244147
+        }
+      },
+      "fresh_frr": {
+        "mean": 0.3333333333333333,
+        "spread": 0.0,
+        "values": {
+          "42": 0.3333333333333333,
+          "43": 0.3333333333333333
+        }
+      }
+    },
+    "iteration10_reference": {
+      "fresh_accuracy": {
+        "42": 0.5238095238095238,
+        "43": 0.5396825396825397
+      },
+      "fresh_frr": {
+        "42": 0.19047619047619047,
+        "43": 0.30158730158730157
+      },
+      "note": "reported as observations only"
+    }
+  },
+  "decision": "B - Improvement-but-fail",
+  "decision_reason": "fresh supported accuracy >= 0.46 for both seeds (meaningful improvement) but at least one gate fails -> production unchanged, improvement documented; the protocol is not renegotiated after the measurement.",
+  "g6_browser": {
+    "generated_utc": "2026-09-27 02:33:00 UTC",
+    "protocol": "docs/rejection_experiment/iteration11_head_adaptation_protocol.md \u00a76 G6",
+    "candidate": "models/checkpoints/wastelens_rej_head11s42_final.keras",
+    "export": {
+      "dir": "scratch/tfjs_head11s42",
+      "command": "py -W ignore src/export_tfjs.py --model models/checkpoints/wastelens_rej_head11s42_final.keras --out scratch/tfjs_head11s42",
+      "format": "layers-model",
+      "top_level_layers": 8,
+      "weights": 266,
+      "shards": 3,
+      "weight_bytes": 10348820,
+      "outputs": {
+        "bins": 4,
+        "reject": 1
+      },
+      "output_names": [
+        "predictions/predictions",
+        "reject/reject"
+      ],
+      "labels_order": [
+        "recyclable",
+        "organic",
+        "hazardous",
+        "general trash"
+      ],
+      "pass": true
+    },
+    "parity_inputs": {
+      "dir": "scratch/parity_head11s42",
+      "n_inputs": 21,
+      "note": "6 synthetic + 15 real images; Keras outputs recorded in parity.json"
+    },
+    "parity_local": {
+      "command": "node src/validate_reject_in_browser.js scratch/tfjs_head11s42 --parity scratch/parity_head11s42",
+      "backend": "cpu",
+      "max_abs_bins": 3.338e-06,
+      "max_abs_reject": 1.001e-05,
+      "atol": 2e-05,
+      "structural_checks": "all PASS (1 input, 2 outputs, 4-unit bins, 1-unit reject, valid distribution, reject in [0,1])",
+      "pass": true
+    },
+    "parity_http": {
+      "command": "node src/validate_reject_in_browser.js http://127.0.0.1:8123/scratch/tfjs_head11s42/model.json --parity scratch/parity_head11s42",
+      "server": "py -m http.server 8123 (repo root, killed after the step)",
+      "max_abs_bins": 3.338e-06,
+      "max_abs_reject": 1.001e-05,
+      "atol": 2e-05,
+      "pass": true
+    },
+    "ui_clickthrough": {
+      "page": "http://127.0.0.1:8123/scratch/ui_head11s42/index.html",
+      "builder": "py -W ignore src/make_scratch_ui.py --model-json scratch/tfjs_head11s42/model.json --threshold 0.0702 --out scratch/ui_head11s42",
+      "html": "production web/index.html markup (only REJECT_THRESHOLD re-emitted as 0.070200, same value)",
+      "checks_passed": "13/13",
+      "page_errors": 0,
+      "evidence": [
+        "docs/rejection_experiment/ui_clickthrough_head11s42.json",
+        "docs/rejection_experiment/ui_clickthrough_desktop_head11s42.jpeg",
+        "docs/rejection_experiment/ui_clickthrough_mobile_head11s42.jpeg"
+      ],
+      "preprocessing": "exercised end-to-end by the click-through (upload/drag-drop -> runInference path); Python-vs-Chrome preprocessing parity for this unchanged production path was proven in Iteration 9/10 (docs/rejection_experiment/preprocess_alignment.json)",
+      "pass": true
+    },
+    "threshold": 0.0702,
+    "threshold_unchanged": true,
+    "production_state": {
+      "web_model_dir_rewritten": false,
+      "git_status_web_and_models_tfjs_model": "clean (no modifications)",
+      "shipped_alias_unchanged": true
+    },
+    "rule": "scratch TFJS export with 4-softmax + 1-sigmoid and correct label order; Python<->TF.js parity atol <= 2e-5 on bins and reject (local and HTTP); headless UI click-through on the scratch page with zero console errors; web/model/ untouched",
+    "pass": true,
+    "status": "scored"
+  },
+  "promotion_target": "models/checkpoints/wastelens_rej_shipped_best.keras <- seed-42 candidate if and only if the decision is A",
+  "production_state": {
+    "shipped_checkpoint": "models\\checkpoints\\wastelens_rej_shipped_best.keras",
+    "shipped_checkpoint_md5": "8735019226412c4d67b0a17269dc38ad",
+    "production_threshold": 0.0702,
+    "web_model_dir_rewritten": false,
+    "note": "no promotion unless Outcome A triggers \u00a78; production artifacts and the 0.0702 threshold are read-only throughout Iteration 11"
+  }
+}

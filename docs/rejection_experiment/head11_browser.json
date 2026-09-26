@@ -1,0 +1,63 @@
+{
+  "generated_utc": "2026-09-27 02:33:00 UTC",
+  "protocol": "docs/rejection_experiment/iteration11_head_adaptation_protocol.md §6 G6",
+  "candidate": "models/checkpoints/wastelens_rej_head11s42_final.keras",
+  "export": {
+    "dir": "scratch/tfjs_head11s42",
+    "command": "py -W ignore src/export_tfjs.py --model models/checkpoints/wastelens_rej_head11s42_final.keras --out scratch/tfjs_head11s42",
+    "format": "layers-model",
+    "top_level_layers": 8,
+    "weights": 266,
+    "shards": 3,
+    "weight_bytes": 10348820,
+    "outputs": {"bins": 4, "reject": 1},
+    "output_names": ["predictions/predictions", "reject/reject"],
+    "labels_order": ["recyclable", "organic", "hazardous", "general trash"],
+    "pass": true
+  },
+  "parity_inputs": {
+    "dir": "scratch/parity_head11s42",
+    "n_inputs": 21,
+    "note": "6 synthetic + 15 real images; Keras outputs recorded in parity.json"
+  },
+  "parity_local": {
+    "command": "node src/validate_reject_in_browser.js scratch/tfjs_head11s42 --parity scratch/parity_head11s42",
+    "backend": "cpu",
+    "max_abs_bins": 3.338e-06,
+    "max_abs_reject": 1.001e-05,
+    "atol": 2e-05,
+    "structural_checks": "all PASS (1 input, 2 outputs, 4-unit bins, 1-unit reject, valid distribution, reject in [0,1])",
+    "pass": true
+  },
+  "parity_http": {
+    "command": "node src/validate_reject_in_browser.js http://127.0.0.1:8123/scratch/tfjs_head11s42/model.json --parity scratch/parity_head11s42",
+    "server": "py -m http.server 8123 (repo root, killed after the step)",
+    "max_abs_bins": 3.338e-06,
+    "max_abs_reject": 1.001e-05,
+    "atol": 2e-05,
+    "pass": true
+  },
+  "ui_clickthrough": {
+    "page": "http://127.0.0.1:8123/scratch/ui_head11s42/index.html",
+    "builder": "py -W ignore src/make_scratch_ui.py --model-json scratch/tfjs_head11s42/model.json --threshold 0.0702 --out scratch/ui_head11s42",
+    "html": "production web/index.html markup (only REJECT_THRESHOLD re-emitted as 0.070200, same value)",
+    "checks_passed": "13/13",
+    "page_errors": 0,
+    "evidence": [
+      "docs/rejection_experiment/ui_clickthrough_head11s42.json",
+      "docs/rejection_experiment/ui_clickthrough_desktop_head11s42.jpeg",
+      "docs/rejection_experiment/ui_clickthrough_mobile_head11s42.jpeg"
+    ],
+    "preprocessing": "exercised end-to-end by the click-through (upload/drag-drop -> runInference path); Python-vs-Chrome preprocessing parity for this unchanged production path was proven in Iteration 9/10 (docs/rejection_experiment/preprocess_alignment.json)",
+    "pass": true
+  },
+  "threshold": 0.0702,
+  "threshold_unchanged": true,
+  "production_state": {
+    "web_model_dir_rewritten": false,
+    "git_status_web_and_models_tfjs_model": "clean (no modifications)",
+    "shipped_alias_unchanged": true
+  },
+  "rule": "scratch TFJS export with 4-softmax + 1-sigmoid and correct label order; Python<->TF.js parity atol <= 2e-5 on bins and reject (local and HTTP); headless UI click-through on the scratch page with zero console errors; web/model/ untouched",
+  "pass": true
+}
