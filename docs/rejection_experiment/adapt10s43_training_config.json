@@ -1,0 +1,130 @@
+{
+  "generated_utc": "2026-09-26 15:52:28 UTC",
+  "protocol": "docs/rejection_experiment/iteration10_adaptation_protocol.md",
+  "rule": "warm start models\\checkpoints\\wastelens_rej_shipped_best.keras (backbone frozen; fc_256 + predictions + reject trainable), replayed 3:1 original:adapt mix, Adam(1e-3), batch 32, 6 epochs, candidate = FINAL epoch (no selection)",
+  "seed": 43,
+  "epochs": 6,
+  "candidate_epoch": 6,
+  "smoke": false,
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "loss_weights": {
+    "bins": 2.0,
+    "reject": 1.0
+  },
+  "batch_size": 32,
+  "img_size": [
+    224,
+    224
+  ],
+  "dataset_seed": 42,
+  "determinism": {
+    "TF_DETERMINISTIC_OPS_env": "1",
+    "enable_op_determinism_error": null,
+    "keras_set_random_seed": 43
+  },
+  "warm_start": {
+    "checkpoint": "models\\checkpoints\\wastelens_rej_shipped_best.keras",
+    "proof": {
+      "method": "16-image ['bins', 'reject'] output comparison vs models\\checkpoints\\wastelens_rej_shipped_best.keras at initialization (before training)",
+      "max_abs_diff": {
+        "bins": 0.0,
+        "reject": 0.0
+      },
+      "bit_exact": {
+        "bins": true,
+        "reject": true
+      }
+    }
+  },
+  "mix": {
+    "n_orig_supported": 5749,
+    "n_orig_unsupported": 8469,
+    "n_adapt_supported_raw": 48,
+    "n_adapt_unsupported_raw": 27,
+    "n_adapt_supported_used": 1916,
+    "n_adapt_unsupported_used": 2823,
+    "n_supported": 7665,
+    "n_unsupported": 11292,
+    "bins_class_weights": {
+      "0": 0.43680191474811947,
+      "1": 1.4418735891647856,
+      "2": 1.8768364348677766,
+      "3": 2.0649245689655173
+    },
+    "rej_weights": {
+      "supported": 1.2365949119373776,
+      "unsupported": 0.8393995749202976
+    }
+  },
+  "adapt_manifest": {
+    "path": "docs\\rejection_experiment\\adaptation_set_manifest.json",
+    "md5": "acae0933aca123c835c1e55396af182a"
+  },
+  "fresh_benchmark_reference": {
+    "path": "docs\\rejection_experiment\\fresh_set_manifest.json",
+    "note": "read for provenance only; no fresh file is ever opened by this script"
+  },
+  "adapt_val_records": [
+    {
+      "adapt_val_bins_loss": 6.726622581481934,
+      "adapt_val_bins_sparse_categorical_accuracy": 0.2631579041481018,
+      "adapt_val_loss": 14.16005802154541,
+      "adapt_val_reject_binary_accuracy": 0.8421052694320679,
+      "adapt_val_reject_loss": 0.7068132162094116
+    },
+    {
+      "adapt_val_bins_loss": 7.502328395843506,
+      "adapt_val_bins_sparse_categorical_accuracy": 0.2631579041481018,
+      "adapt_val_loss": 15.448631286621094,
+      "adapt_val_reject_binary_accuracy": 0.8421052694320679,
+      "adapt_val_reject_loss": 0.44397345185279846
+    },
+    {
+      "adapt_val_bins_loss": 8.731781005859375,
+      "adapt_val_bins_sparse_categorical_accuracy": 0.3684210479259491,
+      "adapt_val_loss": 17.98091697692871,
+      "adapt_val_reject_binary_accuracy": 0.8421052694320679,
+      "adapt_val_reject_loss": 0.5173540711402893
+    },
+    {
+      "adapt_val_bins_loss": 8.888946533203125,
+      "adapt_val_bins_sparse_categorical_accuracy": 0.31578946113586426,
+      "adapt_val_loss": 18.0496883392334,
+      "adapt_val_reject_binary_accuracy": 0.8947368264198303,
+      "adapt_val_reject_loss": 0.27179551124572754
+    },
+    {
+      "adapt_val_bins_loss": 6.410289287567139,
+      "adapt_val_bins_sparse_categorical_accuracy": 0.3684210479259491,
+      "adapt_val_loss": 13.286182403564453,
+      "adapt_val_reject_binary_accuracy": 0.8421052694320679,
+      "adapt_val_reject_loss": 0.46560361981391907
+    },
+    {
+      "adapt_val_bins_loss": 8.155189514160156,
+      "adapt_val_bins_sparse_categorical_accuracy": 0.31578946113586426,
+      "adapt_val_loss": 16.606870651245117,
+      "adapt_val_reject_binary_accuracy": 0.8947368264198303,
+      "adapt_val_reject_loss": 0.29649123549461365
+    }
+  ],
+  "final_epoch": {
+    "val_loss": 0.011328025721013546,
+    "val_bins_acc": 0.7292259335517883
+  },
+  "wall_time_sec": 1191.7,
+  "checkpoints": {
+    "epoch_pattern": "models\\checkpoints\\wastelens_rej_adapt10s43_{epoch:02d}.keras",
+    "final_epoch_file": "models\\checkpoints\\wastelens_rej_adapt10s43_06.keras",
+    "candidate_copy": "models\\checkpoints\\wastelens_rej_adapt10s43_final.keras",
+    "best_alias_copy": "models\\checkpoints\\wastelens_rej_adapt10s43_best.keras",
+    "md5": {
+      "wastelens_rej_adapt10s43_06.keras": "2006cfa04614961c801550784ca7bd0b",
+      "wastelens_rej_adapt10s43_final.keras": "2006cfa04614961c801550784ca7bd0b",
+      "wastelens_rej_adapt10s43_best.keras": "2006cfa04614961c801550784ca7bd0b"
+    }
+  },
+  "history_csv": "docs\\rejection_experiment\\adapt10s43_history.csv",
+  "promotion": "scratch artifact only - promotion is a separate, post-gate decision (protocol \u00a74)"
+}

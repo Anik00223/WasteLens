@@ -1,0 +1,118 @@
+{
+  "seed": 42,
+  "model": "models\\checkpoints\\wastelens_rej_adapt10s42_final.keras",
+  "model_md5": "260586f7640230f5d78f461e61f414dd",
+  "gates": {
+    "G1": {
+      "orig_accuracy": 0.981346309813463,
+      "orig_macro_f1": 0.9736363946289983,
+      "pass": true,
+      "rule": "test acc >= 0.9763 and macro-F1 >= 0.9671"
+    },
+    "G2": {
+      "auroc": 0.9996873893621989,
+      "ood_detect": 0.9963880288957688,
+      "pass": true,
+      "rule": "AUROC >= 0.995 and OOD detect >= 0.95 @ 0.0702"
+    },
+    "G3": {
+      "fresh_accuracy": 0.5238095238095238,
+      "fresh_macro_f1": 0.4832379930506603,
+      "bins_improved": 3,
+      "per_bin": {
+        "organic": {
+          "recall": 0.375,
+          "locked_baseline_recall": 0.0625,
+          "in_run_baseline_recall": 0.0625,
+          "delta_vs_locked": 0.3125,
+          "delta_vs_in_run": 0.3125,
+          "improved": true
+        },
+        "hazardous": {
+          "recall": 0.4,
+          "locked_baseline_recall": 0.26666666666666666,
+          "in_run_baseline_recall": 0.26666666666666666,
+          "delta_vs_locked": 0.13333333333333336,
+          "delta_vs_in_run": 0.13333333333333336,
+          "improved": true
+        },
+        "general trash": {
+          "recall": 0.2727272727272727,
+          "locked_baseline_recall": 0.0,
+          "in_run_baseline_recall": 0.0,
+          "delta_vs_locked": 0.2727272727272727,
+          "delta_vs_in_run": 0.2727272727272727,
+          "improved": true
+        }
+      },
+      "pass": false,
+      "rule": "fresh supported acc >= 0.55 and >= 2 collapse bins improved"
+    },
+    "G4": {
+      "fresh_frr": 0.19047619047619047,
+      "pass": true,
+      "rule": "fresh FRR <= 0.45 @ 0.0702"
+    }
+  },
+  "all_g1_g4_pass": false,
+  "fresh_accuracy_delta_vs_locked": 0.12698412698412703,
+  "fresh_accuracy_delta_vs_in_run_baseline": 0.12698412698412703,
+  "in_run_baseline_remeasurement": {
+    "orig_accuracy": 0.981346309813463,
+    "orig_macro_f1": 0.972132471386473,
+    "orig_auroc": 0.9996601876333407,
+    "orig_ood_detect": 0.9963880288957688,
+    "fresh_accuracy": 0.3968253968253968,
+    "fresh_macro_f1": 0.25459482038429404,
+    "fresh_frr": 0.3333333333333333,
+    "fresh_ood_detect": 0.6744186046511628,
+    "fresh_multi_detect": 0.4666666666666667,
+    "consistency_vs_locked": {
+      "orig_accuracy": {
+        "locked": 0.981346309813463,
+        "remeasured": 0.981346309813463,
+        "abs_diff": 0.0
+      },
+      "orig_macro_f1": {
+        "locked": 0.972132471386473,
+        "remeasured": 0.972132471386473,
+        "abs_diff": 0.0
+      },
+      "orig_auroc": {
+        "locked": 0.9996601876333407,
+        "remeasured": 0.9996601876333407,
+        "abs_diff": 0.0
+      },
+      "orig_ood_detect": {
+        "locked": 0.9963880288957688,
+        "remeasured": 0.9963880288957688,
+        "abs_diff": 0.0
+      },
+      "fresh_accuracy": {
+        "locked": 0.3968253968253968,
+        "remeasured": 0.3968253968253968,
+        "abs_diff": 0.0
+      },
+      "fresh_macro_f1": {
+        "locked": 0.25459482038429404,
+        "remeasured": 0.25459482038429404,
+        "abs_diff": 0.0
+      },
+      "fresh_frr": {
+        "locked": 0.3333333333333333,
+        "remeasured": 0.3333333333333333,
+        "abs_diff": 0.0
+      },
+      "fresh_ood_detect": {
+        "locked": 0.6744186046511628,
+        "remeasured": 0.6744186046511628,
+        "abs_diff": 0.0
+      },
+      "fresh_multi_detect": {
+        "locked": 0.4666666666666667,
+        "remeasured": 0.4666666666666667,
+        "abs_diff": 0.0
+      }
+    }
+  }
+}

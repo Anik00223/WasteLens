@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-26 15:29:16 UTC",
+  "generated_utc": "2026-09-26 15:53:18 UTC",
   "protocol": "docs/rejection_experiment/iteration10_adaptation_protocol.md \u00a73",
   "method": "path comparison + SHA-256 (adaptation vs 131 fresh files, verified against the committed manifest) + MD5 (adaptation vs original test pools incl. CIFAR-10 test batch)",
   "counts": {

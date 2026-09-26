@@ -1,0 +1,4836 @@
+{
+  "seed": 43,
+  "audit": {
+    "generated_utc": "2026-09-26 15:53:18 UTC",
+    "protocol": "docs/rejection_experiment/iteration10_adaptation_protocol.md \u00a73",
+    "method": "path comparison + SHA-256 (adaptation vs 131 fresh files, verified against the committed manifest) + MD5 (adaptation vs original test pools incl. CIFAR-10 test batch)",
+    "counts": {
+      "adapt_train": 75,
+      "adapt_val": 19,
+      "fresh_files": 131,
+      "original_test_files": 3171
+    },
+    "adapt_files": [
+      {
+        "local_name": "adapt-supported__Button_cells__01.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__01.jpg",
+        "sha256_manifest": "89460ead4dffb0d3108aef8edf26ef2890ef4782a44146ef268a4521610d396c",
+        "sha256_disk": "89460ead4dffb0d3108aef8edf26ef2890ef4782a44146ef268a4521610d396c"
+      },
+      {
+        "local_name": "adapt-supported__Button_cells__02.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__02.jpg",
+        "sha256_manifest": "93f9aa1a95a8fbc7a03e8cccfff67aeb036d8787c988426393e3c8e43f543432",
+        "sha256_disk": "93f9aa1a95a8fbc7a03e8cccfff67aeb036d8787c988426393e3c8e43f543432"
+      },
+      {
+        "local_name": "adapt-supported__Button_cells__03.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__03.jpg",
+        "sha256_manifest": "8f1fc1c415087a0ac36dfb1e02fe44c43e8dbc0e28a65520e42a2fc0174eb2ee",
+        "sha256_disk": "8f1fc1c415087a0ac36dfb1e02fe44c43e8dbc0e28a65520e42a2fc0174eb2ee"
+      },
+      {
+        "local_name": "adapt-supported__Button_cells__04.png",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__04.png",
+        "sha256_manifest": "efcec50933f1144aa79b2a12cd9618373d22cbffdb56a3fb1258bf6f3dc9e757",
+        "sha256_disk": "efcec50933f1144aa79b2a12cd9618373d22cbffdb56a3fb1258bf6f3dc9e757"
+      },
+      {
+        "local_name": "adapt-supported__Cardboard_boxes__00.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__00.jpg",
+        "sha256_manifest": "ef406659855a8c451177bf0580d9dd3b16a181656386f9905df9f7a9c4715b0d",
+        "sha256_disk": "ef406659855a8c451177bf0580d9dd3b16a181656386f9905df9f7a9c4715b0d"
+      },
+      {
+        "local_name": "adapt-supported__Cardboard_boxes__01.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__01.jpg",
+        "sha256_manifest": "de2c62130c41f31fbd37e901674b142649f0c2e0f76103e6e70ca593bf2fa0f8",
+        "sha256_disk": "de2c62130c41f31fbd37e901674b142649f0c2e0f76103e6e70ca593bf2fa0f8"
+      },
+      {
+        "local_name": "adapt-supported__Cardboard_boxes__02.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__02.jpg",
+        "sha256_manifest": "881bb9b8dd5f50ca9fb35dab4eb673cb575c9233bc22b76393c6c97dfa3cb472",
+        "sha256_disk": "881bb9b8dd5f50ca9fb35dab4eb673cb575c9233bc22b76393c6c97dfa3cb472"
+      },
+      {
+        "local_name": "adapt-supported__Cardboard_boxes__03.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__03.jpg",
+        "sha256_manifest": "7cd7ac9fd54ff739787837822158731bf5544b7e3ba5ffcd14d33e9efa93f16c",
+        "sha256_disk": "7cd7ac9fd54ff739787837822158731bf5544b7e3ba5ffcd14d33e9efa93f16c"
+      },
+      {
+        "local_name": "adapt-supported__Cardboard_boxes__04.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__04.jpg",
+        "sha256_manifest": "1a3a5bbe2dcffc7fb96e5471f865822d80c2261185346062b5222dcecace6d93",
+        "sha256_disk": "1a3a5bbe2dcffc7fb96e5471f865822d80c2261185346062b5222dcecace6d93"
+      },
+      {
+        "local_name": "adapt-supported__Cardboard_boxes__05.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__05.jpg",
+        "sha256_manifest": "0d1dbedefcb7cf7026a87b383d532bc1a8be2a855aa9114d40c9229d56c52757",
+        "sha256_disk": "0d1dbedefcb7cf7026a87b383d532bc1a8be2a855aa9114d40c9229d56c52757"
+      },
+      {
+        "local_name": "adapt-supported__Compost__00.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__00.jpg",
+        "sha256_manifest": "8e7e49abdb386dc3b7d9a7588c2258e82b8d9f95e7efeac147d0ce0f062903a0",
+        "sha256_disk": "8e7e49abdb386dc3b7d9a7588c2258e82b8d9f95e7efeac147d0ce0f062903a0"
+      },
+      {
+        "local_name": "adapt-supported__Compost__01.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__01.jpg",
+        "sha256_manifest": "91daeba1f9166ab1d2c6e0f83f35cd72d51374eaffb7fb5a13d0712abb601508",
+        "sha256_disk": "91daeba1f9166ab1d2c6e0f83f35cd72d51374eaffb7fb5a13d0712abb601508"
+      },
+      {
+        "local_name": "adapt-supported__Compost__02.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__02.jpg",
+        "sha256_manifest": "fb0fe5e80cc412a59c2b07aa63140faff21f4d8fb2a767da941acbadce7dbd1c",
+        "sha256_disk": "fb0fe5e80cc412a59c2b07aa63140faff21f4d8fb2a767da941acbadce7dbd1c"
+      },
+      {
+        "local_name": "adapt-supported__Compost__03.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__03.jpg",
+        "sha256_manifest": "14921f0faa536ff687a638b4b642262a8de796942e57aae3d196d54c5742ddd9",
+        "sha256_disk": "14921f0faa536ff687a638b4b642262a8de796942e57aae3d196d54c5742ddd9"
+      },
+      {
+        "local_name": "adapt-supported__Compost__04.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__04.jpg",
+        "sha256_manifest": "a7a081ffd67bcf677c046a21e453720f0fd678e5d023672aacff2282830266cc",
+        "sha256_disk": "a7a081ffd67bcf677c046a21e453720f0fd678e5d023672aacff2282830266cc"
+      },
+      {
+        "local_name": "adapt-supported__Compost__05.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__05.jpg",
+        "sha256_manifest": "8ff0aeff3a7fc2dc7ebe468b365f61996f46412a3325b7a1ff7bd19c5687ac28",
+        "sha256_disk": "8ff0aeff3a7fc2dc7ebe468b365f61996f46412a3325b7a1ff7bd19c5687ac28"
+      },
+      {
+        "local_name": "adapt-supported__Compost__06.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__06.jpg",
+        "sha256_manifest": "0bea8c947e49ab95e36ea43b47bb89db5bf9955a5d51ba69cadb329cec778476",
+        "sha256_disk": "0bea8c947e49ab95e36ea43b47bb89db5bf9955a5d51ba69cadb329cec778476"
+      },
+      {
+        "local_name": "adapt-supported__Compost__07.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Compost__07.jpg",
+        "sha256_manifest": "17e03f83d5ad3656c83f68b8c1dd58359786548be68e59c50d887d641cbd55cb",
+        "sha256_disk": "17e03f83d5ad3656c83f68b8c1dd58359786548be68e59c50d887d641cbd55cb"
+      },
+      {
+        "local_name": "adapt-supported__Food_waste__00.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__00.jpg",
+        "sha256_manifest": "b06432f17eacedc357240a152feb69404779a5cf94cddafaa6ca1d48aaed3d62",
+        "sha256_disk": "b06432f17eacedc357240a152feb69404779a5cf94cddafaa6ca1d48aaed3d62"
+      },
+      {
+        "local_name": "adapt-supported__Food_waste__01.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__01.jpg",
+        "sha256_manifest": "f016c2d058c99df1677a650da5bbfc8f8a62f5cf2dd6cf32e8bae627260d7957",
+        "sha256_disk": "f016c2d058c99df1677a650da5bbfc8f8a62f5cf2dd6cf32e8bae627260d7957"
+      },
+      {
+        "local_name": "adapt-supported__Food_waste__02.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__02.jpg",
+        "sha256_manifest": "13fa3f5e4c486bfd3fdbc6a954c63af36fca8c879f9a611c96b7dd81a8de805f",
+        "sha256_disk": "13fa3f5e4c486bfd3fdbc6a954c63af36fca8c879f9a611c96b7dd81a8de805f"
+      },
+      {
+        "local_name": "adapt-supported__Food_waste__03.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__03.jpg",
+        "sha256_manifest": "c0022ac1b3e7c0622e628b0e7ec4f7fcacaa267eb729774373c3666fd38bef0b",
+        "sha256_disk": "c0022ac1b3e7c0622e628b0e7ec4f7fcacaa267eb729774373c3666fd38bef0b"
+      },
+      {
+        "local_name": "adapt-supported__Food_waste__04.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__04.jpg",
+        "sha256_manifest": "2447968baf12c61fb32b571c9df01841ad8eae04420b2b262868a55146d50f2a",
+        "sha256_disk": "2447968baf12c61fb32b571c9df01841ad8eae04420b2b262868a55146d50f2a"
+      },
+      {
+        "local_name": "adapt-supported__Food_waste__05.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__05.jpg",
+        "sha256_manifest": "1952907536d56945e098deef83d7b7b9890cad3472d5eee58302908cad4722b0",
+        "sha256_disk": "1952907536d56945e098deef83d7b7b9890cad3472d5eee58302908cad4722b0"
+      },
+      {
+        "local_name": "adapt-supported__Food_waste__06.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__06.jpg",
+        "sha256_manifest": "7cc9013b26d703d92ad9c74942ebc1e1f5d29c57a622a83380ed15247befaa3c",
+        "sha256_disk": "7cc9013b26d703d92ad9c74942ebc1e1f5d29c57a622a83380ed15247befaa3c"
+      },
+      {
+        "local_name": "adapt-supported__Food_waste__07.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Food_waste__07.jpg",
+        "sha256_manifest": "100f0ef6815a7b18974b6397dbd733c28b58f07069c67617d973363327d33271",
+        "sha256_disk": "100f0ef6815a7b18974b6397dbd733c28b58f07069c67617d973363327d33271"
+      },
+      {
+        "local_name": "adapt-supported__Lead-acid_batteries__00.png",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__00.png",
+        "sha256_manifest": "916d971259ea82339292f5d15482d1e401aa38702203042e8642529c23469312",
+        "sha256_disk": "916d971259ea82339292f5d15482d1e401aa38702203042e8642529c23469312"
+      },
+      {
+        "local_name": "adapt-supported__Lead-acid_batteries__01.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__01.jpg",
+        "sha256_manifest": "dd0196ddc4a2d918fa893367d75ff1b7c8f54e9251a7a3fad12e83f4bb8fd0e7",
+        "sha256_disk": "dd0196ddc4a2d918fa893367d75ff1b7c8f54e9251a7a3fad12e83f4bb8fd0e7"
+      },
+      {
+        "local_name": "adapt-supported__Lead-acid_batteries__02.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__02.jpg",
+        "sha256_manifest": "9cb20b7e5652269b350882b4267ba2cf5a3b5a2811feb65a572fca91aa2b8aec",
+        "sha256_disk": "9cb20b7e5652269b350882b4267ba2cf5a3b5a2811feb65a572fca91aa2b8aec"
+      },
+      {
+        "local_name": "adapt-supported__Lead-acid_batteries__04.png",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__04.png",
+        "sha256_manifest": "d71cb79c555386365ac376d6cd5ba1df429fb38944a718db373d991452d01017",
+        "sha256_disk": "d71cb79c555386365ac376d6cd5ba1df429fb38944a718db373d991452d01017"
+      },
+      {
+        "local_name": "adapt-supported__Lead-acid_batteries__05.png",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__05.png",
+        "sha256_manifest": "86d68f191f619f908cfcdc6182c286e458d995f6205282e465104b7a672db2d9",
+        "sha256_disk": "86d68f191f619f908cfcdc6182c286e458d995f6205282e465104b7a672db2d9"
+      },
+      {
+        "local_name": "adapt-supported__Litter__01.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__01.jpg",
+        "sha256_manifest": "ffbb7837c1f5faef10dc68bd084d5085c22fd82cc33e1581bba803531bcdd745",
+        "sha256_disk": "ffbb7837c1f5faef10dc68bd084d5085c22fd82cc33e1581bba803531bcdd745"
+      },
+      {
+        "local_name": "adapt-supported__Litter__02.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__02.jpg",
+        "sha256_manifest": "b1f18c16999b3d250d8e1f1eb2c6f663c2ec2c0d9a7631ac59551b150886a03d",
+        "sha256_disk": "b1f18c16999b3d250d8e1f1eb2c6f663c2ec2c0d9a7631ac59551b150886a03d"
+      },
+      {
+        "local_name": "adapt-supported__Litter__03.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__03.jpg",
+        "sha256_manifest": "995f459192ffbf345176d7d3ff0f6788d8a3cba96dec98c0d71c4b190307a1e7",
+        "sha256_disk": "995f459192ffbf345176d7d3ff0f6788d8a3cba96dec98c0d71c4b190307a1e7"
+      },
+      {
+        "local_name": "adapt-supported__Litter__04.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__04.jpg",
+        "sha256_manifest": "2c34b757de84709a4a2d854af6e56c36c73d6cef506b35165868ac2a517b98e2",
+        "sha256_disk": "2c34b757de84709a4a2d854af6e56c36c73d6cef506b35165868ac2a517b98e2"
+      },
+      {
+        "local_name": "adapt-supported__Litter__05.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__05.jpg",
+        "sha256_manifest": "cf1c4918ddc30b977304d9e635807f23d602e8ad2e9dd647e8ffa6cb7ea2f706",
+        "sha256_disk": "cf1c4918ddc30b977304d9e635807f23d602e8ad2e9dd647e8ffa6cb7ea2f706"
+      },
+      {
+        "local_name": "adapt-supported__Litter__06.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__06.jpg",
+        "sha256_manifest": "32a510e61a315d1ce333c35b0c909fab6c14935c7a602e17a068311579cad5ef",
+        "sha256_disk": "32a510e61a315d1ce333c35b0c909fab6c14935c7a602e17a068311579cad5ef"
+      },
+      {
+        "local_name": "adapt-supported__Litter__07.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__07.jpg",
+        "sha256_manifest": "f7c3b29f8d9f98e77850770be9b45d3be168cc3cdf51296d4ed2ebd2e5b775f6",
+        "sha256_disk": "f7c3b29f8d9f98e77850770be9b45d3be168cc3cdf51296d4ed2ebd2e5b775f6"
+      },
+      {
+        "local_name": "adapt-supported__Paper_towels__00.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__00.jpg",
+        "sha256_manifest": "48b2e914066f7b9a401a71d027d87ec86ba37eca14db7209c819032b51498654",
+        "sha256_disk": "48b2e914066f7b9a401a71d027d87ec86ba37eca14db7209c819032b51498654"
+      },
+      {
+        "local_name": "adapt-supported__Paper_towels__03.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__03.jpg",
+        "sha256_manifest": "b921ea5573540affb946043b5619e212739cace870a7c4d4b8c5184ec0f9bb95",
+        "sha256_disk": "b921ea5573540affb946043b5619e212739cace870a7c4d4b8c5184ec0f9bb95"
+      },
+      {
+        "local_name": "adapt-supported__Paper_towels__05.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__05.jpg",
+        "sha256_manifest": "cacff0618466250bd3904e6eeb77c1ce3c7e3d67325d6eb633aa63b9be5d6b2e",
+        "sha256_disk": "cacff0618466250bd3904e6eeb77c1ce3c7e3d67325d6eb633aa63b9be5d6b2e"
+      },
+      {
+        "local_name": "adapt-supported__Paper_towels__07.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__07.jpg",
+        "sha256_manifest": "2d48e3ecdd7325f104349a09ed0941da4ffdd3b78c9ee6a64c37e0ca97b2e405",
+        "sha256_disk": "2d48e3ecdd7325f104349a09ed0941da4ffdd3b78c9ee6a64c37e0ca97b2e405"
+      },
+      {
+        "local_name": "adapt-supported__Plastic_bottles__00.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__00.jpg",
+        "sha256_manifest": "00c3d3528f816a2000ace046e1e5860007f9d07a688c6a8cc53c5c7645959cc6",
+        "sha256_disk": "00c3d3528f816a2000ace046e1e5860007f9d07a688c6a8cc53c5c7645959cc6"
+      },
+      {
+        "local_name": "adapt-supported__Plastic_bottles__01.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__01.jpg",
+        "sha256_manifest": "f7c828480ee8e959776628471d01c3f001fbae3fc60ffd13db553d15e0b2c8ed",
+        "sha256_disk": "f7c828480ee8e959776628471d01c3f001fbae3fc60ffd13db553d15e0b2c8ed"
+      },
+      {
+        "local_name": "adapt-supported__Plastic_bottles__03.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__03.jpg",
+        "sha256_manifest": "32e5dd1c6f4ea9ce63ba52efe1aaec35d6b8862136061dd7f4507b6d320da11d",
+        "sha256_disk": "32e5dd1c6f4ea9ce63ba52efe1aaec35d6b8862136061dd7f4507b6d320da11d"
+      },
+      {
+        "local_name": "adapt-supported__Plastic_bottles__04.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__04.jpg",
+        "sha256_manifest": "84080f76d8618056be7aa1e84cb6d9ff57b0f417e54036d3e119a80b46043987",
+        "sha256_disk": "84080f76d8618056be7aa1e84cb6d9ff57b0f417e54036d3e119a80b46043987"
+      },
+      {
+        "local_name": "adapt-supported__Plastic_bottles__06.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__06.jpg",
+        "sha256_manifest": "a2cea86b33deae744f0f8cf607439a08b1147f80245beb6003da69fc3898c886",
+        "sha256_disk": "a2cea86b33deae744f0f8cf607439a08b1147f80245beb6003da69fc3898c886"
+      },
+      {
+        "local_name": "adapt-supported__Plastic_bottles__07.jpg",
+        "role": "supported",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__07.jpg",
+        "sha256_manifest": "b7089323fe42566052ece4e72b2ba4205ebe77b0a06f1fb8e89080731f6c234a",
+        "sha256_disk": "b7089323fe42566052ece4e72b2ba4205ebe77b0a06f1fb8e89080731f6c234a"
+      },
+      {
+        "local_name": "adapt-supported__Button_cells__00.jpg",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__00.jpg",
+        "sha256_manifest": "d1f37cadf8cf11ea11fbab2091c3c9ee998c3173ec006b06715a7f88c4e11648",
+        "sha256_disk": "d1f37cadf8cf11ea11fbab2091c3c9ee998c3173ec006b06715a7f88c4e11648"
+      },
+      {
+        "local_name": "adapt-supported__Button_cells__05.png",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Button_cells__05.png",
+        "sha256_manifest": "3b6be32a87cb2e25a07fe43e66242ee7d15b2a8e5d5c4b26991d87b90becfc03",
+        "sha256_disk": "3b6be32a87cb2e25a07fe43e66242ee7d15b2a8e5d5c4b26991d87b90becfc03"
+      },
+      {
+        "local_name": "adapt-supported__Cardboard_boxes__06.jpg",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__06.jpg",
+        "sha256_manifest": "e15f059a4e8234d27e601e5b5ddba21a09b20eae72cedfcf13db62d2aba04b98",
+        "sha256_disk": "e15f059a4e8234d27e601e5b5ddba21a09b20eae72cedfcf13db62d2aba04b98"
+      },
+      {
+        "local_name": "adapt-supported__Cardboard_boxes__07.jpg",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Cardboard_boxes__07.jpg",
+        "sha256_manifest": "8410f6855ee65c6cfc059304dd579727bd10e4eab6a0ddfb1def08654224f086",
+        "sha256_disk": "8410f6855ee65c6cfc059304dd579727bd10e4eab6a0ddfb1def08654224f086"
+      },
+      {
+        "local_name": "adapt-supported__Lead-acid_batteries__03.jpg",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Lead-acid_batteries__03.jpg",
+        "sha256_manifest": "97f8df8f8380181ad1a5c94b3fd67d91404ae95cc70960549ed6da9576a6a8ce",
+        "sha256_disk": "97f8df8f8380181ad1a5c94b3fd67d91404ae95cc70960549ed6da9576a6a8ce"
+      },
+      {
+        "local_name": "adapt-supported__Litter__00.jpg",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Litter__00.jpg",
+        "sha256_manifest": "9639d2ad1e7a64ae64ac5a3c14b24ffe5bf07885a5ea1f5c6e7113a5410b8c5e",
+        "sha256_disk": "9639d2ad1e7a64ae64ac5a3c14b24ffe5bf07885a5ea1f5c6e7113a5410b8c5e"
+      },
+      {
+        "local_name": "adapt-supported__Paper_towels__01.jpg",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__01.jpg",
+        "sha256_manifest": "3b5ff13c959d9bcf06aae0ec0604269ffcea76d2ba0a0c8a3b7e4f8a5406b7bc",
+        "sha256_disk": "3b5ff13c959d9bcf06aae0ec0604269ffcea76d2ba0a0c8a3b7e4f8a5406b7bc"
+      },
+      {
+        "local_name": "adapt-supported__Paper_towels__02.jpg",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__02.jpg",
+        "sha256_manifest": "c2e33fe9da3d916dbe5ea51cfb91aa775214387c03ed9bb4b3b6f5c446fefa9a",
+        "sha256_disk": "c2e33fe9da3d916dbe5ea51cfb91aa775214387c03ed9bb4b3b6f5c446fefa9a"
+      },
+      {
+        "local_name": "adapt-supported__Paper_towels__04.jpg",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__04.jpg",
+        "sha256_manifest": "c325159e1788f6dbfcfefbd5bc656a8bdea507e91050ffc99f998dd92873cec9",
+        "sha256_disk": "c325159e1788f6dbfcfefbd5bc656a8bdea507e91050ffc99f998dd92873cec9"
+      },
+      {
+        "local_name": "adapt-supported__Paper_towels__06.jpg",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Paper_towels__06.jpg",
+        "sha256_manifest": "e065436d58ea1363a5689461d5582299e25f098c63374d7182374fd265fb5f81",
+        "sha256_disk": "e065436d58ea1363a5689461d5582299e25f098c63374d7182374fd265fb5f81"
+      },
+      {
+        "local_name": "adapt-supported__Plastic_bottles__02.jpg",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__02.jpg",
+        "sha256_manifest": "03a28e7d2cc41094b48cb945ad69c16a8832ed7132c1ee68fc682c85c269500d",
+        "sha256_disk": "03a28e7d2cc41094b48cb945ad69c16a8832ed7132c1ee68fc682c85c269500d"
+      },
+      {
+        "local_name": "adapt-supported__Plastic_bottles__05.jpg",
+        "role": "supported",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-supported__Plastic_bottles__05.jpg",
+        "sha256_manifest": "0c1d77b8300a9fd7208ff7fbccda3f5f4d731954a5deba3ad399d6dd0c3a73a9",
+        "sha256_disk": "0c1d77b8300a9fd7208ff7fbccda3f5f4d731954a5deba3ad399d6dd0c3a73a9"
+      },
+      {
+        "local_name": "adapt-ood__Computer_keyboards__01.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__01.jpg",
+        "sha256_manifest": "992b58fdd3846f14b09e164682840ec6638cca863554ab96ec98550f422c451d",
+        "sha256_disk": "992b58fdd3846f14b09e164682840ec6638cca863554ab96ec98550f422c451d"
+      },
+      {
+        "local_name": "adapt-ood__Computer_keyboards__02.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__02.jpg",
+        "sha256_manifest": "0d89624622df2d97bb92bcced11a29bdf1ec76b50a58e1038fdc0bba1fe599d5",
+        "sha256_disk": "0d89624622df2d97bb92bcced11a29bdf1ec76b50a58e1038fdc0bba1fe599d5"
+      },
+      {
+        "local_name": "adapt-ood__Computer_keyboards__03.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__03.jpg",
+        "sha256_manifest": "9454799d93fc76bca0a36e5729f29ef2fc6cb59119761c3c2cf7396a5eda915b",
+        "sha256_disk": "9454799d93fc76bca0a36e5729f29ef2fc6cb59119761c3c2cf7396a5eda915b"
+      },
+      {
+        "local_name": "adapt-ood__Computer_keyboards__05.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__05.jpg",
+        "sha256_manifest": "0efb0b0117c957bebafd4a6f25fa326278f1e26df7d2a64f2c1129c17d61bf96",
+        "sha256_disk": "0efb0b0117c957bebafd4a6f25fa326278f1e26df7d2a64f2c1129c17d61bf96"
+      },
+      {
+        "local_name": "adapt-ood__Parks__00.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Parks__00.jpg",
+        "sha256_manifest": "40f0c55354895dc4df099c5a8d20b82a7a8fa67e05e7b2155f0a3d3d207a4662",
+        "sha256_disk": "40f0c55354895dc4df099c5a8d20b82a7a8fa67e05e7b2155f0a3d3d207a4662"
+      },
+      {
+        "local_name": "adapt-ood__Parks__01.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Parks__01.jpg",
+        "sha256_manifest": "b3bd81fb90cd21c277edac143af1380d06c948f3a76db9c182fc76cb559caadc",
+        "sha256_disk": "b3bd81fb90cd21c277edac143af1380d06c948f3a76db9c182fc76cb559caadc"
+      },
+      {
+        "local_name": "adapt-ood__Parks__02.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Parks__02.jpg",
+        "sha256_manifest": "5521a084b31ea8e4d4b97c1b571cc9f5e9ee95cf7b36a93451b4da1da0d89dc5",
+        "sha256_disk": "5521a084b31ea8e4d4b97c1b571cc9f5e9ee95cf7b36a93451b4da1da0d89dc5"
+      },
+      {
+        "local_name": "adapt-ood__Parks__03.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Parks__03.jpg",
+        "sha256_manifest": "f4693a0658866eac36a5a3a7ca30678fdb38b16de4645e39a378429b283c2d3a",
+        "sha256_disk": "f4693a0658866eac36a5a3a7ca30678fdb38b16de4645e39a378429b283c2d3a"
+      },
+      {
+        "local_name": "adapt-ood__Shirts__00.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__00.jpg",
+        "sha256_manifest": "d563e6521e3fe05969e147b1b893421b5463002cf6e0629fa039ad7ec14cd900",
+        "sha256_disk": "d563e6521e3fe05969e147b1b893421b5463002cf6e0629fa039ad7ec14cd900"
+      },
+      {
+        "local_name": "adapt-ood__Shirts__01.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__01.jpg",
+        "sha256_manifest": "3ae785d26b08977511cf7931d4c960b7309395bcc87265dfed6bf65b19f69ef1",
+        "sha256_disk": "3ae785d26b08977511cf7931d4c960b7309395bcc87265dfed6bf65b19f69ef1"
+      },
+      {
+        "local_name": "adapt-ood__Shirts__02.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__02.jpg",
+        "sha256_manifest": "6b6fb5c15e6cf46530b11f5d5fbbd519dc58936a473d14a97eea327b1f034c03",
+        "sha256_disk": "6b6fb5c15e6cf46530b11f5d5fbbd519dc58936a473d14a97eea327b1f034c03"
+      },
+      {
+        "local_name": "adapt-ood__Shirts__03.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__03.jpg",
+        "sha256_manifest": "d4fe85b7a92c67105c6e8cde46bfbfcbbf44975752acc8631551059799ed6831",
+        "sha256_disk": "d4fe85b7a92c67105c6e8cde46bfbfcbbf44975752acc8631551059799ed6831"
+      },
+      {
+        "local_name": "adapt-ood__Shirts__04.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__04.jpg",
+        "sha256_manifest": "abad406189211dc5d2504b2f1b0e913d117f590ba4b59674e58ab5cb79320e30",
+        "sha256_disk": "abad406189211dc5d2504b2f1b0e913d117f590ba4b59674e58ab5cb79320e30"
+      },
+      {
+        "local_name": "adapt-ood__Shirts__05.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shirts__05.jpg",
+        "sha256_manifest": "01e9b7ac84924febc34a6bfeaf53154db1e3d1564c426134958b898bedf4a713",
+        "sha256_disk": "01e9b7ac84924febc34a6bfeaf53154db1e3d1564c426134958b898bedf4a713"
+      },
+      {
+        "local_name": "adapt-ood__Shoes__00.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__00.jpg",
+        "sha256_manifest": "6e0feca1bcfd206c50d684abba9216dc100d6194311fc7b88b0ebc6c6387a064",
+        "sha256_disk": "6e0feca1bcfd206c50d684abba9216dc100d6194311fc7b88b0ebc6c6387a064"
+      },
+      {
+        "local_name": "adapt-ood__Shoes__01.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__01.jpg",
+        "sha256_manifest": "655dac89cf03e08daf8b3425c53479fa0c707b7e8a3e32850982e939ca2c6bf9",
+        "sha256_disk": "655dac89cf03e08daf8b3425c53479fa0c707b7e8a3e32850982e939ca2c6bf9"
+      },
+      {
+        "local_name": "adapt-ood__Shoes__03.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__03.jpg",
+        "sha256_manifest": "690e75aa387ca397c9c3e007a12b346be34c8fac0b22f4832c3c3b6ad29741e8",
+        "sha256_disk": "690e75aa387ca397c9c3e007a12b346be34c8fac0b22f4832c3c3b6ad29741e8"
+      },
+      {
+        "local_name": "adapt-ood__Shoes__04.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__04.jpg",
+        "sha256_manifest": "a27a85f9bdd98e55660c68de3ae047c33930903c9888f1ac9701bd066a50250b",
+        "sha256_disk": "a27a85f9bdd98e55660c68de3ae047c33930903c9888f1ac9701bd066a50250b"
+      },
+      {
+        "local_name": "adapt-ood__Shoes__05.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__05.jpg",
+        "sha256_manifest": "fe3cd27f65b3750b7489141f0dd89ee43e2957b1334027dd1af09be8681b3697",
+        "sha256_disk": "fe3cd27f65b3750b7489141f0dd89ee43e2957b1334027dd1af09be8681b3697"
+      },
+      {
+        "local_name": "adapt-ood__Toy_robots__00.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__00.jpg",
+        "sha256_manifest": "12426f4779faba45b4192d5c5c6ef779e29213e7a4219404045d2ccd8cb1e6c9",
+        "sha256_disk": "12426f4779faba45b4192d5c5c6ef779e29213e7a4219404045d2ccd8cb1e6c9"
+      },
+      {
+        "local_name": "adapt-ood__Toy_robots__02.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__02.jpg",
+        "sha256_manifest": "13de0f4003f655743b183bfe8136415594993f66996b677754728520aed142aa",
+        "sha256_disk": "13de0f4003f655743b183bfe8136415594993f66996b677754728520aed142aa"
+      },
+      {
+        "local_name": "adapt-ood__Toy_robots__03.jpg",
+        "role": "ood",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__03.jpg",
+        "sha256_manifest": "196cc645d9ee6a685530e1f89cfe80f23bafa1d935541993e60cb3f35f7b766f",
+        "sha256_disk": "196cc645d9ee6a685530e1f89cfe80f23bafa1d935541993e60cb3f35f7b766f"
+      },
+      {
+        "local_name": "adapt-ood__Computer_keyboards__00.jpg",
+        "role": "ood",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__00.jpg",
+        "sha256_manifest": "c5b901f6861c5d1c35e8a244e18b04a3d95b5a6efbc6168b01a819cd42c6e1d0",
+        "sha256_disk": "c5b901f6861c5d1c35e8a244e18b04a3d95b5a6efbc6168b01a819cd42c6e1d0"
+      },
+      {
+        "local_name": "adapt-ood__Computer_keyboards__04.jpg",
+        "role": "ood",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Computer_keyboards__04.jpg",
+        "sha256_manifest": "1753af95524a001450f507756b4d148b9d7f8c9b20410fb11842f451bb9eadf3",
+        "sha256_disk": "1753af95524a001450f507756b4d148b9d7f8c9b20410fb11842f451bb9eadf3"
+      },
+      {
+        "local_name": "adapt-ood__Shoes__02.jpg",
+        "role": "ood",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Shoes__02.jpg",
+        "sha256_manifest": "d20294614f207ec3cddbe0255aab90391e4fc103db2df3720b63390eaeca738f",
+        "sha256_disk": "d20294614f207ec3cddbe0255aab90391e4fc103db2df3720b63390eaeca738f"
+      },
+      {
+        "local_name": "adapt-ood__Toy_robots__01.jpg",
+        "role": "ood",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__01.jpg",
+        "sha256_manifest": "5392e02d4c4397b1c72bd45db458aea44ff7933c6a00004a3980eafc26aa4518",
+        "sha256_disk": "5392e02d4c4397b1c72bd45db458aea44ff7933c6a00004a3980eafc26aa4518"
+      },
+      {
+        "local_name": "adapt-ood__Toy_robots__04.jpg",
+        "role": "ood",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__04.jpg",
+        "sha256_manifest": "03f5a1cb414c994c334127ba8d903aecd2728b7901297dd767de6c4ae03c1318",
+        "sha256_disk": "03f5a1cb414c994c334127ba8d903aecd2728b7901297dd767de6c4ae03c1318"
+      },
+      {
+        "local_name": "adapt-ood__Toy_robots__05.jpg",
+        "role": "ood",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-ood__Toy_robots__05.jpg",
+        "sha256_manifest": "ca77cd6b207e9784ac06c26d9c395cc1fd9fe9a67f7dc8ed83634831ccb9660f",
+        "sha256_disk": "ca77cd6b207e9784ac06c26d9c395cc1fd9fe9a67f7dc8ed83634831ccb9660f"
+      },
+      {
+        "local_name": "adapt-multi__Flea_markets__00.jpg",
+        "role": "multi",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__00.jpg",
+        "sha256_manifest": "76b8bdc38ee75e0d49d197282ef44e43dfde3f906d4916e4e40a4fca9070f85d",
+        "sha256_disk": "76b8bdc38ee75e0d49d197282ef44e43dfde3f906d4916e4e40a4fca9070f85d"
+      },
+      {
+        "local_name": "adapt-multi__Flea_markets__01.jpg",
+        "role": "multi",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__01.jpg",
+        "sha256_manifest": "879acf7a5a1d2bce92446979f9e964c12ddec7e724fa6d49331d508a8e82712b",
+        "sha256_disk": "879acf7a5a1d2bce92446979f9e964c12ddec7e724fa6d49331d508a8e82712b"
+      },
+      {
+        "local_name": "adapt-multi__Flea_markets__02.jpg",
+        "role": "multi",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__02.jpg",
+        "sha256_manifest": "bcdd2c36823d7b07d3d603206c6f7c268b8d7002d8f31ba248bc301c4ad6c79b",
+        "sha256_disk": "bcdd2c36823d7b07d3d603206c6f7c268b8d7002d8f31ba248bc301c4ad6c79b"
+      },
+      {
+        "local_name": "adapt-multi__Flea_markets__04.jpg",
+        "role": "multi",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__04.jpg",
+        "sha256_manifest": "ba0ac62d896ab72dd488d998d0c61f05afa96c3b2d3fc329fe9f3d9a7ef778a4",
+        "sha256_disk": "ba0ac62d896ab72dd488d998d0c61f05afa96c3b2d3fc329fe9f3d9a7ef778a4"
+      },
+      {
+        "local_name": "adapt-multi__Flea_markets__05.jpg",
+        "role": "multi",
+        "part": "adapt-train",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__05.jpg",
+        "sha256_manifest": "a3de88efe00016737cf643c7a73485bd657e2789c9e972d873b45593d84002a6",
+        "sha256_disk": "a3de88efe00016737cf643c7a73485bd657e2789c9e972d873b45593d84002a6"
+      },
+      {
+        "local_name": "adapt-multi__Flea_markets__03.jpg",
+        "role": "multi",
+        "part": "adapt-val",
+        "path": "C:\\Users\\dasa8\\OneDrive\\Desktop\\WasteLens\\scratch\\adaptation_set\\adapt-multi__Flea_markets__03.jpg",
+        "sha256_manifest": "d3a12cf6dea70629e679695078060a44a9def09fa897502d9d33c764d4bcd5a4",
+        "sha256_disk": "d3a12cf6dea70629e679695078060a44a9def09fa897502d9d33c764d4bcd5a4"
+      }
+    ],
+    "path_hits": [],
+    "sha256_hits_vs_fresh": [],
+    "md5_hits_vs_original_test": [],
+    "manifest_integrity_failures": [],
+    "clean": true,
+    "notes": "The fresh benchmark files are never opened by the training path; this audit is the mechanical proof."
+  },
+  "baseline_in_run": {
+    "model": "models\\checkpoints\\wastelens_rej_shipped_best.keras",
+    "md5": "8735019226412c4d67b0a17269dc38ad",
+    "original": {
+      "classification": {
+        "accuracy": 0.981346309813463,
+        "macro_f1": 0.972132471386473,
+        "per_bin": {
+          "recyclable": {
+            "p": 0.9823113207547169,
+            "r": 0.9928486293206198,
+            "f1": 0.9875518672199171
+          },
+          "organic": {
+            "p": 0.9863945578231292,
+            "r": 0.9797297297297297,
+            "f1": 0.9830508474576272
+          },
+          "hazardous": {
+            "p": 0.9710144927536232,
+            "r": 0.9436619718309859,
+            "f1": 0.9571428571428572
+          },
+          "general trash": {
+            "p": 0.98,
+            "r": 0.9423076923076923,
+            "f1": 0.9607843137254902
+          }
+        },
+        "confusion_matrix": [
+          [
+            833,
+            2,
+            2,
+            2
+          ],
+          [
+            3,
+            145,
+            0,
+            0
+          ],
+          [
+            8,
+            0,
+            134,
+            0
+          ],
+          [
+            4,
+            0,
+            2,
+            98
+          ]
+        ]
+      },
+      "rejection": {
+        "auroc": 0.9996601876333407,
+        "per_source_detect_at_production_threshold": {
+          "clothes": 0.99875,
+          "shoes": 0.9899328859060402,
+          "collage": 0.9777777777777777,
+          "nonwaste": 0.9986666666666667
+        },
+        "ood_detect_at_production_threshold": 0.9963880288957688,
+        "id_frr_at_production_threshold": 0.017842660178426603,
+        "val_frozen_thresholds": {
+          "0.01": 0.07018820941448212,
+          "0.05": 0.0028878916054964066,
+          "0.10": 0.0005905671860091388,
+          "0.15": 0.00017358895274810493,
+          "0.20": 7.108593854354694e-05
+        },
+        "candidate_own_val_frozen_5pct_threshold": 0.0028878916054964066,
+        "val_frr_at_own_5pct_threshold": 0.050365556458164096,
+        "threshold_note": "gates use the frozen production threshold 0.0702 (protocol \u00a74, no threshold rescue); the val-frozen values are for the promotion step"
+      }
+    },
+    "fresh": {
+      "classification": {
+        "n_images": 63,
+        "accuracy": 0.3968253968253968,
+        "macro_f1": 0.25459482038429404,
+        "per_bin": {
+          "recyclable": {
+            "precision": 0.36363636363636365,
+            "recall": 0.9523809523809523,
+            "f1": 0.5263157894736843,
+            "count": 21
+          },
+          "organic": {
+            "precision": 0.5,
+            "recall": 0.0625,
+            "f1": 0.1111111111111111,
+            "count": 16
+          },
+          "hazardous": {
+            "precision": 0.6666666666666666,
+            "recall": 0.26666666666666666,
+            "f1": 0.3809523809523809,
+            "count": 15
+          },
+          "general trash": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "count": 11
+          }
+        },
+        "confusion_matrix": [
+          [
+            20,
+            0,
+            1,
+            0
+          ],
+          [
+            15,
+            1,
+            0,
+            0
+          ],
+          [
+            10,
+            1,
+            4,
+            0
+          ],
+          [
+            10,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "rejection": {
+        "threshold": 0.0702,
+        "id_n": 63,
+        "ood_n": 43,
+        "auroc": 0.7526762643041713,
+        "auprc": 0.67170188639086,
+        "false_rejection_rate": 0.3333333333333333,
+        "overall_ood_detection": 0.6744186046511628,
+        "per_role": {
+          "ood-objects": {
+            "count": 15,
+            "detected": 9,
+            "detection_rate": 0.6,
+            "mean_reject": 0.44867900991036247
+          },
+          "ood-clothes": {
+            "count": 8,
+            "detected": 6,
+            "detection_rate": 0.75,
+            "mean_reject": 0.6601221256359304
+          },
+          "ood-shoes": {
+            "count": 8,
+            "detected": 4,
+            "detection_rate": 0.5,
+            "mean_reject": 0.5017197990855493
+          },
+          "ood-scenes": {
+            "count": 12,
+            "detected": 10,
+            "detection_rate": 0.8333333333333334,
+            "mean_reject": 0.48777853045612574
+          }
+        }
+      },
+      "multi_object": {
+        "count": 15,
+        "detected": 7,
+        "detection_rate": 0.4666666666666667,
+        "mean_reject": 0.2553742876822601,
+        "verdicts": {
+          "supported": 8,
+          "uncertain": 0,
+          "unsupported": 7
+        }
+      },
+      "ambiguous": {
+        "count": 10,
+        "verdicts": {
+          "supported": 8,
+          "uncertain": 0,
+          "unsupported": 2
+        },
+        "mean_top_prob": 0.9888290286064148,
+        "mean_margin": 0.9776581051156832
+      },
+      "detailed_predictions": [
+        {
+          "local_name": "supported-organic__Compost__00.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            1.0,
+            5.189966234553367e-10,
+            1.1598418753200335e-10,
+            4.5481896027155244e-10
+          ],
+          "reject": 0.29175564646720886,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-organic__Compost__01.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9999938011169434,
+            1.4188012986693366e-09,
+            6.173012025101343e-06,
+            5.962058624575661e-10
+          ],
+          "reject": 0.5337706208229065,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-organic__Compost__02.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9999840259552002,
+            1.593549495737534e-05,
+            7.723857109454002e-09,
+            9.126293470940183e-12
+          ],
+          "reject": 0.08118946105241776,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-organic__Compost__03.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9999998807907104,
+            6.975788124918836e-08,
+            7.390219991521008e-09,
+            1.8590414763153262e-09
+          ],
+          "reject": 0.9976256489753723,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-organic__Compost__04.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9999815225601196,
+            1.8429440387990326e-05,
+            2.0451811355570726e-09,
+            1.0238322342703832e-11
+          ],
+          "reject": 5.322687866282649e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Compost__05.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9999992847442627,
+            4.091763372571222e-09,
+            7.740736691630445e-07,
+            1.7269720375967523e-10
+          ],
+          "reject": 0.9997274279594421,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__00.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.7819522023200989,
+            0.2180471122264862,
+            7.604605798405828e-07,
+            4.561481400933154e-11
+          ],
+          "reject": 0.9803404211997986,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__01.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9999938011169434,
+            5.896163656871067e-06,
+            2.4431088263554557e-07,
+            1.113201442137779e-08
+          ],
+          "reject": 0.42400631308555603,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__02.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            9.773804049473256e-05,
+            0.999900221824646,
+            2.0058578229509294e-06,
+            4.764758587683104e-10
+          ],
+          "reject": 0.023486070334911346,
+          "pred_bin": "organic",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__03.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9999997615814209,
+            1.7883547798192012e-07,
+            3.4670851078999476e-08,
+            1.0129365228539466e-11
+          ],
+          "reject": 1.8731014279183e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__04.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9999954700469971,
+            4.486195848585339e-06,
+            8.350612562546544e-11,
+            8.488616927426751e-12
+          ],
+          "reject": 0.0008453368209302425,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__05.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            1.0,
+            7.500305064522816e-12,
+            3.674589014416186e-15,
+            5.938759337846407e-18
+          ],
+          "reject": 9.465954462939408e-06,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Compost_bins__00.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            1.0,
+            2.0106900588956478e-09,
+            2.281427130546021e-10,
+            3.637470533113252e-11
+          ],
+          "reject": 0.7967909574508667,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-organic__Compost_bins__01.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9984082579612732,
+            0.0015633369330316782,
+            1.5903420717222616e-05,
+            1.2479678844101727e-05
+          ],
+          "reject": 0.12758684158325195,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-organic__Compost_bins__02.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9999991655349731,
+            8.589714184381592e-07,
+            4.887942495201969e-09,
+            3.5900844519431985e-09
+          ],
+          "reject": 0.005149331875145435,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Compost_bins__03.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9999746084213257,
+            2.2547232219949365e-05,
+            2.8793153887818335e-06,
+            3.0248330507021137e-09
+          ],
+          "reject": 0.9962405562400818,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__00.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999353885650635,
+            6.464513717219234e-05,
+            5.8222806131880134e-08,
+            9.355533708843566e-11
+          ],
+          "reject": 0.8225787878036499,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__01.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9990799427032471,
+            0.00024587291409261525,
+            0.000665710074827075,
+            8.439279554295354e-06
+          ],
+          "reject": 0.011148917488753796,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__02.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999986886978149,
+            1.2932640629514935e-06,
+            3.3037910185385044e-08,
+            1.0378281567469116e-09
+          ],
+          "reject": 0.007914847694337368,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__03.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            1.0,
+            6.559765231006764e-11,
+            1.6278218772924902e-09,
+            3.156788668155449e-15
+          ],
+          "reject": 0.00012537528527900577,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__04.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            1.0,
+            7.835583744342234e-12,
+            5.320057588908966e-11,
+            1.8827246619362858e-13
+          ],
+          "reject": 1.8433746618029545e-06,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__05.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9928610920906067,
+            1.3623783878813356e-08,
+            0.007138846907764673,
+            7.055814266188065e-10
+          ],
+          "reject": 1.364027957606595e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Aluminium_cans__00.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.999998927116394,
+            1.4219518007507759e-08,
+            1.0879580258915666e-06,
+            5.146361106906673e-14
+          ],
+          "reject": 0.0030314745381474495,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Aluminium_cans__01.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999998807907104,
+            3.4410459372321775e-14,
+            1.264564701841664e-07,
+            1.5194984921287978e-16
+          ],
+          "reject": 1.9721543139894493e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Aluminium_cans__02.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999654293060303,
+            4.003131692797979e-08,
+            3.46251399605535e-05,
+            6.211269720779455e-09
+          ],
+          "reject": 0.09625373780727386,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-recyclable__Aluminium_cans__03.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.0019674256909638643,
+            5.557126860367134e-05,
+            0.997977077960968,
+            1.5492857292079753e-16
+          ],
+          "reject": 0.017862744629383087,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Aluminium_cans__04.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            1.0,
+            8.857689497783656e-15,
+            1.2955892055802748e-13,
+            3.119986992421381e-15
+          ],
+          "reject": 7.252157274706406e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Plastic_bottles__00.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999998807907104,
+            1.5419142584960355e-07,
+            2.3591914533049874e-10,
+            8.66190497106345e-09
+          ],
+          "reject": 4.7413763240911067e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Plastic_bottles__01.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            1.0,
+            6.588834160345045e-14,
+            1.5977494392631353e-14,
+            3.4985948379762924e-15
+          ],
+          "reject": 0.0001450917188776657,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Plastic_bottles__02.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            1.0,
+            2.3674202789120136e-12,
+            5.393105233231221e-12,
+            9.386649790776858e-11
+          ],
+          "reject": 0.0004973172908648849,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Plastic_bottles__03.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.8562636971473694,
+            0.07144343852996826,
+            0.07229293882846832,
+            2.9994865258231584e-08
+          ],
+          "reject": 0.03540584444999695,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Plastic_bottles__04.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999985694885254,
+            2.974295254531967e-10,
+            1.432387989552808e-06,
+            1.6190912542971003e-12
+          ],
+          "reject": 5.2741426770808175e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Broken_glass__00.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            1.0,
+            1.2667427357024815e-18,
+            1.190058233232717e-18,
+            1.3451593046956276e-23
+          ],
+          "reject": 1.2641257853829302e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Broken_glass__01.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            1.0,
+            3.446700216902521e-11,
+            7.364244305509138e-13,
+            4.2366581612366294e-16
+          ],
+          "reject": 0.003418251872062683,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Broken_glass__02.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            1.0,
+            2.326607060221947e-13,
+            4.905011292966055e-12,
+            1.2363239958564564e-16
+          ],
+          "reject": 0.00839450117200613,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Broken_glass__03.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999878406524658,
+            1.2205916391394567e-05,
+            1.4844260043389568e-08,
+            2.1223626155142394e-12
+          ],
+          "reject": 0.0001432848657714203,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Broken_glass__04.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999731779098511,
+            2.7741592134589155e-07,
+            2.65816615865333e-05,
+            4.508813322701144e-09
+          ],
+          "reject": 0.020828023552894592,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Lead-acid_batteries__00.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            2.6076179437950486e-06,
+            1.229064849894712e-09,
+            0.9999973773956299,
+            1.050931802519528e-13
+          ],
+          "reject": 6.410454716387903e-06,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Lead-acid_batteries__01.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.1986362338066101,
+            6.531217877636664e-08,
+            0.8013637065887451,
+            1.540774036135062e-10
+          ],
+          "reject": 0.0003779797116294503,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Lead-acid_batteries__02.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.9866999387741089,
+            3.205400034289596e-08,
+            0.013300023041665554,
+            8.10541629474304e-13
+          ],
+          "reject": 0.003943623509258032,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Lead-acid_batteries__03.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            3.6715059081871004e-07,
+            1.6534168950392495e-18,
+            0.9999996423721313,
+            4.3148741865425842e-19
+          ],
+          "reject": 1.4771451333217556e-06,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Lead-acid_batteries__04.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            1.6228867025347427e-05,
+            1.0680455408973444e-09,
+            0.9999837875366211,
+            1.7004114782892543e-10
+          ],
+          "reject": 0.03442920744419098,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Button_cells__00.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.9242544174194336,
+            0.06589146703481674,
+            0.009853200986981392,
+            9.634151183490758e-07
+          ],
+          "reject": 0.00010844106873264536,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Button_cells__01.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.10429908335208893,
+            0.6701425313949585,
+            5.629679071716964e-05,
+            0.225502148270607
+          ],
+          "reject": 0.990104079246521,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-hazardous__Button_cells__02.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            1.0,
+            5.3386166598556883e-08,
+            1.4829913963509966e-09,
+            4.994366031851882e-12
+          ],
+          "reject": 1.6437964234228275e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Button_cells__03.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.999312162399292,
+            6.233146887524299e-09,
+            0.000687832769472152,
+            1.1432707558434174e-10
+          ],
+          "reject": 1.7641934391576797e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Button_cells__04.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.999790370464325,
+            4.632027206241673e-09,
+            0.00020967786258552223,
+            4.150419563586638e-09
+          ],
+          "reject": 3.206191365734412e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Fluorescent_lamps__00.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.9999998807907104,
+            1.986355080418889e-09,
+            1.2313498132243694e-07,
+            1.783109548902928e-09
+          ],
+          "reject": 0.0016408234369009733,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Fluorescent_lamps__01.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            1.0,
+            1.094914174652956e-14,
+            7.740110219423002e-10,
+            5.783347162714031e-14
+          ],
+          "reject": 1.4520141178309132e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Fluorescent_lamps__02.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.9996414184570312,
+            5.881953484276892e-07,
+            0.0003579513868317008,
+            1.307566832586815e-10
+          ],
+          "reject": 0.936410665512085,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-hazardous__Fluorescent_lamps__03.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            1.0,
+            5.160381365656216e-15,
+            4.69387792523257e-11,
+            3.180552601007142e-15
+          ],
+          "reject": 2.271774945938887e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Fluorescent_lamps__04.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.9999818801879883,
+            3.779926593949767e-09,
+            1.8115093553205952e-05,
+            2.9715363503157732e-09
+          ],
+          "reject": 0.8582469820976257,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Litter__00.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.9999998807907104,
+            6.771216032319671e-09,
+            2.9247719801617222e-09,
+            6.79616505294689e-08
+          ],
+          "reject": 0.3785267472267151,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Litter__01.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.9996646642684937,
+            1.2648033731466057e-08,
+            0.00033536425326019526,
+            1.713814333503816e-11
+          ],
+          "reject": 0.035108234733343124,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-general__Litter__02.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.9999996423721313,
+            3.271330797360861e-07,
+            1.844829705666129e-10,
+            3.923122937621315e-11
+          ],
+          "reject": 0.029816580936312675,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-general__Litter__03.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            1.0,
+            1.7907297866770477e-10,
+            2.2809745758856081e-10,
+            1.3479109495229125e-10
+          ],
+          "reject": 0.09313969314098358,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Litter__04.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            1.0,
+            1.6555368631543388e-08,
+            5.361640298406911e-11,
+            5.753344467507304e-10
+          ],
+          "reject": 0.8998899459838867,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Litter__05.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            1.0,
+            3.2820748341322314e-09,
+            1.5622499821565938e-11,
+            1.3017161133721533e-11
+          ],
+          "reject": 0.4084641933441162,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Paper_towels__00.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.9999966621398926,
+            2.0839966055063996e-06,
+            3.0390016891868044e-11,
+            1.306508465859224e-06
+          ],
+          "reject": 0.9636178016662598,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Paper_towels__01.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            1.0,
+            3.420027802625292e-11,
+            5.255705267694089e-13,
+            7.60940264385489e-15
+          ],
+          "reject": 0.007517366204410791,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-general__Paper_towels__02.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            1.0,
+            6.578700258164094e-14,
+            3.426652408003439e-13,
+            1.1214657945780165e-13
+          ],
+          "reject": 7.562348855572054e-06,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-general__Paper_towels__03.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.9999983310699463,
+            1.653918161537149e-06,
+            3.2857772058747514e-09,
+            1.213779299291673e-08
+          ],
+          "reject": 0.9983178377151489,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Paper_towels__04.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.00032633377122692764,
+            4.575445089471941e-08,
+            0.9996737241744995,
+            5.849312145755903e-09
+          ],
+          "reject": 1.1706274563039187e-06,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Pizza_boxes__00.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            1.0,
+            2.1873038523099152e-14,
+            1.6431106692263442e-12,
+            1.9825510861899015e-13
+          ],
+          "reject": 3.3683116384963796e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Pizza_boxes__01.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.9994844198226929,
+            0.0005154827958904207,
+            9.412707413503085e-08,
+            3.432679973602859e-10
+          ],
+          "reject": 0.005528218578547239,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Pizza_boxes__02.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.9999998807907104,
+            4.75433969970851e-10,
+            1.0092243485360086e-07,
+            9.09168519549336e-13
+          ],
+          "reject": 2.1733474568463862e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Pizza_boxes__03.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            1.0,
+            6.591528538268943e-13,
+            1.478510716634851e-11,
+            4.208010079709973e-13
+          ],
+          "reject": 0.02503832057118416,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Pizza_boxes__04.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.8894089460372925,
+            5.461648555638021e-08,
+            0.11059091240167618,
+            1.1825680408875106e-13
+          ],
+          "reject": 0.42024263739585876,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ambiguous__Cigarette_butts__00.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            1.0,
+            5.411270720401262e-08,
+            5.039420547525708e-10,
+            2.4419284360566043e-15
+          ],
+          "reject": 0.0010914873564615846,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Cigarette_butts__01.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            1.0,
+            4.6757404534563535e-14,
+            1.278468924828394e-14,
+            5.785972379675812e-22
+          ],
+          "reject": 0.0032107746228575706,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Cigarette_butts__02.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            1.0,
+            2.4191339903500975e-11,
+            1.833805893594609e-12,
+            9.631373823482114e-12
+          ],
+          "reject": 0.004649179521948099,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Cigarette_butts__03.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.9993970394134521,
+            0.0006026680348441005,
+            2.290227882895124e-07,
+            9.827926561456479e-08
+          ],
+          "reject": 0.009601340629160404,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Cigarette_butts__04.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            1.0,
+            1.6599097207858904e-08,
+            5.6081428390086785e-09,
+            3.6038477025735274e-14
+          ],
+          "reject": 0.9194671511650085,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Bicycles__00.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9990720748901367,
+            0.0009277723729610443,
+            1.1510685737903259e-07,
+            5.159020454760521e-13
+          ],
+          "reject": 0.947424054145813,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Bicycles__01.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.6015154123306274,
+            0.3984837234020233,
+            8.510130555805517e-07,
+            4.301659473071595e-08
+          ],
+          "reject": 0.9894443154335022,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Bicycles__02.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9999984502792358,
+            7.89472721862694e-07,
+            6.868726813991088e-07,
+            3.754296352964648e-12
+          ],
+          "reject": 0.055027514696121216,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-objects__Bicycles__03.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            8.944495838436595e-11,
+            3.200595566354991e-09,
+            2.0425989458866534e-13
+          ],
+          "reject": 0.9932383894920349,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Bicycles__04.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9999879598617554,
+            5.429388494349041e-09,
+            1.2030717698507942e-05,
+            1.4387905459364479e-16
+          ],
+          "reject": 0.002356127370148897,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-objects__Toy_robots__00.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            1.1850609903107934e-11,
+            5.023035143381094e-08,
+            7.082195467319303e-16
+          ],
+          "reject": 0.9667519330978394,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Toy_robots__01.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.99943608045578,
+            0.0002546044997870922,
+            0.0003091766557190567,
+            7.621678577152124e-08
+          ],
+          "reject": 0.8652752637863159,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Toy_robots__02.png",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9997920393943787,
+            0.00014477728109341115,
+            8.895157179722446e-07,
+            6.235915498109534e-05
+          ],
+          "reject": 0.2267199456691742,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Toy_robots__03.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.999991774559021,
+            1.1407536720797751e-10,
+            8.191383130906615e-06,
+            1.788433984240001e-11
+          ],
+          "reject": 0.018747497349977493,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-objects__Toy_robots__04.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9999880790710449,
+            7.382831427094061e-06,
+            4.5193828555056825e-06,
+            2.9550212277129617e-10
+          ],
+          "reject": 0.2748350501060486,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Computer_keyboards__00.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9758098721504211,
+            0.02381250634789467,
+            0.00037511604023166,
+            2.444444135107915e-06
+          ],
+          "reject": 0.9216414093971252,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Computer_keyboards__01.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.972804844379425,
+            0.00021351237955968827,
+            0.02697978913784027,
+            1.8690758452066802e-06
+          ],
+          "reject": 0.403979629278183,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Computer_keyboards__02.png",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            5.480061716911511e-12,
+            3.652973745715826e-08,
+            7.154162787355312e-13
+          ],
+          "reject": 0.03894093632698059,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-objects__Computer_keyboards__03.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9854191541671753,
+            3.847821172797694e-09,
+            0.01458083838224411,
+            3.997159581103915e-08
+          ],
+          "reject": 6.94663031026721e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-objects__Computer_keyboards__04.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9582536220550537,
+            0.00015580892795696855,
+            0.04154989868402481,
+            4.063254891661927e-05
+          ],
+          "reject": 0.025733616203069687,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__00.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            9.893023900087172e-12,
+            5.747212737184162e-14,
+            5.29421161841033e-16
+          ],
+          "reject": 0.0016022040508687496,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__01.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            9.294876500420823e-12,
+            3.3560256795794885e-09,
+            4.3125475487502864e-15
+          ],
+          "reject": 8.237049797799045e-08,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__02.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            3.15598207289991e-11,
+            4.584805029118205e-14,
+            3.338830323329489e-10
+          ],
+          "reject": 1.0,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__03.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.9999988079071045,
+            9.957771496260648e-09,
+            4.360588279350708e-12,
+            1.2368572015475365e-06
+          ],
+          "reject": 1.0,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__04.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.9999994039535522,
+            1.2546490779641317e-07,
+            2.165530865738674e-09,
+            4.834892024518922e-07
+          ],
+          "reject": 0.9999960660934448,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__05.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.996187150478363,
+            0.0012602080823853612,
+            0.0025514066219329834,
+            1.1582152410483104e-06
+          ],
+          "reject": 0.9998548030853271,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__06.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            2.5783247065147563e-11,
+            1.3910525292412657e-12,
+            6.635649332526611e-14
+          ],
+          "reject": 0.99924236536026,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__07.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.9999997615814209,
+            1.53197035501762e-07,
+            3.1962682500719097e-10,
+            2.683431254979496e-08
+          ],
+          "reject": 0.2802814841270447,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__00.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            1.406426863859167e-09,
+            3.094283584914592e-08,
+            4.698154842594504e-13
+          ],
+          "reject": 0.0003786544839385897,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__01.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            0.9999982118606567,
+            1.7990234937315108e-06,
+            9.689626878639501e-10,
+            6.795668472392435e-10
+          ],
+          "reject": 0.9999979138374329,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__02.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            0.9999994039535522,
+            5.308560275807395e-07,
+            1.7592286383205646e-07,
+            2.6455004853431774e-10
+          ],
+          "reject": 0.9888409376144409,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__03.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            1.1155244505900441e-09,
+            1.700718677000168e-09,
+            3.872685592348768e-12
+          ],
+          "reject": 0.05440634489059448,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__04.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            4.201596581765443e-08,
+            2.848205893357658e-09,
+            7.969602218828656e-14
+          ],
+          "reject": 0.037401966750621796,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__05.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            0.9999749660491943,
+            8.122518011077773e-06,
+            1.698256346571725e-05,
+            1.8356287156962026e-08
+          ],
+          "reject": 0.9954090118408203,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__06.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            3.1917926079927383e-09,
+            6.39146846559413e-10,
+            5.083633404371398e-15
+          ],
+          "reject": 0.005070917773991823,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__07.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            4.5257508851648254e-10,
+            5.465385088943009e-12,
+            1.0100718005057185e-11
+          ],
+          "reject": 0.9322526454925537,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__00.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.9999375343322754,
+            5.9637743106577545e-05,
+            2.615940275063622e-06,
+            1.7192991208503372e-07
+          ],
+          "reject": 0.35690587759017944,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__01.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.9999996423721313,
+            3.7449194678629283e-07,
+            7.750433628217479e-10,
+            3.4491951517168218e-09
+          ],
+          "reject": 0.20109935104846954,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__02.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.9999988079071045,
+            2.553045064246362e-08,
+            1.151379933617136e-06,
+            1.015205714632872e-12
+          ],
+          "reject": 0.8941867351531982,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__03.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            1.0,
+            8.403961970770979e-09,
+            3.885819183785388e-12,
+            1.1203423605499196e-11
+          ],
+          "reject": 0.03368350490927696,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__04.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.9999622106552124,
+            1.2895698731085758e-08,
+            3.77521246264223e-05,
+            2.7475414304811707e-11
+          ],
+          "reject": 0.24504749476909637,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__05.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.9999470710754395,
+            7.827855030839714e-11,
+            5.2945662901038304e-05,
+            3.8582201669634664e-13
+          ],
+          "reject": 0.8244000673294067,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__00.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.9999734163284302,
+            2.967485897897859e-06,
+            2.3626744223292917e-05,
+            2.7208129083078347e-08
+          ],
+          "reject": 0.9987055659294128,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__01.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.9997562766075134,
+            3.063544136239216e-05,
+            0.00021289882715791464,
+            2.6463146696187323e-07
+          ],
+          "reject": 0.999194860458374,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__02.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.9999909400939941,
+            4.243093826516997e-06,
+            4.720305241789902e-06,
+            2.0059907068770144e-09
+          ],
+          "reject": 0.49344882369041443,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__03.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.9999996423721313,
+            3.471692764378531e-07,
+            4.624538973985182e-09,
+            1.988182773970948e-08
+          ],
+          "reject": 0.42266958951950073,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__04.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.9999998807907104,
+            7.333159857125793e-08,
+            4.4133288690240136e-10,
+            9.495091379818632e-10
+          ],
+          "reject": 0.06337912380695343,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__05.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.9999788999557495,
+            2.0804938685614616e-05,
+            2.0666902855737135e-07,
+            7.829813242210548e-09
+          ],
+          "reject": 0.3206213712692261,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__00.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            1.0,
+            4.414783816297785e-11,
+            5.825747523280356e-11,
+            3.1015628433606057e-12
+          ],
+          "reject": 0.0031461662147194147,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__01.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9996181726455688,
+            9.026862244354561e-05,
+            0.00029133062344044447,
+            2.1482365752945043e-07
+          ],
+          "reject": 0.12190308421850204,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__02.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.999998927116394,
+            1.8604320928261586e-07,
+            3.562257973044325e-07,
+            5.502073463503621e-07
+          ],
+          "reject": 0.7138915061950684,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__03.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9999274015426636,
+            8.597330634074751e-06,
+            5.8547044318402186e-05,
+            5.411280653788708e-06
+          ],
+          "reject": 0.007700688671320677,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__04.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.999954104423523,
+            3.193942393409088e-05,
+            5.048319962952519e-06,
+            8.933928256738e-06
+          ],
+          "reject": 0.5099179148674011,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__05.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9999988079071045,
+            3.03888540997832e-08,
+            1.0305028581569786e-06,
+            7.499224352613965e-08
+          ],
+          "reject": 0.4293096661567688,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__00.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9941148161888123,
+            0.0058782692067325115,
+            4.956231350661255e-06,
+            1.918369207487558e-06
+          ],
+          "reject": 0.9774491786956787,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__01.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9999985694885254,
+            3.896454714436004e-09,
+            1.4736359617018024e-06,
+            4.6161487826656966e-11
+          ],
+          "reject": 0.10118921101093292,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__02.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9987969398498535,
+            0.0012023840099573135,
+            5.384359837989905e-07,
+            1.6144122483296997e-08
+          ],
+          "reject": 0.007771919947117567,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__03.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9510020017623901,
+            1.223217194201709e-09,
+            0.04899796470999718,
+            2.056311901082932e-14
+          ],
+          "reject": 0.00010233077773591504,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__04.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9993447661399841,
+            1.2442696117886953e-07,
+            0.0006550922989845276,
+            9.4890924545038e-13
+          ],
+          "reject": 0.04235203191637993,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__05.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9998643398284912,
+            0.00013563466200139374,
+            2.2557644641096886e-09,
+            3.0177358008309785e-12
+          ],
+          "reject": 0.915230929851532,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Clutter__00.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            1.0,
+            4.2389213273925745e-16,
+            1.2766134720523792e-12,
+            2.510584562556126e-18
+          ],
+          "reject": 4.0406018797511933e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Clutter__01.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9999980926513672,
+            6.133294050414406e-08,
+            1.8035067341770628e-06,
+            7.995703654728459e-09
+          ],
+          "reject": 0.00028980502975173295,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Clutter__02.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9999998807907104,
+            9.362354225217473e-10,
+            1.519587868870076e-07,
+            2.4918998420275784e-08
+          ],
+          "reject": 0.0003594776208046824,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        }
+      ]
+    },
+    "eval_utc": "2026-09-26 15:54:43 UTC"
+  },
+  "candidate": {
+    "model": "models\\checkpoints\\wastelens_rej_adapt10s43_final.keras",
+    "md5": "2006cfa04614961c801550784ca7bd0b",
+    "original": {
+      "classification": {
+        "accuracy": 0.9772911597729116,
+        "macro_f1": 0.9672164087481487,
+        "per_bin": {
+          "recyclable": {
+            "p": 0.9879807692307693,
+            "r": 0.9797377830750894,
+            "f1": 0.9838420107719928
+          },
+          "organic": {
+            "p": 0.9931506849315068,
+            "r": 0.9797297297297297,
+            "f1": 0.9863945578231292
+          },
+          "hazardous": {
+            "p": 0.9448275862068966,
+            "r": 0.9647887323943662,
+            "f1": 0.9547038327526133
+          },
+          "general trash": {
+            "p": 0.9181818181818182,
+            "r": 0.9711538461538461,
+            "f1": 0.9439252336448598
+          }
+        },
+        "confusion_matrix": [
+          [
+            822,
+            1,
+            7,
+            9
+          ],
+          [
+            3,
+            145,
+            0,
+            0
+          ],
+          [
+            5,
+            0,
+            137,
+            0
+          ],
+          [
+            2,
+            0,
+            1,
+            101
+          ]
+        ]
+      },
+      "rejection": {
+        "auroc": 0.9996961776130608,
+        "per_source_detect_at_production_threshold": {
+          "clothes": 1.0,
+          "shoes": 0.9899328859060402,
+          "collage": 0.9888888888888889,
+          "nonwaste": 0.9986666666666667
+        },
+        "ood_detect_at_production_threshold": 0.9974200206398349,
+        "id_frr_at_production_threshold": 0.0202757502027575,
+        "val_frozen_thresholds": {
+          "0.01": 0.14545220136642456,
+          "0.05": 0.0047611054033041,
+          "0.10": 0.0006294946069829166,
+          "0.15": 0.00010329217184334993,
+          "0.20": 3.057556750718504e-05
+        },
+        "candidate_own_val_frozen_5pct_threshold": 0.0047611054033041,
+        "val_frr_at_own_5pct_threshold": 0.050365556458164096,
+        "threshold_note": "gates use the frozen production threshold 0.0702 (protocol \u00a74, no threshold rescue); the val-frozen values are for the promotion step"
+      }
+    },
+    "fresh": {
+      "classification": {
+        "n_images": 63,
+        "accuracy": 0.5396825396825397,
+        "macro_f1": 0.5151866826395128,
+        "per_bin": {
+          "recyclable": {
+            "precision": 0.46875,
+            "recall": 0.7142857142857143,
+            "f1": 0.5660377358490566,
+            "count": 21
+          },
+          "organic": {
+            "precision": 0.75,
+            "recall": 0.5625,
+            "f1": 0.6428571428571429,
+            "count": 16
+          },
+          "hazardous": {
+            "precision": 0.5833333333333334,
+            "recall": 0.4666666666666667,
+            "f1": 0.5185185185185186,
+            "count": 15
+          },
+          "general trash": {
+            "precision": 0.42857142857142855,
+            "recall": 0.2727272727272727,
+            "f1": 0.33333333333333326,
+            "count": 11
+          }
+        },
+        "confusion_matrix": [
+          [
+            15,
+            2,
+            3,
+            1
+          ],
+          [
+            5,
+            9,
+            0,
+            2
+          ],
+          [
+            7,
+            0,
+            7,
+            1
+          ],
+          [
+            5,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "rejection": {
+        "threshold": 0.0702,
+        "id_n": 63,
+        "ood_n": 43,
+        "auroc": 0.8002953119232189,
+        "auprc": 0.7373295604769166,
+        "false_rejection_rate": 0.30158730158730157,
+        "overall_ood_detection": 0.6976744186046512,
+        "per_role": {
+          "ood-objects": {
+            "count": 15,
+            "detected": 12,
+            "detection_rate": 0.8,
+            "mean_reject": 0.6517916569888048
+          },
+          "ood-clothes": {
+            "count": 8,
+            "detected": 6,
+            "detection_rate": 0.75,
+            "mean_reject": 0.75197989561957
+          },
+          "ood-shoes": {
+            "count": 8,
+            "detected": 5,
+            "detection_rate": 0.625,
+            "mean_reject": 0.6102392899338156
+          },
+          "ood-scenes": {
+            "count": 12,
+            "detected": 7,
+            "detection_rate": 0.5833333333333334,
+            "mean_reject": 0.5001342511677649
+          }
+        }
+      },
+      "multi_object": {
+        "count": 15,
+        "detected": 9,
+        "detection_rate": 0.6,
+        "mean_reject": 0.3968376852455549,
+        "verdicts": {
+          "supported": 6,
+          "uncertain": 0,
+          "unsupported": 9
+        }
+      },
+      "ambiguous": {
+        "count": 10,
+        "verdicts": {
+          "supported": 3,
+          "uncertain": 2,
+          "unsupported": 5
+        },
+        "mean_top_prob": 0.8607996046543122,
+        "mean_margin": 0.759014225117167
+      },
+      "detailed_predictions": [
+        {
+          "local_name": "supported-organic__Compost__00.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.00047724854084663093,
+            0.9967904686927795,
+            2.3949010596879816e-07,
+            0.0027320431545376778
+          ],
+          "reject": 0.008905031718313694,
+          "pred_bin": "organic",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Compost__01.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.14405742287635803,
+            0.852944016456604,
+            0.0015668505802750587,
+            0.0014317180030047894
+          ],
+          "reject": 0.0014668788062408566,
+          "pred_bin": "organic",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Compost__02.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            2.7773298825195525e-06,
+            0.9998331069946289,
+            2.3741125732001933e-10,
+            0.00016406983195338398
+          ],
+          "reject": 2.0454911009437637e-06,
+          "pred_bin": "organic",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Compost__03.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.7055821418762207,
+            0.004151231609284878,
+            6.847343320259824e-05,
+            0.2901981472969055
+          ],
+          "reject": 0.999711275100708,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-organic__Compost__04.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.05638238787651062,
+            0.8213829398155212,
+            2.7457647888695647e-07,
+            0.12223438918590546
+          ],
+          "reject": 0.0003328250313643366,
+          "pred_bin": "organic",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Compost__05.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.008008168078958988,
+            0.9513319134712219,
+            0.003083714284002781,
+            0.03757622465491295
+          ],
+          "reject": 0.9387995004653931,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__00.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            7.910832209745422e-06,
+            0.8078226447105408,
+            4.381280049869929e-08,
+            0.1921693980693817
+          ],
+          "reject": 5.118639023748983e-07,
+          "pred_bin": "organic",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__01.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.00010249293700326234,
+            0.0014476474607363343,
+            1.9151569574660243e-07,
+            0.9984495639801025
+          ],
+          "reject": 0.00021289689175318927,
+          "pred_bin": "general trash",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__02.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            3.778355448957882e-06,
+            0.9999890327453613,
+            1.2664478390433942e-06,
+            5.930495717620943e-06
+          ],
+          "reject": 0.00010949729767162353,
+          "pred_bin": "organic",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__03.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9221401810646057,
+            0.0637819841504097,
+            0.0026658009737730026,
+            0.011412111110985279
+          ],
+          "reject": 0.00419205566868186,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__04.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.9862853288650513,
+            0.013469046913087368,
+            1.7972013210965088e-08,
+            0.0002456333313602954
+          ],
+          "reject": 0.02410496212542057,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Food_waste__05.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.997951328754425,
+            0.00010504178499104455,
+            1.9528045847039266e-09,
+            0.0019436265574768186
+          ],
+          "reject": 0.0004600703250616789,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Compost_bins__00.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            6.998200115049258e-05,
+            0.0008900486282072961,
+            9.180683435694448e-10,
+            0.9990399479866028
+          ],
+          "reject": 0.001056196284480393,
+          "pred_bin": "general trash",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Compost_bins__01.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.027750151231884956,
+            0.9628466367721558,
+            3.727990770130418e-05,
+            0.00936590414494276
+          ],
+          "reject": 0.0013724765740334988,
+          "pred_bin": "organic",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-organic__Compost_bins__02.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.6768096685409546,
+            0.32018208503723145,
+            1.8679567801882513e-05,
+            0.0029894651379436255
+          ],
+          "reject": 0.004054197110235691,
+          "pred_bin": "recyclable",
+          "verdict": "uncertain"
+        },
+        {
+          "local_name": "supported-organic__Compost_bins__03.jpg",
+          "group": "supported-organic",
+          "label": "organic",
+          "bins": [
+            0.0081306928768754,
+            0.9916430711746216,
+            1.4931914847693406e-05,
+            0.00021141675824765116
+          ],
+          "reject": 0.1349601149559021,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__00.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.007492998149245977,
+            0.9795264601707458,
+            0.00012753118062391877,
+            0.012852964922785759
+          ],
+          "reject": 0.1189582422375679,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__01.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.05785145238041878,
+            0.004312983248382807,
+            0.9377684593200684,
+            6.71258385409601e-05
+          ],
+          "reject": 0.07927875965833664,
+          "pred_bin": "hazardous",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__02.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.5161914229393005,
+            0.3579257130622864,
+            0.1182098537683487,
+            0.007673074956983328
+          ],
+          "reject": 0.9859445095062256,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__03.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9996814727783203,
+            0.0001545268460176885,
+            0.00015738869842607528,
+            6.564030627487227e-06
+          ],
+          "reject": 0.01620662584900856,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__04.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            1.0,
+            7.828753645355846e-09,
+            1.076358078187789e-12,
+            6.611259095734567e-09
+          ],
+          "reject": 4.0312137628006894e-08,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Cardboard_boxes__05.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.029307642951607704,
+            1.738106547577445e-08,
+            0.9706922769546509,
+            1.3653000507929391e-07
+          ],
+          "reject": 0.02641270123422146,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Aluminium_cans__00.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.996607780456543,
+            6.685278094664682e-06,
+            0.003385439282283187,
+            5.698737126635933e-08
+          ],
+          "reject": 0.00472488347440958,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Aluminium_cans__01.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999598264694214,
+            9.397227884733184e-09,
+            4.015970989712514e-05,
+            8.537391349427992e-10
+          ],
+          "reject": 3.762722144529107e-06,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Aluminium_cans__02.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999954700469971,
+            1.9849393595450238e-07,
+            4.08187770517543e-06,
+            2.821549571763171e-07
+          ],
+          "reject": 0.4150547385215759,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-recyclable__Aluminium_cans__03.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.00033782521495595574,
+            0.006980189122259617,
+            0.9926816821098328,
+            3.1777187814441277e-07
+          ],
+          "reject": 0.8372159004211426,
+          "pred_bin": "hazardous",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-recyclable__Aluminium_cans__04.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            1.0,
+            4.5477101251467644e-11,
+            2.2103967148388165e-13,
+            5.001052350017687e-10
+          ],
+          "reject": 2.525466982206126e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Plastic_bottles__00.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9768036603927612,
+            0.006746905855834484,
+            5.650254024658352e-07,
+            0.016448816284537315
+          ],
+          "reject": 0.07517492771148682,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-recyclable__Plastic_bottles__01.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            1.0,
+            1.4624620958691992e-11,
+            1.6577974683664766e-14,
+            6.959423592967084e-10
+          ],
+          "reject": 0.000397727097151801,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Plastic_bottles__02.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999988079071045,
+            4.33509061981141e-11,
+            6.124914811445059e-12,
+            1.202243424813787e-06
+          ],
+          "reject": 4.365045242593624e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Plastic_bottles__03.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.0019345759646967053,
+            0.980487048625946,
+            0.01307627558708191,
+            0.0045020850375294685
+          ],
+          "reject": 0.7401117086410522,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-recyclable__Plastic_bottles__04.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.2488170862197876,
+            0.1796128898859024,
+            0.04242950677871704,
+            0.5291405320167542
+          ],
+          "reject": 0.04978877305984497,
+          "pred_bin": "general trash",
+          "verdict": "uncertain"
+        },
+        {
+          "local_name": "supported-recyclable__Broken_glass__00.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9624658823013306,
+            9.32579879986406e-09,
+            1.353333334286333e-09,
+            0.03753413259983063
+          ],
+          "reject": 1.6512187528405775e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Broken_glass__01.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9902806282043457,
+            3.5542176192393526e-05,
+            1.0498019342719545e-08,
+            0.009683824144303799
+          ],
+          "reject": 4.536787514552998e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Broken_glass__02.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999098777770996,
+            8.067755697993562e-05,
+            3.3305348097201204e-06,
+            6.051225682313088e-06
+          ],
+          "reject": 0.001493762363679707,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Broken_glass__03.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9999994039535522,
+            3.0820379492979555e-07,
+            2.0029014904943132e-11,
+            2.924678597082675e-07
+          ],
+          "reject": 6.67590484226821e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-recyclable__Broken_glass__04.jpg",
+          "group": "supported-recyclable",
+          "label": "recyclable",
+          "bins": [
+            0.9993640780448914,
+            7.559185632999288e-07,
+            0.0005995620740577579,
+            3.554201975930482e-05
+          ],
+          "reject": 0.004645457956939936,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Lead-acid_batteries__00.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            1.1526947218953865e-07,
+            6.018875068486418e-12,
+            0.9999998807907104,
+            4.347662421050336e-12
+          ],
+          "reject": 6.742048981323023e-07,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Lead-acid_batteries__01.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.0030149605590850115,
+            1.3194928669690853e-06,
+            0.9969834685325623,
+            2.572107007381419e-07
+          ],
+          "reject": 0.0019527559634298086,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Lead-acid_batteries__02.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.6810122132301331,
+            0.18691594898700714,
+            0.13043011724948883,
+            0.0016417456790804863
+          ],
+          "reject": 0.3121562898159027,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-hazardous__Lead-acid_batteries__03.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            2.7480362430054583e-09,
+            1.5714730748372964e-18,
+            1.0,
+            1.8115867528564595e-17
+          ],
+          "reject": 0.00030244787922129035,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Lead-acid_batteries__04.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            1.8073591512290932e-09,
+            7.43534736818291e-14,
+            1.0,
+            2.9329156155588273e-14
+          ],
+          "reject": 6.548425972141558e-06,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Button_cells__00.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.06957823783159256,
+            0.0013852730626240373,
+            0.9290164709091187,
+            1.9987232008134015e-05
+          ],
+          "reject": 0.0002161106967832893,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Button_cells__01.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.0001347123325103894,
+            0.2983957827091217,
+            2.90676695158254e-07,
+            0.7014693021774292
+          ],
+          "reject": 0.9999982118606567,
+          "pred_bin": "general trash",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-hazardous__Button_cells__02.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.9999781847000122,
+            2.1608371980619268e-07,
+            4.169564363110112e-06,
+            1.7410220607416704e-05
+          ],
+          "reject": 0.0017734769498929381,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Button_cells__03.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.004005327820777893,
+            3.233046186323918e-08,
+            0.9959943294525146,
+            3.805713788551657e-07
+          ],
+          "reject": 1.5726505807833746e-05,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Button_cells__04.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.008164478465914726,
+            1.6215611253755924e-07,
+            0.9918339252471924,
+            1.49165475704649e-06
+          ],
+          "reject": 3.353079591761343e-06,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Fluorescent_lamps__00.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.9996867179870605,
+            2.3495090317737777e-06,
+            1.729108134895796e-06,
+            0.0003091309336014092
+          ],
+          "reject": 0.005781961604952812,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Fluorescent_lamps__01.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.9999992847442627,
+            2.8455673581340157e-11,
+            1.4173593410049534e-09,
+            7.743571472929034e-07
+          ],
+          "reject": 1.9930203265516866e-08,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Fluorescent_lamps__02.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.8807260990142822,
+            0.101995088160038,
+            0.017276914790272713,
+            1.8301996078662341e-06
+          ],
+          "reject": 0.9990255832672119,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-hazardous__Fluorescent_lamps__03.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            1.0,
+            1.1769736660977026e-12,
+            6.034938521137789e-11,
+            1.3470071724697164e-09
+          ],
+          "reject": 8.906695256882813e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-hazardous__Fluorescent_lamps__04.jpg",
+          "group": "supported-hazardous",
+          "label": "hazardous",
+          "bins": [
+            0.634860634803772,
+            0.0004925190005451441,
+            1.7860162188299e-05,
+            0.36462900042533875
+          ],
+          "reject": 0.08401890099048615,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Litter__00.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.9969999194145203,
+            2.3890690499683842e-05,
+            6.92463345330907e-07,
+            0.00297540077008307
+          ],
+          "reject": 0.18608811497688293,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Litter__01.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.011088591068983078,
+            0.00445657828822732,
+            0.9844505190849304,
+            4.392946721054614e-06
+          ],
+          "reject": 0.042141787707805634,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-general__Litter__02.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.001256009447388351,
+            2.8820625175285386e-07,
+            1.3161059915500761e-11,
+            0.9987438321113586
+          ],
+          "reject": 7.695551175856963e-06,
+          "pred_bin": "general trash",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-general__Litter__03.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.8502733111381531,
+            0.039167165756225586,
+            0.0010171271860599518,
+            0.10954228043556213
+          ],
+          "reject": 0.0012412440264597535,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-general__Litter__04.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.00041005012462846935,
+            3.860006108880043e-05,
+            1.6686151349531997e-09,
+            0.9995513558387756
+          ],
+          "reject": 0.00010939805360976607,
+          "pred_bin": "general trash",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-general__Litter__05.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.888173520565033,
+            0.09746461361646652,
+            2.0360790585982613e-05,
+            0.014341571368277073
+          ],
+          "reject": 0.3206775486469269,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Paper_towels__00.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.00873110257089138,
+            2.7470280201669084e-06,
+            3.9617052693952104e-11,
+            0.9912661910057068
+          ],
+          "reject": 0.9877688884735107,
+          "pred_bin": "general trash",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Paper_towels__01.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.27493736147880554,
+            0.41232848167419434,
+            0.00010555012704571709,
+            0.3126285970211029
+          ],
+          "reject": 0.10786730796098709,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Paper_towels__02.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.8339011669158936,
+            0.00867539830505848,
+            0.0003249774454161525,
+            0.1570984125137329
+          ],
+          "reject": 0.016261564567685127,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "supported-general__Paper_towels__03.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            0.6994228363037109,
+            0.266074538230896,
+            3.4702779316830856e-07,
+            0.03450232744216919
+          ],
+          "reject": 0.9998345971107483,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "supported-general__Paper_towels__04.jpg",
+          "group": "supported-general",
+          "label": "general trash",
+          "bins": [
+            3.7869277158542047e-10,
+            3.380944079185038e-15,
+            1.0,
+            9.698907394448467e-14
+          ],
+          "reject": 1.372952311839981e-07,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Pizza_boxes__00.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.9999943971633911,
+            9.35587718409181e-10,
+            4.170321314840575e-13,
+            5.641442385240225e-06
+          ],
+          "reject": 5.989130613670568e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Pizza_boxes__01.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.1539485901594162,
+            0.6511096358299255,
+            5.918832925999595e-07,
+            0.1949411779642105
+          ],
+          "reject": 0.001269794418476522,
+          "pred_bin": "organic",
+          "verdict": "uncertain"
+        },
+        {
+          "local_name": "ambiguous__Pizza_boxes__02.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.9999988079071045,
+            2.2190815229805594e-07,
+            5.268552172310592e-07,
+            4.952491394760727e-07
+          ],
+          "reject": 0.0007624610443599522,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Pizza_boxes__03.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.9913546442985535,
+            0.00044555572094395757,
+            4.566247662296519e-05,
+            0.008154147304594517
+          ],
+          "reject": 0.9785721898078918,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ambiguous__Pizza_boxes__04.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.033355843275785446,
+            0.0066267442889511585,
+            0.959955096244812,
+            6.23039377387613e-05
+          ],
+          "reject": 0.09388917684555054,
+          "pred_bin": "hazardous",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ambiguous__Cigarette_butts__00.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.9992707371711731,
+            0.0007167126750573516,
+            1.1206118870177306e-05,
+            1.3090183301756042e-06
+          ],
+          "reject": 0.1855730265378952,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ambiguous__Cigarette_butts__01.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.9999998807907104,
+            1.4002208104102465e-07,
+            2.7669702085120207e-09,
+            4.763609950941827e-09
+          ],
+          "reject": 0.49951133131980896,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ambiguous__Cigarette_butts__02.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            3.760373510885984e-05,
+            4.570924284053035e-05,
+            1.887586614790493e-10,
+            0.9999167919158936
+          ],
+          "reject": 3.955852662329562e-06,
+          "pred_bin": "general trash",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ambiguous__Cigarette_butts__03.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.4560723900794983,
+            0.2099938988685608,
+            1.6332359109583194e-06,
+            0.3339320719242096
+          ],
+          "reject": 1.4639498431279208e-06,
+          "pred_bin": "recyclable",
+          "verdict": "uncertain"
+        },
+        {
+          "local_name": "ambiguous__Cigarette_butts__04.jpg",
+          "group": "ambiguous",
+          "label": "ambiguous",
+          "bins": [
+            0.002939369063824415,
+            0.4467018246650696,
+            3.5177203244529665e-05,
+            0.5503236651420593
+          ],
+          "reject": 0.49829497933387756,
+          "pred_bin": "general trash",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Bicycles__00.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            6.33308882243e-05,
+            0.9999206066131592,
+            4.71938619739376e-07,
+            1.556438292027451e-05
+          ],
+          "reject": 0.9255102276802063,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Bicycles__01.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.0004788520745933056,
+            0.9750484228134155,
+            2.1666384952823137e-07,
+            0.024472396820783615
+          ],
+          "reject": 0.004101569298654795,
+          "pred_bin": "organic",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-objects__Bicycles__02.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.30946555733680725,
+            0.14893709123134613,
+            0.08316181600093842,
+            0.4584354758262634
+          ],
+          "reject": 0.9799865484237671,
+          "pred_bin": "general trash",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Bicycles__03.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9905975461006165,
+            0.008071131072938442,
+            3.0287021672847914e-06,
+            0.0013282543513923883
+          ],
+          "reject": 0.9998826384544373,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Bicycles__04.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.09937818348407745,
+            0.001002456876449287,
+            0.8994845151901245,
+            0.00013475176820065826
+          ],
+          "reject": 0.003158864565193653,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-objects__Toy_robots__00.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.8922176361083984,
+            0.0042671700939536095,
+            0.10315433889627457,
+            0.0003608877887018025
+          ],
+          "reject": 0.9999580383300781,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Toy_robots__01.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.710281491279602,
+            0.16031086444854736,
+            0.003256226656958461,
+            0.12615138292312622
+          ],
+          "reject": 0.980738639831543,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Toy_robots__02.png",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9093629121780396,
+            0.005233628675341606,
+            2.843633183147176e-06,
+            0.08540071547031403
+          ],
+          "reject": 0.9431778788566589,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Toy_robots__03.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9997650980949402,
+            1.1321508281980641e-06,
+            4.1520896047586575e-05,
+            0.00019226294534746557
+          ],
+          "reject": 0.9021593928337097,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Toy_robots__04.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.902810275554657,
+            0.08736676722764969,
+            0.00016716554819140583,
+            0.009655854664742947
+          ],
+          "reject": 0.48445186018943787,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Computer_keyboards__00.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.042852144688367844,
+            0.9489344358444214,
+            0.0013409950770437717,
+            0.0068724025040864944
+          ],
+          "reject": 0.16693904995918274,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Computer_keyboards__01.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.024567309767007828,
+            1.3948424566478934e-05,
+            0.9753348231315613,
+            8.39649947010912e-05
+          ],
+          "reject": 0.9999419450759888,
+          "pred_bin": "hazardous",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Computer_keyboards__02.png",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.19432036578655243,
+            6.372819427724608e-08,
+            0.805679440498352,
+            1.163347320698449e-07
+          ],
+          "reject": 0.6042662858963013,
+          "pred_bin": "hazardous",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-objects__Computer_keyboards__03.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.9957191348075867,
+            1.4714116147729328e-08,
+            0.0042745936661958694,
+            6.297477739281021e-06
+          ],
+          "reject": 3.801166315042792e-07,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-objects__Computer_keyboards__04.jpg",
+          "group": "ood-objects",
+          "label": "unsupported",
+          "bins": [
+            0.8468539118766785,
+            0.0013139878865331411,
+            0.14271801710128784,
+            0.009114023298025131
+          ],
+          "reject": 0.782601535320282,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__00.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.9999737739562988,
+            8.405181688431185e-06,
+            1.4815015880742521e-10,
+            1.779468402673956e-05
+          ],
+          "reject": 0.04637499898672104,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__01.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.9793024659156799,
+            4.032358731365093e-07,
+            0.020610861480236053,
+            8.620532025815919e-05
+          ],
+          "reject": 2.8593345632543787e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__02.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.9991612434387207,
+            3.860643715825063e-08,
+            2.5870293754448603e-11,
+            0.0008386802510358393
+          ],
+          "reject": 1.0,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__03.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.9486827850341797,
+            7.549749057034205e-07,
+            5.301119543332788e-10,
+            0.05131649971008301
+          ],
+          "reject": 1.0,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__04.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.9989118576049805,
+            6.557582764799008e-06,
+            2.2633706464603165e-07,
+            0.0010813204571604729
+          ],
+          "reject": 1.0,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__05.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.9235561490058899,
+            0.0005499912076629698,
+            0.0677410364151001,
+            0.008152809925377369
+          ],
+          "reject": 1.0,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__06.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.9762099385261536,
+            2.092859176627826e-05,
+            3.343252075183045e-08,
+            0.023769160732626915
+          ],
+          "reject": 0.9999997019767761,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-clothes__Shirts__07.jpg",
+          "group": "ood-clothes",
+          "label": "unsupported",
+          "bins": [
+            0.002145328326150775,
+            0.9971687197685242,
+            3.6045460092282156e-06,
+            0.0006823143921792507
+          ],
+          "reject": 0.9694358706474304,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__00.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            0.9973758459091187,
+            1.7997665054281242e-05,
+            0.002598833292722702,
+            7.343243851209991e-06
+          ],
+          "reject": 0.0220512542873621,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__01.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            0.9960324168205261,
+            0.0035005444660782814,
+            5.2979267195496504e-08,
+            0.0004670306807383895
+          ],
+          "reject": 0.9999999403953552,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__02.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            0.16893251240253448,
+            0.12727199494838715,
+            1.7596745237824507e-05,
+            0.7037779688835144
+          ],
+          "reject": 0.05217166617512703,
+          "pred_bin": "general trash",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__03.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            0.7925657629966736,
+            0.1861869841814041,
+            0.001347774756141007,
+            0.019899500533938408
+          ],
+          "reject": 0.8019742965698242,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__04.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            0.9847779273986816,
+            0.0019221346592530608,
+            8.054296631598845e-05,
+            0.013219433836638927
+          ],
+          "reject": 0.9981363415718079,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__05.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            0.9441246390342712,
+            0.00490575609728694,
+            0.010870145633816719,
+            0.04009943827986717
+          ],
+          "reject": 0.9868738055229187,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__06.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            0.45275387167930603,
+            0.4913833737373352,
+            0.0010077978949993849,
+            0.054854925721883774
+          ],
+          "reject": 0.054304901510477066,
+          "pred_bin": "organic",
+          "verdict": "uncertain"
+        },
+        {
+          "local_name": "ood-shoes__Shoes__07.jpg",
+          "group": "ood-shoes",
+          "label": "unsupported",
+          "bins": [
+            0.9944994449615479,
+            6.560650945175439e-05,
+            1.5893437677050315e-09,
+            0.005434968043118715
+          ],
+          "reject": 0.9664021134376526,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__00.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.06362553685903549,
+            0.13653519749641418,
+            9.079031588044018e-05,
+            0.7997484803199768
+          ],
+          "reject": 0.00644645607098937,
+          "pred_bin": "general trash",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__01.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.02797601744532585,
+            0.055772460997104645,
+            3.880053895954916e-07,
+            0.9162511229515076
+          ],
+          "reject": 0.0015874570235610008,
+          "pred_bin": "general trash",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__02.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.6637043952941895,
+            0.33615392446517944,
+            1.0815937457664404e-05,
+            0.00013075751485303044
+          ],
+          "reject": 0.5316401124000549,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__03.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.11333752423524857,
+            0.884609043598175,
+            9.932488609365464e-08,
+            0.0020533271599560976
+          ],
+          "reject": 0.8104806542396545,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__04.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.04918389767408371,
+            0.1897483617067337,
+            0.7570466995239258,
+            0.004021099302917719
+          ],
+          "reject": 0.018013859167695045,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-scenes__Parks__05.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.5543002486228943,
+            8.63197692524409e-06,
+            0.44567742943763733,
+            1.3613434020953719e-05
+          ],
+          "reject": 0.9996741414070129,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__00.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.007019286043941975,
+            0.9917830228805542,
+            0.0003386707976460457,
+            0.0008590498473495245
+          ],
+          "reject": 0.6478109359741211,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__01.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.024202363565564156,
+            0.9557439684867859,
+            0.01611427217721939,
+            0.003939369227737188
+          ],
+          "reject": 0.9950538277626038,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__02.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.208902969956398,
+            0.7891937494277954,
+            0.0014198104618117213,
+            0.00048348077689297497
+          ],
+          "reject": 0.9962489008903503,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__03.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.20439012348651886,
+            0.735687255859375,
+            1.7788423065212555e-05,
+            0.059904757887125015
+          ],
+          "reject": 0.9911715388298035,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__04.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.018894804641604424,
+            0.9795087575912476,
+            5.902203170649045e-08,
+            0.0015964014455676079
+          ],
+          "reject": 0.0022608614526689053,
+          "pred_bin": "organic",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "ood-scenes__Streets__05.jpg",
+          "group": "ood-scenes",
+          "label": "unsupported",
+          "bins": [
+            0.5603451728820801,
+            0.18494051694869995,
+            1.4496045878331643e-05,
+            0.25469982624053955
+          ],
+          "reject": 0.0012222687946632504,
+          "pred_bin": "recyclable",
+          "verdict": "uncertain"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__00.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.7944179773330688,
+            0.003351651830598712,
+            8.672978765389416e-06,
+            0.20222170650959015
+          ],
+          "reject": 0.0484393872320652,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__01.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.75774747133255,
+            0.08828631788492203,
+            0.1497674286365509,
+            0.004198818001896143
+          ],
+          "reject": 0.4898836016654968,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__02.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.7802395224571228,
+            0.028546737506985664,
+            6.24915846856311e-05,
+            0.19115117192268372
+          ],
+          "reject": 0.984531581401825,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__03.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.966525673866272,
+            0.01907467469573021,
+            0.004731513559818268,
+            0.009668142534792423
+          ],
+          "reject": 0.00031226404826156795,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__04.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.053057894110679626,
+            0.023150702938437462,
+            0.0004916353500448167,
+            0.9232997894287109
+          ],
+          "reject": 0.5575527548789978,
+          "pred_bin": "general trash",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Beach_litter__05.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.4453166127204895,
+            0.007613960187882185,
+            0.0017896322533488274,
+            0.5452798008918762
+          ],
+          "reject": 0.38484516739845276,
+          "pred_bin": "general trash",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__00.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.00037756512756459415,
+            0.9981175661087036,
+            2.119195050909184e-05,
+            0.0014837462222203612
+          ],
+          "reject": 0.9903286695480347,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__01.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.317898154258728,
+            0.2725779414176941,
+            0.2919774055480957,
+            0.11754656583070755
+          ],
+          "reject": 0.5819317698478699,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__02.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.0031167345587164164,
+            0.9967071413993835,
+            4.0382175939157605e-05,
+            0.00013583411055151373
+          ],
+          "reject": 0.12198404222726822,
+          "pred_bin": "organic",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__03.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.03309458866715431,
+            0.0009059589356184006,
+            0.9659987092018127,
+            7.776471306897292e-07
+          ],
+          "reject": 0.004828277975320816,
+          "pred_bin": "hazardous",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__04.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9936284422874451,
+            0.00019829260418191552,
+            0.006165531929582357,
+            7.722597729298286e-06
+          ],
+          "reject": 0.7695145606994629,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Flea_markets__05.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.5381279587745667,
+            0.4618479013442993,
+            8.390550476633507e-08,
+            2.4001063138712198e-05
+          ],
+          "reject": 0.992131769657135,
+          "pred_bin": "recyclable",
+          "verdict": "unsupported"
+        },
+        {
+          "local_name": "multi-object__Clutter__00.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            1.0,
+            6.455077028455491e-10,
+            3.3047327097079915e-09,
+            4.6516841933907926e-08
+          ],
+          "reject": 3.003954770974815e-05,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Clutter__01.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.8552778363227844,
+            0.056832555681467056,
+            0.008261059410870075,
+            0.07962849736213684
+          ],
+          "reject": 0.025229234248399734,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        },
+        {
+          "local_name": "multi-object__Clutter__02.jpg",
+          "group": "multi-object",
+          "label": "multi-object",
+          "bins": [
+            0.9999781847000122,
+            7.875166829762748e-07,
+            4.75102552854878e-07,
+            2.049782960966695e-05
+          ],
+          "reject": 0.0010221583070233464,
+          "pred_bin": "recyclable",
+          "verdict": "supported"
+        }
+      ]
+    },
+    "eval_utc": "2026-09-26 15:56:06 UTC"
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "generated_utc": "2026-09-26 15:57:44 UTC",
+  "protocol": "docs/rejection_experiment/iteration10_adaptation_protocol.md \u00a74",
+  "per_seed": {
+    "42": {
+      "model": "models\\checkpoints\\wastelens_rej_adapt10s42_final.keras",
+      "model_md5": "260586f7640230f5d78f461e61f414dd",
+      "all_g1_g4_pass": false,
+      "G1": true,
+      "G2": true,
+      "G3": false,
+      "G4": true,
+      "orig_accuracy": 0.981346309813463,
+      "orig_macro_f1": 0.9736363946289983,
+      "orig_auroc": 0.9996873893621989,
+      "orig_ood_detect": 0.9963880288957688,
+      "fresh_accuracy": 0.5238095238095238,
+      "fresh_macro_f1": 0.4832379930506603,
+      "fresh_bins_improved": 3,
+      "fresh_frr": 0.19047619047619047,
+      "fresh_bin_recall": {
+        "organic": 0.375,
+        "hazardous": 0.4,
+        "general trash": 0.2727272727272727
+      },
+      "fresh_ood_detect": 0.6046511627906976,
+      "fresh_multi_detect": 0.6,
+      "fresh_ambiguous_unsupported": 2
+    },
+    "43": {
+      "model": "models\\checkpoints\\wastelens_rej_adapt10s43_final.keras",
+      "model_md5": "2006cfa04614961c801550784ca7bd0b",
+      "all_g1_g4_pass": false,
+      "G1": true,
+      "G2": true,
+      "G3": false,
+      "G4": true,
+      "orig_accuracy": 0.9772911597729116,
+      "orig_macro_f1": 0.9672164087481487,
+      "orig_auroc": 0.9996961776130608,
+      "orig_ood_detect": 0.9974200206398349,
+      "fresh_accuracy": 0.5396825396825397,
+      "fresh_macro_f1": 0.5151866826395128,
+      "fresh_bins_improved": 3,
+      "fresh_frr": 0.30158730158730157,
+      "fresh_bin_recall": {
+        "organic": 0.5625,
+        "hazardous": 0.4666666666666667,
+        "general trash": 0.2727272727272727
+      },
+      "fresh_ood_detect": 0.6976744186046512,
+      "fresh_multi_detect": 0.6,
+      "fresh_ambiguous_unsupported": 5
+    }
+  },
+  "g5_seed_consistency": {
+    "both_seeds_satisfy_g1_g4": false,
+    "seeds_passing": [],
+    "neither_seed_discarded": true,
+    "metric_mean_and_spread": {
+      "orig_accuracy": {
+        "mean": 0.9793187347931873,
+        "spread": 0.0040551500405514584,
+        "values": {
+          "42": 0.981346309813463,
+          "43": 0.9772911597729116
+        }
+      },
+      "orig_macro_f1": {
+        "mean": 0.9704264016885735,
+        "spread": 0.006419985880849577,
+        "values": {
+          "42": 0.9736363946289983,
+          "43": 0.9672164087481487
+        }
+      },
+      "orig_auroc": {
+        "mean": 0.9996917834876299,
+        "spread": 8.78825086192414e-06,
+        "values": {
+          "42": 0.9996873893621989,
+          "43": 0.9996961776130608
+        }
+      },
+      "orig_ood_detect": {
+        "mean": 0.9969040247678018,
+        "spread": 0.0010319917440660964,
+        "values": {
+          "42": 0.9963880288957688,
+          "43": 0.9974200206398349
+        }
+      },
+      "fresh_accuracy": {
+        "mean": 0.5317460317460317,
+        "spread": 0.015873015873015817,
+        "values": {
+          "42": 0.5238095238095238,
+          "43": 0.5396825396825397
+        }
+      },
+      "fresh_macro_f1": {
+        "mean": 0.49921233784508656,
+        "spread": 0.03194868958885255,
+        "values": {
+          "42": 0.4832379930506603,
+          "43": 0.5151866826395128
+        }
+      },
+      "fresh_frr": {
+        "mean": 0.24603174603174602,
+        "spread": 0.1111111111111111,
+        "values": {
+          "42": 0.19047619047619047,
+          "43": 0.30158730158730157
+        }
+      }
+    }
+  },
+  "decision": "Improvement-but-fail",
+  "decision_reason": "Fresh-domain accuracy improved, but at least one gate failed: no promotion - the protocol is not renegotiated after the measurement.",
+  "promotion_target": "models\\checkpoints\\wastelens_rej_shipped_best.keras <- seed 42 candidate if the decision is Ship",
+  "g6_browser_parity": "separate step: TFJS export to scratch + browser_preprocess_probe.js parity (atol <= 2e-5)",
+  "production_state": {
+    "shipped_checkpoint": "models\\checkpoints\\wastelens_rej_shipped_best.keras",
+    "shipped_checkpoint_md5": "8735019226412c4d67b0a17269dc38ad",
+    "shipped_model_alias_unchanged": true,
+    "web_model_dir_rewritten": false,
+    "production_threshold": 0.0702,
+    "note": "no promotion: production artifacts and constants were read-only throughout Iteration 10"
+  }
+}

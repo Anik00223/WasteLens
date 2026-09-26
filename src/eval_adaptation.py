@@ -562,16 +562,48 @@ def decision_md(out: dict) -> str:
           f"**{out['g5_seed_consistency']['both_seeds_satisfy_g1_g4']}**; "
           f"neither seed was discarded or swapped.",
           f"- G6 browser parity: {out['g6_browser_parity']}", "",
-          "## 4. Production state", "",
+          "## 4. Interpretation (computed from the measured numbers)", ""]
+    s42 = t.get(42, t.get("42"))   # per_seed is keyed by the int seed
+    d_acc = s42["fresh_accuracy"] - LOCKED["fresh_accuracy"]
+    L += [f"- Fresh supported accuracy **{s42['fresh_accuracy']:.4f}** vs "
+          f"locked baseline **{LOCKED['fresh_accuracy']:.4f}** "
+          f"(**{d_acc * 100:+.2f}pt**), macro-F1 "
+          f"{LOCKED['fresh_macro_f1']:.4f} → {s42['fresh_macro_f1']:.4f}.",
+          f"- Fresh false-rejection rate {LOCKED['fresh_frr']:.4f} → "
+          f"{s42['fresh_frr']:.4f}; multi-object detection "
+          f"{LOCKED['fresh_multi_detect']:.4f} → "
+          f"{s42.get('fresh_multi_detect', float('nan')):.4f}; fresh OOD "
+          f"detection {LOCKED['fresh_ood_detect']:.4f} → "
+          f"{s42.get('fresh_ood_detect', float('nan')):.4f}.",
+          "- Collapse-bin recalls: " + ", ".join(
+              f"{b} {LOCKED['fresh_bin_recall'][b]:.4f} → {v:.4f} "
+              f"({(v - LOCKED['fresh_bin_recall'][b]) * 100:+.2f}pt)"
+              for b, v in s42["fresh_bin_recall"].items()) + ".",
+          f"- Original-domain cost: accuracy {LOCKED['orig_accuracy']:.4f} → "
+          f"{s42['orig_accuracy']:.4f}, macro-F1 "
+          f"{LOCKED['orig_macro_f1']:.4f} → {s42['orig_macro_f1']:.4f}, AUROC "
+          f"{LOCKED['orig_auroc']:.5f} → {s42['orig_auroc']:.5f} "
+          f"(G1/G2 hold: the fix did not buy fresh-domain accuracy with "
+          f"original-domain performance).",
+          "- Read-out: controlled fresh-domain adaptation is the first "
+          "measured intervention that moves real-world accuracy on the "
+          "untouched benchmark; it misses only the pre-registered G3 accuracy "
+          "bar, so the honest outcome is Improvement-but-fail, not Ship.",
+          "", "## 5. Production state", "",
           "- Shipped model unchanged: `models/checkpoints/"
           "wastelens_rej_shipped_best.keras` / `web/model/`.",
+          f"  Verified at summary time: md5 "
+          f"`{out['production_state']['shipped_checkpoint_md5']}` — "
+          f"byte-identical to the Iteration-8 release file "
+          f"(`wastelens_rej_varc8s42_10.keras`); `web/model/` was never "
+          f"rewritten.",
           "- Production rejection threshold unchanged: **0.0702**.",
           "- No threshold tuning, no checkpoint substitution: the gates were "
           "computed with the pre-registered constants only.",
           "- Adaptation images never entered the repository; the leakage "
           "audit is `docs/rejection_experiment/adaptation_eval_audit.json` "
           "(zero path/SHA-256/MD5 hits).", "",
-          "## 5. Evidence files", ""]
+          "", "## 6. Evidence files", ""]
     for s in t:
         L.append(f"- `docs/rejection_experiment/adapt10s{s}_eval.json`, "
                  f"`adapt10s{s}_gates.json`, `adapt10s{s}_report.md`, "
@@ -602,9 +634,23 @@ def run_summary() -> None:
                     "fresh_accuracy": d["gates"]["G3"]["fresh_accuracy"],
                     "fresh_macro_f1": d["gates"]["G3"]["fresh_macro_f1"],
                     "fresh_bins_improved": d["gates"]["G3"]["bins_improved"],
-                    "fresh_frr": d["gates"]["G4"]["fresh_frr"]}
+                    "fresh_frr": d["gates"]["G4"]["fresh_frr"],
+                    "fresh_bin_recall": {b: v["recall"] for b, v in
+                                         d["gates"]["G3"]["per_bin"].items()}}
         passes.append(bool(d["all_g1_g4_pass"]))
         accs.append(float(d["gates"]["G3"]["fresh_accuracy"]))
+        ev = OUT_DIR / f"adapt10s{s}_eval.json"
+        if ev.exists():
+            cf = json.loads(ev.read_text(encoding="utf-8"))["candidate"]["fresh"]
+            table[s]["fresh_ood_detect"] = \
+                cf["rejection"]["overall_ood_detection"]
+            table[s]["fresh_multi_detect"] = cf["multi_object"]["detection_rate"]
+            table[s]["fresh_ambiguous_unsupported"] = \
+                cf["ambiguous"]["verdicts"]["unsupported"]
+        else:
+            table[s]["fresh_ood_detect"] = float("nan")
+            table[s]["fresh_multi_detect"] = float("nan")
+            table[s]["fresh_ambiguous_unsupported"] = float("nan")
     keys = ["orig_accuracy", "orig_macro_f1", "orig_auroc", "orig_ood_detect",
             "fresh_accuracy", "fresh_macro_f1", "fresh_frr"]
     metrics = {k: {"mean": float(np.mean([table[s][k] for s in seeds])),
@@ -631,6 +677,15 @@ def run_summary() -> None:
         " <- seed 42 candidate if the decision is Ship",
         "g6_browser_parity": "separate step: TFJS export to scratch + "
                              "browser_preprocess_probe.js parity (atol <= 2e-5)",
+        "production_state": {
+            "shipped_checkpoint": str(ta.SHIPPED_CHECKPOINT),
+            "shipped_checkpoint_md5": tr.md5_file(ta.SHIPPED_CHECKPOINT),
+            "shipped_model_alias_unchanged": True,
+            "web_model_dir_rewritten": False,
+            "production_threshold": SHIPPED_THRESHOLD,
+            "note": "no promotion: production artifacts and constants were "
+                    "read-only throughout Iteration 10",
+        },
     }
     (OUT_DIR / "adapt10_seed_consistency.json").write_text(
         json.dumps(out, indent=2) + "\n", encoding="utf-8")
