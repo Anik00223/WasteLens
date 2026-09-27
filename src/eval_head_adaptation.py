@@ -65,18 +65,20 @@ GATE = {
     "G5": {"fresh_frr_max": 0.33830, "reject_max_abs_diff": 1e-6,
            "reject_verdict_changes_max": 0},
 }
-# Literal Iteration-12 gate table (protocol §7). G1-G3 identical to Iter-11;
-# G4 = class coverage (Iter-11 two-seed min, minus 5pt); G5 = rejection bars;
-# G6 = fresh OOD as its own gate; G8 = browser parity (scored from evidence).
+# Literal Iteration-12 gate table (task spec + protocol §7): G1 original
+# accuracy, G2 original macro-F1, G3 fresh acc, G4 class coverage
+# (Iter-11 two-seed min, minus 5pt), G5 rejection, G6 fresh OOD as its
+# own gate, G7 both-seeds G1-G4, G8 browser parity (scored from evidence).
 GATE_HEAD12 = {
-    "G1": {"orig_acc_min": 0.9763, "orig_macro_f1_min": 0.9671},
-    "G2": {"fresh_acc_min": 0.5500},
-    "G3": {"min_recall": {"recyclable": 0.7119, "organic": 0.3875,
+    "G1": {"orig_acc_min": 0.9763},
+    "G2": {"orig_macro_f1_min": 0.9671},
+    "G3": {"fresh_acc_min": 0.5500},
+    "G4": {"min_recall": {"recyclable": 0.7119, "organic": 0.3875,
                           "hazardous": 0.4833, "general trash": 0.4045},
            "baseline_rule": "Iteration-11 two-seed minimum minus 5pt"},
-    "G4": {"orig_auroc_min": 0.99466, "orig_ood_detect_min": 0.99139,
-           "orig_id_frr_max": 0.02284, "fresh_auroc_min": 0.74770},
-    "G5": {"fresh_frr_max": 0.33830, "reject_max_abs_diff": 1e-6,
+    "G5": {"orig_auroc_min": 0.99466, "orig_ood_detect_min": 0.99139,
+           "orig_id_frr_max": 0.02284, "fresh_auroc_min": 0.74770,
+           "fresh_frr_max": 0.33830, "reject_max_abs_diff": 1e-6,
            "reject_verdict_changes_max": 0},
     "G6": {"fresh_ood_detect_min": 0.66940},
 }
@@ -281,23 +283,45 @@ def browser_gate(tag: str = "head11") -> dict:
 
 def gates_for(cand: dict, base: dict, equiv: dict,
               gate: dict | None = None, tag: str = "head11") -> dict:
-    """Pre-registered gates for one seed (browser gate from evidence)."""
+    """Pre-registered gates for one seed (browser gate from evidence).
+
+    Head11 table: G1 orig acc+F1, G2 fresh acc, G3 class recall, G4
+    rejection+freshOOD, G5 FRR+isolation, G6 browser evidence.
+    Head12 table: G1 orig acc, G2 orig F1, G3 fresh acc, G4 class recall,
+    G5 rejection+FRR+isolation, G6 fresh OOD (own gate), G8 browser
+    evidence lands in the same G6 evidence slot (renamed in the report).
+    """
     gate = gate if gate is not None else GATE
+    is12 = "G6" in gate and "fresh_ood_detect_min" in gate["G6"]
     o, f = cand["original"], cand["fresh"]
     ob, fb = base["original"], base["fresh"]
     c, r = o["classification"], o["rejection"]
     fc, frj = f["classification"], f["rejection"]
-    g1 = {"orig_accuracy": c["accuracy"], "orig_macro_f1": c["macro_f1"],
-          "pass": bool(c["accuracy"] >= gate["G1"]["orig_acc_min"]
-                       and c["macro_f1"] >= gate["G1"]["orig_macro_f1_min"]),
-          "rule": f"orig acc >= {gate['G1']['orig_acc_min']} and macro-F1 "
-                  f">= {gate['G1']['orig_macro_f1_min']}"}
-    g2 = {"fresh_accuracy": fc["accuracy"],
-          "fresh_macro_f1": fc["macro_f1"],
-          "pass": bool(fc["accuracy"] >= gate["G2"]["fresh_acc_min"]),
-          "rule": f"fresh supported acc >= {gate['G2']['fresh_acc_min']}"}
+    if is12:
+        g1 = {"orig_accuracy": c["accuracy"],
+              "pass": bool(c["accuracy"] >= gate["G1"]["orig_acc_min"]),
+              "rule": f"orig acc >= {gate['G1']['orig_acc_min']}"}
+        g2 = {"orig_macro_f1": c["macro_f1"],
+              "pass": bool(c["macro_f1"] >= gate["G2"]["orig_macro_f1_min"]),
+              "rule": f"orig macro-F1 >= {gate['G2']['orig_macro_f1_min']}"}
+        g3 = {"fresh_accuracy": fc["accuracy"],
+              "fresh_macro_f1": fc["macro_f1"],
+              "pass": bool(fc["accuracy"] >= gate["G3"]["fresh_acc_min"]),
+              "rule": f"fresh supported acc >= {gate['G3']['fresh_acc_min']}"}
+        gkey_cov, gkey_rej = "G4", "G5"
+    else:
+        g1 = {"orig_accuracy": c["accuracy"], "orig_macro_f1": c["macro_f1"],
+              "pass": bool(c["accuracy"] >= gate["G1"]["orig_acc_min"]
+                           and c["macro_f1"] >= gate["G1"]["orig_macro_f1_min"]),
+              "rule": f"orig acc >= {gate['G1']['orig_acc_min']} and macro-F1 "
+                      f">= {gate['G1']['orig_macro_f1_min']}"}
+        g2 = {"fresh_accuracy": fc["accuracy"],
+              "fresh_macro_f1": fc["macro_f1"],
+              "pass": bool(fc["accuracy"] >= gate["G2"]["fresh_acc_min"]),
+              "rule": f"fresh supported acc >= {gate['G2']['fresh_acc_min']}"}
+        gkey_cov, gkey_rej = "G3", "G4"
     per_bin = {}
-    for b, bar in gate["G3"]["min_recall"].items():
+    for b, bar in gate[gkey_cov]["min_recall"].items():
         rec = fc["per_bin"][b]["recall"]
         per_bin[b] = {"fresh_recall": rec, "bar": bar,
                       "in_run_baseline_recall":
@@ -305,67 +329,96 @@ def gates_for(cand: dict, base: dict, equiv: dict,
                       "frozen_iteration10_baseline_recall":
                           ea.LOCKED["fresh_bin_recall"].get(b),
                       "pass": bool(rec >= bar)}
-    g3 = {"per_bin": per_bin,
-          "pass": bool(all(v["pass"] for v in per_bin.values())),
-          "rule": "every fresh class recall >= the min over the two "
-                  "Iteration-10 seeds (no class may collapse)"}
-    g4 = {"orig_auroc": r["auroc"],
-          "orig_ood_detect": r["ood_detect_at_production_threshold"],
-          "orig_id_frr": r["id_frr_at_production_threshold"],
-          "fresh_ood_detect": frj["overall_ood_detection"],
-          "fresh_auroc": frj["auroc"],
-          "pass": bool(r["auroc"] >= gate["G4"]["orig_auroc_min"]
-                       and r["ood_detect_at_production_threshold"]
-                       >= gate["G4"]["orig_ood_detect_min"]
-                       and r["id_frr_at_production_threshold"]
-                       <= gate["G4"]["orig_id_frr_max"]
-                       and frj["overall_ood_detection"]
-                       >= gate["G4"].get(
-                           "fresh_ood_detect_min",
-                           gate.get("G6", {}).get(
-                               "fresh_ood_detect_min", 0.66940))
-                       and frj["auroc"] >= gate["G4"]["fresh_auroc_min"]),
-          "rule": "rejection preservation vs production ∓0.5pt: "
-                  f"orig AUROC >= {gate['G4']['orig_auroc_min']}, orig OOD "
-                  f"detect >= {gate['G4']['orig_ood_detect_min']}, orig ID "
-                  f"FRR <= {gate['G4']['orig_id_frr_max']}, fresh OOD "
-                  f"detect >= {gate['G4'].get('fresh_ood_detect_min', gate.get('G6', {}).get('fresh_ood_detect_min'))}, fresh "
-                  f"AUROC >= {gate['G4']['fresh_auroc_min']}"}
-    g5_frr_ok = bool(frj["false_rejection_rate"]
-                     <= gate["G5"]["fresh_frr_max"])
-    g5 = {"fresh_frr": frj["false_rejection_rate"],
-          "fresh_frr_bar": gate["G5"]["fresh_frr_max"],
-          "fresh_frr_pass": g5_frr_ok,
-          "isolation_pass": equiv["pass"],
-          "max_abs_reject_diff": equiv["overall"]["reject_max_abs_diff"],
-          "reject_verdict_changes_at_threshold":
-              equiv["overall"]["reject_verdict_changes_at_threshold"],
-          "file_level_frozen_identical":
-              equiv["file_level_freeze_check"]["pass"],
-          "iteration10_frr_observed_only": ITER10_FRR_OBSERVED,
-          "pass": bool(g5_frr_ok and equiv["pass"]),
-          "rule": f"fresh FRR <= {gate['G5']['fresh_frr_max']} @0.0702 AND "
-                  f"isolation: max |Δreject| <= "
-                  f"{gate['G5']['reject_max_abs_diff']} with 0 changed "
-                  f"reject verdicts"}
-    g6 = browser_gate(tag)
-    if "G6" in gate and "fresh_ood_detect_min" in gate["G6"]:
-        g6 = {**g6, "fresh_ood_detect": frj["overall_ood_detection"],
+    g_cov = {"per_bin": per_bin,
+             "pass": bool(all(v["pass"] for v in per_bin.values())),
+             "rule": gate[gkey_cov].get(
+                 "baseline_rule",
+                 "every fresh class recall >= bar (no class may collapse)")}
+    g_rej = {"orig_auroc": r["auroc"],
+             "orig_ood_detect": r["ood_detect_at_production_threshold"],
+             "orig_id_frr": r["id_frr_at_production_threshold"],
+             "fresh_auroc": frj["auroc"],
+             "pass": bool(
+                 r["auroc"] >= gate[gkey_rej]["orig_auroc_min"]
+                 and r["ood_detect_at_production_threshold"]
+                 >= gate[gkey_rej]["orig_ood_detect_min"]
+                 and r["id_frr_at_production_threshold"]
+                 <= gate[gkey_rej]["orig_id_frr_max"]
+                 and frj["auroc"] >= gate[gkey_rej]["fresh_auroc_min"]),
+             "rule": "rejection preservation vs production ∓0.5pt: "
+                     f"orig AUROC >= {gate[gkey_rej]['orig_auroc_min']}, "
+                     f"orig OOD detect >= "
+                     f"{gate[gkey_rej]['orig_ood_detect_min']}, orig ID FRR "
+                     f"<= {gate[gkey_rej]['orig_id_frr_max']}, fresh AUROC >= "
+                     f"{gate[gkey_rej]['fresh_auroc_min']}"}
+    if is12:
+        g3, g4 = g3, g_cov
+        g5 = {**g_rej,
+              "fresh_frr": frj["false_rejection_rate"],
+              "fresh_frr_bar": gate["G5"]["fresh_frr_max"],
+              "fresh_frr_pass": bool(
+                  frj["false_rejection_rate"]
+                  <= gate["G5"]["fresh_frr_max"]),
+              "isolation_pass": equiv["pass"],
+              "max_abs_reject_diff":
+                  equiv["overall"]["reject_max_abs_diff"],
+              "reject_verdict_changes_at_threshold":
+                  equiv["overall"]["reject_verdict_changes_at_threshold"],
+              "file_level_frozen_identical":
+                  equiv["file_level_freeze_check"]["pass"],
+              "iteration10_frr_observed_only": ITER10_FRR_OBSERVED}
+        g5["pass"] = bool(g5["fresh_frr_pass"] and equiv["pass"])
+        g5["rule"] = (
+            f"fresh FRR <= {gate['G5']['fresh_frr_max']} @0.0702 AND "
+            f"isolation: max |Δreject| <= "
+            f"{gate['G5']['reject_max_abs_diff']} with 0 changed reject "
+            "verdicts; orig/fresh-AUROC bars as in G5")
+        g6 = {"fresh_ood_detect": frj["overall_ood_detection"],
               "fresh_ood_detect_bar": gate["G6"]["fresh_ood_detect_min"],
-              "fresh_ood_pass": bool(
-                  frj["overall_ood_detection"]
-                  >= gate["G6"]["fresh_ood_detect_min"])}
+              "pass": bool(frj["overall_ood_detection"]
+                            >= gate["G6"]["fresh_ood_detect_min"]),
+              "rule": f"fresh OOD detect >= "
+                      f"{gate['G6']['fresh_ood_detect_min']} @0.0702"}
+        g8_evidence = browser_gate(tag)
+        g6 = {**g6, "browser_evidence": g8_evidence}
+    else:
+        g3 = g_cov
+        g4 = {**g_rej,
+              "fresh_ood_detect": frj["overall_ood_detection"],
+              "pass": bool(g_rej["pass"] and frj["overall_ood_detection"]
+                           >= gate["G4"]["fresh_ood_detect_min"])}
+        g4["rule"] += (f", fresh OOD detect >= "
+                       f"{gate['G4']['fresh_ood_detect_min']}")
+        g5_frr_ok = bool(frj["false_rejection_rate"]
+                         <= gate["G5"]["fresh_frr_max"])
+        g5 = {"fresh_frr": frj["false_rejection_rate"],
+              "fresh_frr_bar": gate["G5"]["fresh_frr_max"],
+              "fresh_frr_pass": g5_frr_ok,
+              "isolation_pass": equiv["pass"],
+              "max_abs_reject_diff": equiv["overall"]["reject_max_abs_diff"],
+              "reject_verdict_changes_at_threshold":
+                  equiv["overall"]["reject_verdict_changes_at_threshold"],
+              "file_level_frozen_identical":
+                  equiv["file_level_freeze_check"]["pass"],
+              "iteration10_frr_observed_only": ITER10_FRR_OBSERVED,
+              "pass": bool(g5_frr_ok and equiv["pass"]),
+              "rule": f"fresh FRR <= {gate['G5']['fresh_frr_max']} @0.0702 "
+                      f"AND isolation: max |Δreject| <= "
+                      f"{gate['G5']['reject_max_abs_diff']} with 0 changed "
+                      "reject verdicts"}
+        g6 = browser_gate(tag)
     remeasured = {"orig_accuracy": ob["classification"]["accuracy"],
                   "orig_macro_f1": ob["classification"]["macro_f1"],
                   "orig_auroc": ob["rejection"]["auroc"],
                   "fresh_accuracy": fb["classification"]["accuracy"],
                   "fresh_frr": fb["rejection"]["false_rejection_rate"]}
+    core = (g1, g2, g3, g4, g5, g6) if is12 else (g1, g2, g3, g4, g5)
     out = {
         "G1": g1, "G2": g2, "G3": g3, "G4": g4, "G5": g5, "G6": g6,
         "G7": {"pass": None,
-               "rule": "both seeds must satisfy G2 and every other gate; "
-                       "decided in --summary"},
-        "all_g1_g5_pass": bool(all(g["pass"] for g in (g1, g2, g3, g4, g5))),
+               "rule": "both seeds must satisfy G1-G4 (head12) / every "
+                       "other gate (head11); decided in --summary"},
+        "all_g1_g5_pass": bool(all(g["pass"] for g in core)),
         "in_run_baseline_remeasurement": {
             **remeasured,
             "consistency_vs_locked": {
@@ -379,15 +432,6 @@ def gates_for(cand: dict, base: dict, equiv: dict,
             str(s): fc["accuracy"] - ITER10_FRESH_ACC[str(s)]
             for s in ADAPT10_SEEDS},
     }
-    if "G6" in gate and "fresh_ood_detect_min" in gate["G6"]:
-        g6_pass = g6.get("fresh_ood_pass")
-        if g6_pass is None:
-            g6_pass = g6.get("pass")
-        out["G6"] = {**g6, "pass": bool(g6_pass)}
-        scored = [g1, g2, g3, g4, g5,
-                  {"pass": out["G6"]["pass"]}]
-        out["all_g1_g5_pass"] = bool(all(g["pass"] for g in scored))
-        out["all_g1_g6_pass"] = out["all_g1_g5_pass"]
     return out
 
 
@@ -415,35 +459,35 @@ def report_md_iter11(seed: int, cand: dict, base: dict, gates: dict,
          f"- threshold: **{SHIPPED_THRESHOLD}** unchanged (no calibration)",
          "- dataset audit identical to Iteration-10 (except timestamp): "
          f"**{audit_ok}**",
-         "", "## 1. Gates (pre-registered §6)", "",
+         "", "## 1. Gates (pre-registered)", "",
          "| Gate | Measured | Rule | Pass |", "|---|---|---|---|",
-         f"| G1 existing | acc {gates['G1']['orig_accuracy']:.4f}, macro-F1 "
-         f"{gates['G1']['orig_macro_f1']:.4f} | acc >= 0.9763 and F1 >= 0.9671"
-         f" | {yn(gates['G1']['pass'])} |",
-         f"| G2 fresh | acc {gates['G2']['fresh_accuracy']:.4f} | >= 0.5500 "
-         f"| {yn(gates['G2']['pass'])} |",
-         f"| G4 rejection | orig AUROC {gates['G4']['orig_auroc']:.5f}, orig "
-         f"OOD {gates['G4']['orig_ood_detect']:.5f}, orig ID FRR "
-         f"{gates['G4']['orig_id_frr']:.5f}, fresh OOD "
-         f"{gates['G4']['fresh_ood_detect']:.5f}, fresh AUROC "
-         f"{gates['G4']['fresh_auroc']:.5f} | production ∓0.5pt "
-         f"| {yn(gates['G4']['pass'])} |",
+         f"| G1 existing | acc {gates['G1'].get('orig_accuracy', float('nan')):.4f}, macro-F1 "
+         f"{gates['G1'].get('orig_macro_f1', gates['G2'].get('orig_macro_f1', float('nan'))):.4f} | acc >= 0.9763 and F1 >= 0.9671"
+         f" | {yn(gates['G1']['pass'] and gates['G2']['pass'] if tag == 'head12' else gates['G1']['pass'])} |",
+         f"| G2 fresh | acc {gates['G3' if tag == 'head12' else 'G2']['fresh_accuracy']:.4f} | >= 0.5500 "
+         f"| {yn(gates['G3' if tag == 'head12' else 'G2']['pass'])} |",
+         f"| G4 rejection | orig AUROC {gates['G5' if tag == 'head12' else 'G4']['orig_auroc']:.5f}, orig "
+         f"OOD {gates['G5' if tag == 'head12' else 'G4']['orig_ood_detect']:.5f}, orig ID FRR "
+         f"{gates['G5' if tag == 'head12' else 'G4']['orig_id_frr']:.5f}, fresh AUROC "
+         f"{gates['G5' if tag == 'head12' else 'G4']['fresh_auroc']:.5f} | production ∓0.5pt "
+         f"| {yn(gates['G5' if tag == 'head12' else 'G4']['pass'])} |",
          f"| G5 FRR + isolation | fresh FRR {gates['G5']['fresh_frr']:.5f}, "
          f"max |Δreject| {gates['G5']['max_abs_reject_diff']:.3e}, flips "
          f"{gates['G5']['reject_verdict_changes_at_threshold']} | FRR <= "
          f"0.33830 AND max|Δ| <= 1e-6 AND 0 flips AND frozen file identical "
          f"| {yn(gates['G5']['pass'])} |",
-         f"| G6 browser/parity | {gates['G6'].get('status', 'pending')} | "
+         f"| G6 browser/parity | {gates['G6'].get('browser_evidence', gates['G6']).get('status', 'pending')} | "
          f"export + atol<=2e-5 parity + UI click-through | "
-         f"{'PENDING' if gates['G6'].get('pass') is None else yn(gates['G6']['pass'])} |",
+         f"{'PENDING' if gates['G6'].get('browser_evidence', gates['G6']).get('pass') is None else yn(gates['G6'].get('browser_evidence', gates['G6'])['pass'])} |",
          "| G7 two-seed | decided in --summary | both seeds pass | PENDING |",
-         "", "### G3 fresh class coverage", "",
-         "| Bin | Fresh recall | Bar (Iter-10 min) | In-run baseline | Pass |",
+         "", "### G3/G4 fresh class coverage", "",
+         "| Bin | Fresh recall | Bar | In-run baseline | Pass |",
          "|---|---|---|---|---|"]
-    for b, d in gates["G3"]["per_bin"].items():
+    cov_key = "G4" if tag == "head12" else "G3"
+    for b, d in gates[cov_key]["per_bin"].items():
         L.append(f"| {b} | {d['fresh_recall']:.4f} | {d['bar']:.4f} | "
                  f"{d['in_run_baseline_recall']:.4f} | {yn(d['pass'])} |")
-    L += ["", f"**G3 overall: {yn(gates['G3']['pass'])}**; G1-G5 composite: "
+    L += ["", f"**{cov_key} overall: {yn(gates[cov_key]['pass'])}**; G1-G5 composite: "
           f"**{yn(gates['all_g1_g5_pass'])}**", "",
           "## 2. LOOP-12 rejection isolation", "",
           f"- fresh 131 one-at-a-time: max |Δreject| = "
@@ -543,14 +587,27 @@ def run_one(args) -> None:
                              or "iteration11_head_adaptation_protocol.md"),
             encoding="utf-8")
     g = gates
-    print(f"[seed {seed}] G1={g['G1']['pass']} G2={g['G2']['pass']} "
-          f"G3={g['G3']['pass']} G4={g['G4']['pass']} G5={g['G5']['pass']} "
-          f"G6={g['G6'].get('status')} -> G1-G5 all={g['all_g1_g5_pass']}")
-    print(f"[seed {seed}] fresh acc {g['G2']['fresh_accuracy']:.4f} "
-          f"(delta vs Iter-10: "
-          f"{json.dumps(g['fresh_accuracy_delta_vs_iteration10'])}); "
-          f"fresh FRR {g['G5']['fresh_frr']:.5f}; isolation "
-          f"max|d|={g['G5']['max_abs_reject_diff']:.3e}")
+    if tag == "head12":
+        print(f"[seed {seed}] G1={g['G1']['pass']} G2={g['G2']['pass']} "
+              f"G3={g['G3']['pass']} G4={g['G4']['pass']} G5={g['G5']['pass']} "
+              f"G6={g['G6']['pass']} G8={g['G6'].get('browser_evidence', {}).get('status')} "
+              f"-> G1-G6 all={g['all_g1_g5_pass']}")
+        print(f"[seed {seed}] orig acc {g['G1']['orig_accuracy']:.4f}, orig F1 "
+              f"{g['G2']['orig_macro_f1']:.4f}; fresh acc "
+              f"{g['G3']['fresh_accuracy']:.4f} (delta vs Iter-10: "
+              f"{json.dumps(g['fresh_accuracy_delta_vs_iteration10'])}); "
+              f"fresh OOD {g['G6']['fresh_ood_detect']:.5f}; fresh FRR "
+              f"{g['G5']['fresh_frr']:.5f}; isolation "
+              f"max|d|={g['G5']['max_abs_reject_diff']:.3e}")
+    else:
+        print(f"[seed {seed}] G1={g['G1']['pass']} G2={g['G2']['pass']} "
+              f"G3={g['G3']['pass']} G4={g['G4']['pass']} G5={g['G5']['pass']} "
+              f"G6={g['G6'].get('status')} -> G1-G5 all={g['all_g1_g5_pass']}")
+        print(f"[seed {seed}] fresh acc {g['G2']['fresh_accuracy']:.4f} "
+              f"(delta vs Iter-10: "
+              f"{json.dumps(g['fresh_accuracy_delta_vs_iteration10'])}); "
+              f"fresh FRR {g['G5']['fresh_frr']:.5f}; isolation "
+              f"max|d|={g['G5']['max_abs_reject_diff']:.3e}")
 
 
 # --- Two-seed summary, G7, decision (protocol §7) ---------------------------
@@ -570,7 +627,15 @@ def load_seed_gates(tag: str = "head11") -> dict[int, dict]:
         p = OUT_DIR / f"{tag}s{s}_gates.json"
         if p.exists():
             g = json.loads(p.read_text(encoding="utf-8"))
-            g["G6"] = browser_gate(tag)   # re-read: evidence may be newer
+            if tag == "head12":
+                # Head12: G6 is the measured fresh-OOD gate; G8 browser
+                # evidence rides inside G6.browser_evidence (do NOT overwrite
+                # the measured gate with the evidence file).
+                ev = browser_gate(tag)
+                if isinstance(g.get("G6"), dict):
+                    g["G6"] = {**g["G6"], "browser_evidence": ev}
+            else:
+                g["G6"] = browser_gate(tag)   # re-read: evidence may be newer
             out[s] = g
     return out
 
@@ -587,37 +652,77 @@ def run_summary(args) -> None:
     browser = browser_gate(tag)
     per_seed = {}
     for s, g in sorted(gates.items()):
-        passes = {k: (g[k]["pass"] if g[k].get("pass") is not None else None)
-                  for k in GATE_KEYS}
-        scored = [k for k in GATE_KEYS if passes[k] is not None]
-        per_seed[str(s)] = {
+        if is_head12:
+            g8 = (g.get("G6", {}).get("browser_evidence", {})
+                  if isinstance(g.get("G6"), dict) else {})
+            passes = {k: g[k]["pass"] for k in
+                      ("G1", "G2", "G3", "G4", "G5", "G6")}
+            passes["G8"] = g8.get("pass")
+        else:
+            passes = {k: (g[k]["pass"] if g[k].get("pass") is not None
+                          else None) for k in GATE_KEYS}
+        scored = [k for k, v in passes.items() if v is not None]
+        entry = {
             "model": g["model"], "model_md5": g["model_md5"],
-            **{f"{k}_pass": passes[k] for k in GATE_KEYS},
+            **{f"{k}_pass": passes[k] for k in passes},
             "gates_scored_pass": bool(all(passes[k] for k in scored)),
-            "fresh_accuracy": g["G2"]["fresh_accuracy"],
-            "fresh_macro_f1": g["G2"]["fresh_macro_f1"],
-            "orig_accuracy": g["G1"]["orig_accuracy"],
-            "orig_macro_f1": g["G1"]["orig_macro_f1"],
-            "orig_auroc": g["G4"]["orig_auroc"],
-            "fresh_frr": g["G5"]["fresh_frr"],
-            "fresh_frr_isolation_pass": g["G5"]["isolation_pass"],
-            "fresh_accuracy_delta_vs_iteration10":
-                g["fresh_accuracy_delta_vs_iteration10"],
         }
-    # G7: BOTH seeds must satisfy G2 and every other gate numerically.
+        if is_head12:
+            entry.update({
+                "fresh_accuracy": g["G3"]["fresh_accuracy"],
+                "fresh_macro_f1": g["G3"]["fresh_macro_f1"],
+                "orig_accuracy": g["G1"]["orig_accuracy"],
+                "orig_macro_f1": g["G2"]["orig_macro_f1"],
+                "orig_auroc": g["G5"]["orig_auroc"],
+                "fresh_ood_detect": g["G6"]["fresh_ood_detect"],
+                "fresh_frr": g["G5"]["fresh_frr"],
+                "fresh_frr_isolation_pass": g["G5"]["isolation_pass"],
+                "fresh_accuracy_delta_vs_iteration10":
+                    g["fresh_accuracy_delta_vs_iteration10"],
+            })
+        else:
+            entry.update({
+                "fresh_accuracy": g["G2"]["fresh_accuracy"],
+                "fresh_macro_f1": g["G2"]["fresh_macro_f1"],
+                "orig_accuracy": g["G1"]["orig_accuracy"],
+                "orig_macro_f1": g["G1"]["orig_macro_f1"],
+                "orig_auroc": g["G4"]["orig_auroc"],
+                "fresh_frr": g["G5"]["fresh_frr"],
+                "fresh_frr_isolation_pass": g["G5"]["isolation_pass"],
+                "fresh_accuracy_delta_vs_iteration10":
+                    g["fresh_accuracy_delta_vs_iteration10"],
+            })
+        per_seed[str(s)] = entry
+    # G7 (head12): BOTH seeds satisfy G1-G4 numerically. Outcome A further
+    # needs G5+G6 measured pass AND G8 browser evidence scored pass.
+    # Head11 path unchanged: G1-G5 contention, G6 evidence, G7 = all.
+    g8_pending = (browser.get("pass") is None) if is_head12 else None
     g6_pending = browser.get("pass") is None
     both = not missing
 
     def s15(s: int) -> bool:
+        if is_head12:
+            return all(per_seed[str(s)][f"{k}_pass"]
+                       for k in ("G1", "G2", "G3", "G4"))
         return all(per_seed[str(s)][f"{k}_pass"]
                    for k in ("G1", "G2", "G3", "G4", "G5"))
 
-    # Outcome A can only be decided once G6 is scored; if G1-G5 already fail
-    # anywhere, A is excluded regardless of G6, so B/C stay determinable.
+    # Outcome A can only be decided once the browser evidence is scored; if
+    # the measured gates already fail anywhere, A is excluded regardless of
+    # G8, so B/C stay determinable.
     a_contender = bool(both and all(s15(s) for s in ADAPT10_SEEDS))
-    g7_pass = bool(a_contender and not g6_pending
-                   and all(per_seed[str(s)]["G6_pass"]
-                           for s in ADAPT10_SEEDS))
+    if is_head12:
+        g7_pass = bool(a_contender)
+        a_full = bool(
+            a_contender and not g8_pending
+            and all(per_seed[str(s)]["G5_pass"] for s in ADAPT10_SEEDS)
+            and all(per_seed[str(s)]["G6_pass"] for s in ADAPT10_SEEDS)
+            and all(per_seed[str(s)]["G8_pass"] for s in ADAPT10_SEEDS))
+    else:
+        g7_pass = bool(a_contender and not g6_pending
+                       and all(per_seed[str(s)]["G6_pass"]
+                               for s in ADAPT10_SEEDS))
+        a_full = g7_pass
     accs = {str(s): per_seed[str(s)]["fresh_accuracy"]
             for s in per_seed}
     if not both:
@@ -625,18 +730,28 @@ def run_summary(args) -> None:
             "Pending",
             f"seed(s) {missing} not evaluated yet - G7 needs both seeds "
             f"before the decision vocabulary applies.")
-    elif a_contender and g6_pending:
+    elif is_head12 and a_contender and g8_pending:
+        decision, reason = (
+            "Pending",
+            "both seeds satisfy G1-G4 and G7 passes, but G8 "
+            "(browser export/parity/UI evidence) is unscored - run that step, "
+            f"write {tag}_browser.json, re-run --summary.")
+    elif a_contender and g6_pending and not is_head12:
         decision, reason = (
             "Pending",
             "both seeds are in contention for Outcome A (G1-G5 pass), so G6 "
             "(browser export/parity/UI evidence) is required - run that step, "
             f"write {tag}_browser.json, re-run --summary.")
-    elif g7_pass:
+    elif a_full:
         decision, reason = (
             "A - Ship-eligible",
             "both seeds pass G1-G6 (=> G7 satisfied): the seed-42 candidate "
             "may be promoted in the promotion step §8 (threshold 0.0702 "
-            "unchanged).")
+            "unchanged).") if not is_head12 else (
+            "A - Ship-eligible",
+            "both seeds pass G1-G6 and G8 browser evidence (=> G7 "
+            "satisfied): the seed-42 candidate may be promoted "
+            "(threshold 0.0702 unchanged).")
     elif all(a >= MEANINGFUL_IMPROVEMENT_MIN for a in accs.values()):
         decision, reason = (
             "B - Improvement-but-fail",
@@ -653,6 +768,28 @@ def run_summary(args) -> None:
     metrics = {k: spread({str(s): per_seed[str(s)][k] for s in per_seed})
                for k in ("orig_accuracy", "orig_macro_f1", "orig_auroc",
                          "fresh_accuracy", "fresh_macro_f1", "fresh_frr")}
+    g7_block = {
+            "rule": "both seeds must satisfy G1-G4 "
+                    "(head12; disagreement on G3 = Outcome B)"
+                    if is_head12 else
+                    "both seeds must satisfy G2 and every other gate "
+                    "(numerically); disagreement on G2 = Outcome B",
+            "both_seeds_present": bool(both),
+            "g6_status": browser.get("status", "pending"),
+            "g2_pass_disagreement": bool(
+                both and per_seed["42"]["G3_pass" if is_head12 else "G2_pass"]
+                != per_seed["43"]["G3_pass" if is_head12 else "G2_pass"]),
+            "outcome_a_contention_g1_g5": a_contender,
+            "both_seeds_pass_g1_g6": g7_pass,
+            "metric_mean_and_spread": metrics,
+            "iteration10_reference": {"fresh_accuracy": ITER10_FRESH_ACC,
+                                      "fresh_frr": ITER10_FRR_OBSERVED,
+                                      "note": "reported as observations only"},
+        }
+    if is_head12:
+        g7_block["g7_pass"] = g7_pass
+        g7_block["outcome_a_full_g1_g6_g8"] = a_full
+        g7_block["g8_status"] = browser.get("status", "pending")
     out = {
         "generated_utc": datetime.now(timezone.utc)
         .strftime("%Y-%m-%d %H:%M:%S UTC"),
@@ -661,21 +798,7 @@ def run_summary(args) -> None:
         "iteration11_head_adaptation_protocol.md §6 G7 / §7",
         "iteration": "head12-distillation" if is_head12 else "head11",
         "per_seed": per_seed,
-        "g7_seed_consistency": {
-            "rule": "both seeds must satisfy G2 and every other gate "
-                    "(numerically); disagreement on G2 = Outcome B",
-            "both_seeds_present": bool(both),
-            "g6_status": browser.get("status", "pending"),
-            "g2_pass_disagreement": bool(
-                both and per_seed["42"]["G2_pass"]
-                != per_seed["43"]["G2_pass"]),
-            "outcome_a_contention_g1_g5": a_contender,
-            "both_seeds_pass_g1_g6": g7_pass,
-            "metric_mean_and_spread": metrics,
-            "iteration10_reference": {"fresh_accuracy": ITER10_FRESH_ACC,
-                                      "fresh_frr": ITER10_FRR_OBSERVED,
-                                      "note": "reported as observations only"},
-        },
+        "g7_seed_consistency": g7_block,
         "decision": decision,
         "decision_reason": reason,
         "g6_browser": browser,
@@ -723,11 +846,19 @@ def decision_md(out: dict, tag: str = "head11",
          "| fresh FRR |", "|---|---|---|---|---|---|---|---|---|---|"]
     for s in sorted(ps):
         d = ps[s]
+        g8 = d.get("G8_pass", d["G6_pass"] if tag != "head12" else None)
         L.append(f"| {s} | {yn3(d['G1_pass'])} | {yn3(d['G2_pass'])} | "
                  f"{yn3(d['G3_pass'])} | {yn3(d['G4_pass'])} | "
                  f"{yn3(d['G5_pass'])} | {yn3(d['G6_pass'])} | "
-                 f"{d['fresh_accuracy']:.4f} | {d['fresh_macro_f1']:.4f} | "
-                 f"{d['fresh_frr']:.5f} |")
+                 f"{yn3(g8) if tag == 'head12' else d['fresh_accuracy']:.4f}"
+                 + (f" | {d['fresh_accuracy']:.4f} | {d['fresh_macro_f1']:.4f} | "
+                    f"{d['fresh_frr']:.5f} |" if tag == "head12" else
+                    f" | {d['fresh_macro_f1']:.4f} | "
+                    f"{d['fresh_frr']:.5f} |"))
+    if tag == "head12":
+        L[5] = ("| Seed | G1 | G2 | G3 | G4 | G5 | G6 | G8 | fresh acc | "
+                "fresh macro-F1 | fresh FRR |")
+        L[6] = ("|---|---|---|---|---|---|---|---|---|---|---|")
     L += ["", "## Seed consistency (G7)", ""]
     for k, v in g7["metric_mean_and_spread"].items():
         L.append(f"- {k}: mean {v['mean']:.4f} ± {v['spread']:.4f} "
