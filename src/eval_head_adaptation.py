@@ -1,9 +1,12 @@
 # src/eval_head_adaptation.py
 #
-# WasteLens Iteration 11 - LOOP 10/11/12: evaluator for a
-# classification-head-only candidate.
+# WasteLens Iteration 11/12 - LOOP 10/11/12: evaluator for a
+# classification-head-only candidate (Iteration 11: plain CE objective;
+# Iteration 12: distillation-constrained objective - the evaluator is
+# objective-agnostic: it scores a SAVED candidate file either way).
 #
-# Implements docs/rejection_experiment/iteration11_head_adaptation_protocol.md:
+# Implements docs/rejection_experiment/iteration11_head_adaptation_protocol.md
+# (and, via --protocol/--tag/--gates overrides, the Iteration-12 protocol):
 #   * dataset-drift check: re-runs the Iteration-10 leakage audit and asserts it
 #     is identical to the committed one except `generated_utc` (§3),
 #   * existing-benchmark evaluation (G1 + rejection preservation part of G4),
@@ -11,8 +14,15 @@
 #   * the LOOP-12 REJECTION EQUIVALENCE test: candidate vs shipped rejection
 #     probabilities over fresh 131 + original test pools; protocol §6 requires
 #     max |Δreject| <= 1e-6 and 0 changed reject verdicts at 0.0702,
-#   * writes head11s{seed}_eval.json / _gates.json / _report.md and, with
-#     --summary, head11_seed_consistency.json + iteration11_decision.md.
+#   * writes {tag}s{seed}_eval.json / _gates.json / _report.md and, with
+#     --summary, {tag}_seed_consistency.json + iteration{nn}_decision.md
+#     (defaults: tag=head11, protocol=iteration11 file, gates=head11 table).
+#
+# Iteration-12 gate overrides (--gates head12_gates.json) implement the
+# literal protocol §7 table: G1/G2/G3 identical; G4 splits into G4 (class
+# coverage, Iter-11 min - 5pt) + G5/G6 (rejection bars) with G6 fresh OOD
+# as its own gate; G7 both-seeds G1-G4; G8 browser parity. Metric code is
+# shared; only the bar table and artifact names change.
 #
 # METRIC CODE IS REUSED, NOT REWRITTEN: eval_adaptation.candidate_metrics
 # (which itself calls eval_rejection / eval_fresh_realworld definitions).
@@ -40,7 +50,9 @@ SHIPPED = Path("models/checkpoints/wastelens_rej_shipped_best.keras")
 SHIPPED_THRESHOLD = ea.SHIPPED_THRESHOLD          # 0.0702, production constant
 ADAPT10_SEEDS = (42, 43)
 
-# Pre-registered Iteration-11 gates (protocol §6). Numbers are literal.
+# Default gate table = pre-registered Iteration-11 gates (protocol §6).
+# --gates head12_gates.json swaps in the literal Iteration-12 table (§7);
+# see resolve_gate_table() below. Numbers are literal in both tables.
 GATE = {
     "G1": {"orig_acc_min": 0.9763, "orig_macro_f1_min": 0.9671},
     "G2": {"fresh_acc_min": 0.5500},
@@ -53,19 +65,44 @@ GATE = {
     "G5": {"fresh_frr_max": 0.33830, "reject_max_abs_diff": 1e-6,
            "reject_verdict_changes_max": 0},
 }
+# Literal Iteration-12 gate table (protocol §7). G1-G3 identical to Iter-11;
+# G4 = class coverage (Iter-11 two-seed min, minus 5pt); G5 = rejection bars;
+# G6 = fresh OOD as its own gate; G8 = browser parity (scored from evidence).
+GATE_HEAD12 = {
+    "G1": {"orig_acc_min": 0.9763, "orig_macro_f1_min": 0.9671},
+    "G2": {"fresh_acc_min": 0.5500},
+    "G3": {"min_recall": {"recyclable": 0.7119, "organic": 0.3875,
+                          "hazardous": 0.4833, "general trash": 0.4045},
+           "baseline_rule": "Iteration-11 two-seed minimum minus 5pt"},
+    "G4": {"orig_auroc_min": 0.99466, "orig_ood_detect_min": 0.99139,
+           "orig_id_frr_max": 0.02284, "fresh_auroc_min": 0.74770},
+    "G5": {"fresh_frr_max": 0.33830, "reject_max_abs_diff": 1e-6,
+           "reject_verdict_changes_max": 0},
+    "G6": {"fresh_ood_detect_min": 0.66940},
+}
+
+
+def resolve_gate_table(name: str | None) -> dict:
+    """Select the pre-registered gate table by --gates flag (no post-hoc edits)."""
+    if name in (None, "", "head11_gates.json"):
+        return GATE
+    if name == "head12_gates.json":
+        return GATE_HEAD12
+    raise SystemExit(f"unknown --gates table {name!r} (expected "
+                     "head11_gates.json | head12_gates.json)")
 MEANINGFUL_IMPROVEMENT_MIN = 0.4600               # protocol §7
 ITER10_FRR_OBSERVED = {"42": 0.19047619047619047, "43": 0.30158730158730157}
 # Iteration-10 fresh supported accuracy per seed (adapt10_seed_consistency.json)
 ITER10_FRESH_ACC = {"42": 0.5238095238095238, "43": 0.5396825396825397}
 
 
-def audit_iter11() -> tuple[dict, bool]:
+def audit_iter11(tag: str = "head11") -> tuple[dict, bool]:
     """Re-run the leakage audit and prove the dataset did not move (§3).
 
     `eval_adaptation.run_audit()` rewrites the committed audit file, so its
-    bytes are saved first and restored afterwards: Iteration 11 must not
-    change an Iteration-10 artifact. The fresh audit is written to
-    `head11_audit.json` with the comparison result attached.
+    bytes are saved first and restored afterwards: no iteration may change
+    an Iteration-10 artifact. The fresh audit is written to
+    `{tag}_audit.json` with the comparison result attached.
     """
     committed_path = OUT_DIR / "adaptation_eval_audit.json"
     committed_bytes = committed_path.read_bytes()
@@ -78,14 +115,14 @@ def audit_iter11() -> tuple[dict, bool]:
     fresh["iteration11_check"] = {
         "identical_to_iteration10_audit_except_timestamp": bool(identical),
         "note": "protocol §3: the adaptation dataset and benchmarks must be "
-                "unchanged between Iteration 10 and Iteration 11",
+                "unchanged between Iteration 10 and Iteration 11/12",
     }
-    (OUT_DIR / "head11_audit.json").write_text(
+    (OUT_DIR / f"{tag}_audit.json").write_text(
         json.dumps(fresh, indent=2) + "\n", encoding="utf-8")
     if not identical:
-        raise SystemExit("dataset drift: the Iteration-11 audit differs from "
+        raise SystemExit("dataset drift: the audit differs from "
                          "the committed Iteration-10 audit (see "
-                         "docs/rejection_experiment/head11_audit.json)")
+                         f"docs/rejection_experiment/{tag}_audit.json)")
     print(f"[audit] clean={fresh['clean']} "
           f"identical_to_iteration10={identical}")
     return fresh, identical
@@ -107,13 +144,17 @@ def original_pool_paths() -> dict[str, list[str]]:
 
 # --- LOOP 12: rejection equivalence -----------------------------------------
 
-def rejection_equivalence(model_path: Path, seed: int) -> dict:
+def rejection_equivalence(model_path: Path, seed: int,
+                          tag: str = "head11",
+                          gate: dict | None = None,
+                          protocol: str = "iteration11_head_adaptation_protocol.md §6 G5") -> dict:
     """Prove the frozen rejection pathway did not move, at file level.
 
     Compares candidate vs shipped `reject` probabilities (and bins, for
     information) over the fresh 131 files and every original test pool.
-    Protocol §6/G5: max |Δreject| <= 1e-6 and 0 changed reject verdicts.
+    Head11 §6/G5 (head12 §7/G5): max |Δreject| <= 1e-6, 0 verdict flips.
     """
+    gate = gate if gate is not None else GATE
     cand = tf.keras.models.load_model(model_path)
     shipped = tf.keras.models.load_model(SHIPPED)
     thr = SHIPPED_THRESHOLD
@@ -162,7 +203,7 @@ def rejection_equivalence(model_path: Path, seed: int) -> dict:
     # File-level freeze check: the saved candidate must carry byte-identical
     # frozen tensors (proves the .keras round trip, not just the in-memory run).
     digests = th.sha256_weights(cand.weights)
-    proof_path = OUT_DIR / f"head11s{seed}_freeze_proof.json"
+    proof_path = OUT_DIR / f"{tag}s{seed}_freeze_proof.json"
     file_ok, file_detail = None, "freeze proof file not found"
     if proof_path.exists():
         before = json.loads(proof_path.read_text(encoding="utf-8"))["before"]
@@ -180,8 +221,7 @@ def rejection_equivalence(model_path: Path, seed: int) -> dict:
     result = {
         "generated_utc": datetime.now(timezone.utc)
         .strftime("%Y-%m-%d %H:%M:%S UTC"),
-        "protocol": "docs/rejection_experiment/"
-                    "iteration11_head_adaptation_protocol.md §6 G5",
+        "protocol": f"docs/rejection_experiment/{protocol}",
         "candidate": str(model_path), "candidate_md5": tr.md5_file(model_path),
         "shipped": str(SHIPPED), "threshold": thr,
         "fresh": {
@@ -203,18 +243,18 @@ def rejection_equivalence(model_path: Path, seed: int) -> dict:
                     "reject_mean_abs_diff": float(all_d.mean()),
                     "reject_verdict_changes_at_threshold": flips_all},
         "file_level_freeze_check": {"pass": file_ok, "detail": file_detail},
-        "pass": bool(max_all <= GATE["G5"]["reject_max_abs_diff"]
-                     and flips_all == GATE["G5"]["reject_verdict_changes_max"]
+        "pass": bool(max_all <= gate["G5"]["reject_max_abs_diff"]
+                     and flips_all == gate["G5"]["reject_verdict_changes_max"]
                      and file_ok is True),
-        "rule": f"max |Δreject| <= {GATE['G5']['reject_max_abs_diff']}, "
-                f"{GATE['G5']['reject_verdict_changes_max']} changed reject "
+        "rule": f"max |Δreject| <= {gate['G5']['reject_max_abs_diff']}, "
+                f"{gate['G5']['reject_verdict_changes_max']} changed reject "
                 f"verdicts, frozen tensors byte-identical in the saved file",
         "notes": "Fresh rows are scored one image at a time (the baseline's "
                  "exact preprocessing); original pools use "
                  "eval_rejection.batches. 0.0 is the expected Δ: the reject "
                  "path is frozen and every input is identical.",
     }
-    (OUT_DIR / "head11_rejection_equivalence.json").write_text(
+    (OUT_DIR / f"{tag}_rejection_equivalence.json").write_text(
         json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(f"[equivalence] max |delta(reject)| = "
           f"{result['overall']['reject_max_abs_diff']:.3e}, reject verdict "
@@ -226,9 +266,9 @@ def rejection_equivalence(model_path: Path, seed: int) -> dict:
 
 # --- Pre-registered gates (§6) ----------------------------------------------
 
-def browser_gate() -> dict:
-    """G6 is scored from the export/parity/UI evidence file (written later)."""
-    path = OUT_DIR / "head11_browser.json"
+def browser_gate(tag: str = "head11") -> dict:
+    """G6/G8 scored from the export/parity/UI evidence file (written later)."""
+    path = OUT_DIR / f"{tag}_browser.json"
     if not path.exists():
         return {"status": "pending",
                 "rule": "TFJS export + atol<=2e-5 parity (local + HTTP) + "
@@ -239,23 +279,25 @@ def browser_gate() -> dict:
     return {**data, "status": "scored", "pass": bool(data.get("pass"))}
 
 
-def gates_for(cand: dict, base: dict, equiv: dict) -> dict:
-    """Protocol §6 gates for one seed (G6 from evidence, G7 in --summary)."""
+def gates_for(cand: dict, base: dict, equiv: dict,
+              gate: dict | None = None, tag: str = "head11") -> dict:
+    """Pre-registered gates for one seed (browser gate from evidence)."""
+    gate = gate if gate is not None else GATE
     o, f = cand["original"], cand["fresh"]
     ob, fb = base["original"], base["fresh"]
     c, r = o["classification"], o["rejection"]
     fc, frj = f["classification"], f["rejection"]
     g1 = {"orig_accuracy": c["accuracy"], "orig_macro_f1": c["macro_f1"],
-          "pass": bool(c["accuracy"] >= GATE["G1"]["orig_acc_min"]
-                       and c["macro_f1"] >= GATE["G1"]["orig_macro_f1_min"]),
-          "rule": f"orig acc >= {GATE['G1']['orig_acc_min']} and macro-F1 "
-                  f">= {GATE['G1']['orig_macro_f1_min']}"}
+          "pass": bool(c["accuracy"] >= gate["G1"]["orig_acc_min"]
+                       and c["macro_f1"] >= gate["G1"]["orig_macro_f1_min"]),
+          "rule": f"orig acc >= {gate['G1']['orig_acc_min']} and macro-F1 "
+                  f">= {gate['G1']['orig_macro_f1_min']}"}
     g2 = {"fresh_accuracy": fc["accuracy"],
           "fresh_macro_f1": fc["macro_f1"],
-          "pass": bool(fc["accuracy"] >= GATE["G2"]["fresh_acc_min"]),
-          "rule": f"fresh supported acc >= {GATE['G2']['fresh_acc_min']}"}
+          "pass": bool(fc["accuracy"] >= gate["G2"]["fresh_acc_min"]),
+          "rule": f"fresh supported acc >= {gate['G2']['fresh_acc_min']}"}
     per_bin = {}
-    for b, bar in GATE["G3"]["min_recall"].items():
+    for b, bar in gate["G3"]["min_recall"].items():
         rec = fc["per_bin"][b]["recall"]
         per_bin[b] = {"fresh_recall": rec, "bar": bar,
                       "in_run_baseline_recall":
@@ -272,24 +314,27 @@ def gates_for(cand: dict, base: dict, equiv: dict) -> dict:
           "orig_id_frr": r["id_frr_at_production_threshold"],
           "fresh_ood_detect": frj["overall_ood_detection"],
           "fresh_auroc": frj["auroc"],
-          "pass": bool(r["auroc"] >= GATE["G4"]["orig_auroc_min"]
+          "pass": bool(r["auroc"] >= gate["G4"]["orig_auroc_min"]
                        and r["ood_detect_at_production_threshold"]
-                       >= GATE["G4"]["orig_ood_detect_min"]
+                       >= gate["G4"]["orig_ood_detect_min"]
                        and r["id_frr_at_production_threshold"]
-                       <= GATE["G4"]["orig_id_frr_max"]
+                       <= gate["G4"]["orig_id_frr_max"]
                        and frj["overall_ood_detection"]
-                       >= GATE["G4"]["fresh_ood_detect_min"]
-                       and frj["auroc"] >= GATE["G4"]["fresh_auroc_min"]),
+                       >= gate["G4"].get(
+                           "fresh_ood_detect_min",
+                           gate.get("G6", {}).get(
+                               "fresh_ood_detect_min", 0.66940))
+                       and frj["auroc"] >= gate["G4"]["fresh_auroc_min"]),
           "rule": "rejection preservation vs production ∓0.5pt: "
-                  f"orig AUROC >= {GATE['G4']['orig_auroc_min']}, orig OOD "
-                  f"detect >= {GATE['G4']['orig_ood_detect_min']}, orig ID "
-                  f"FRR <= {GATE['G4']['orig_id_frr_max']}, fresh OOD "
-                  f"detect >= {GATE['G4']['fresh_ood_detect_min']}, fresh "
-                  f"AUROC >= {GATE['G4']['fresh_auroc_min']}"}
+                  f"orig AUROC >= {gate['G4']['orig_auroc_min']}, orig OOD "
+                  f"detect >= {gate['G4']['orig_ood_detect_min']}, orig ID "
+                  f"FRR <= {gate['G4']['orig_id_frr_max']}, fresh OOD "
+                  f"detect >= {gate['G4'].get('fresh_ood_detect_min', gate.get('G6', {}).get('fresh_ood_detect_min'))}, fresh "
+                  f"AUROC >= {gate['G4']['fresh_auroc_min']}"}
     g5_frr_ok = bool(frj["false_rejection_rate"]
-                     <= GATE["G5"]["fresh_frr_max"])
+                     <= gate["G5"]["fresh_frr_max"])
     g5 = {"fresh_frr": frj["false_rejection_rate"],
-          "fresh_frr_bar": GATE["G5"]["fresh_frr_max"],
+          "fresh_frr_bar": gate["G5"]["fresh_frr_max"],
           "fresh_frr_pass": g5_frr_ok,
           "isolation_pass": equiv["pass"],
           "max_abs_reject_diff": equiv["overall"]["reject_max_abs_diff"],
@@ -299,17 +344,23 @@ def gates_for(cand: dict, base: dict, equiv: dict) -> dict:
               equiv["file_level_freeze_check"]["pass"],
           "iteration10_frr_observed_only": ITER10_FRR_OBSERVED,
           "pass": bool(g5_frr_ok and equiv["pass"]),
-          "rule": f"fresh FRR <= {GATE['G5']['fresh_frr_max']} @0.0702 AND "
+          "rule": f"fresh FRR <= {gate['G5']['fresh_frr_max']} @0.0702 AND "
                   f"isolation: max |Δreject| <= "
-                  f"{GATE['G5']['reject_max_abs_diff']} with 0 changed "
+                  f"{gate['G5']['reject_max_abs_diff']} with 0 changed "
                   f"reject verdicts"}
-    g6 = browser_gate()
+    g6 = browser_gate(tag)
+    if "G6" in gate and "fresh_ood_detect_min" in gate["G6"]:
+        g6 = {**g6, "fresh_ood_detect": frj["overall_ood_detection"],
+              "fresh_ood_detect_bar": gate["G6"]["fresh_ood_detect_min"],
+              "fresh_ood_pass": bool(
+                  frj["overall_ood_detection"]
+                  >= gate["G6"]["fresh_ood_detect_min"])}
     remeasured = {"orig_accuracy": ob["classification"]["accuracy"],
                   "orig_macro_f1": ob["classification"]["macro_f1"],
                   "orig_auroc": ob["rejection"]["auroc"],
                   "fresh_accuracy": fb["classification"]["accuracy"],
                   "fresh_frr": fb["rejection"]["false_rejection_rate"]}
-    return {
+    out = {
         "G1": g1, "G2": g2, "G3": g3, "G4": g4, "G5": g5, "G6": g6,
         "G7": {"pass": None,
                "rule": "both seeds must satisfy G2 and every other gate; "
@@ -328,6 +379,16 @@ def gates_for(cand: dict, base: dict, equiv: dict) -> dict:
             str(s): fc["accuracy"] - ITER10_FRESH_ACC[str(s)]
             for s in ADAPT10_SEEDS},
     }
+    if "G6" in gate and "fresh_ood_detect_min" in gate["G6"]:
+        g6_pass = g6.get("fresh_ood_pass")
+        if g6_pass is None:
+            g6_pass = g6.get("pass")
+        out["G6"] = {**g6, "pass": bool(g6_pass)}
+        scored = [g1, g2, g3, g4, g5,
+                  {"pass": out["G6"]["pass"]}]
+        out["all_g1_g5_pass"] = bool(all(g["pass"] for g in scored))
+        out["all_g1_g6_pass"] = out["all_g1_g5_pass"]
+    return out
 
 
 # --- Per-seed report --------------------------------------------------------
@@ -335,7 +396,8 @@ def gates_for(cand: dict, base: dict, equiv: dict) -> dict:
 # --- Per-seed report --------------------------------------------------------
 
 def report_md_iter11(seed: int, cand: dict, base: dict, gates: dict,
-                     equiv: dict, audit: dict) -> str:
+                     equiv: dict, audit: dict, tag: str = "head11",
+                     protocol: str = "iteration11_head_adaptation_protocol.md") -> str:
     o, f = cand["original"], cand["fresh"]
     ob, fb = base["original"], base["fresh"]
     yn = lambda b: "PASS" if b else "FAIL"
@@ -343,10 +405,10 @@ def report_md_iter11(seed: int, cand: dict, base: dict, gates: dict,
     ftensors = fd["frozen_tensors_in_file"] if isinstance(fd, dict) else "n/a"
     audit_ok = audit["iteration11_check"][
         "identical_to_iteration10_audit_except_timestamp"]
-    L = [f"# Iteration 11 - classification-head-only adaptation - seed {seed}",
+    iter_no = "12 - distillation-constrained" if tag == "head12" else "11"
+    L = [f"# Iteration {iter_no} - classification-head-only adaptation - seed {seed}",
          "",
-         "- protocol: `iteration11_head_adaptation_protocol.md` (registered "
-         "at baseline `ae1410f`, protocol committed pre-training `19c30bc`)",
+         f"- protocol: `{protocol}`",
          f"- candidate: `{cand['model']}` (md5 `{cand['md5']}`)",
          "- warm start: shipped checkpoint - only `predictions/kernel` + "
          "`predictions/bias` (1,028 params) trainable; 264 frozen tensors",
@@ -450,28 +512,35 @@ def report_md_iter11(seed: int, cand: dict, base: dict, gates: dict,
 
 def run_one(args) -> None:
     seed = int(args.seed)
+    tag = getattr(args, "tag", None) or "head11"
+    gate = resolve_gate_table(getattr(args, "gates", None))
     cand_path = Path(args.model)
     if not cand_path.exists():
         raise SystemExit(f"candidate not found: {cand_path} - train the seed "
                          f"first (src/train_head_adaptation.py --seed {seed})")
-    audit = None if args.skip_audit else audit_iter11()[0]   # dict (§3)
+    audit = None if args.skip_audit else audit_iter11(tag)[0]   # dict (§3)
     base = ea.candidate_metrics(Path(args.baseline))
     cand = ea.candidate_metrics(cand_path)
     # LOOP-12 isolation (part of G5): candidate vs shipped reject probability.
-    equiv = rejection_equivalence(cand_path, seed)
-    gates = gates_for(cand, base, equiv)
-    (OUT_DIR / f"head11s{seed}_eval.json").write_text(
+    equiv = rejection_equivalence(cand_path, seed, tag=tag, gate=gate)
+    gates = gates_for(cand, base, equiv, gate=gate, tag=tag)
+    (OUT_DIR / f"{tag}s{seed}_eval.json").write_text(
         json.dumps({"seed": seed, "audit": audit, "baseline_in_run": base,
                     "candidate": cand}, indent=2) + "\n", encoding="utf-8")
-    (OUT_DIR / f"head11s{seed}_gates.json").write_text(
+    (OUT_DIR / f"{tag}s{seed}_gates.json").write_text(
         json.dumps({"seed": seed, "model": cand["model"],
                     "model_md5": cand["md5"],
+                    "gate_table": getattr(args, "gates", None)
+                    or "head11_gates.json",
                     "equivalence_file": str(OUT_DIR /
-                                            "head11_rejection_equivalence.json"),
+                                            f"{tag}_rejection_equivalence.json"),
                     **gates}, indent=2) + "\n", encoding="utf-8")
     if audit:
-        (OUT_DIR / f"head11s{seed}_report.md").write_text(
-            report_md_iter11(seed, cand, base, gates, equiv, audit),
+        (OUT_DIR / f"{tag}s{seed}_report.md").write_text(
+            report_md_iter11(seed, cand, base, gates, equiv, audit,
+                             tag=tag,
+                             protocol=getattr(args, "protocol", None)
+                             or "iteration11_head_adaptation_protocol.md"),
             encoding="utf-8")
     g = gates
     print(f"[seed {seed}] G1={g['G1']['pass']} G2={g['G2']['pass']} "
@@ -495,23 +564,27 @@ def spread(values: dict) -> dict:
             "spread": float(np.max(v) - np.min(v)), "values": values}
 
 
-def load_seed_gates() -> dict[int, dict]:
+def load_seed_gates(tag: str = "head11") -> dict[int, dict]:
     out = {}
     for s in ADAPT10_SEEDS:
-        p = OUT_DIR / f"head11s{s}_gates.json"
+        p = OUT_DIR / f"{tag}s{s}_gates.json"
         if p.exists():
             g = json.loads(p.read_text(encoding="utf-8"))
-            g["G6"] = browser_gate()      # re-read: evidence may be newer
+            g["G6"] = browser_gate(tag)   # re-read: evidence may be newer
             out[s] = g
     return out
 
 
 def run_summary(args) -> None:
-    gates = load_seed_gates()
+    tag = getattr(args, "tag", None) or "head11"
+    protocol = getattr(args, "protocol", None) or \
+        "iteration11_head_adaptation_protocol.md"
+    is_head12 = tag == "head12"
+    gates = load_seed_gates(tag)
     if not gates:
-        raise SystemExit("no head11s{42,43}_gates.json - run --seed first")
+        raise SystemExit(f"no {tag}s{{42,43}}_gates.json - run --seed first")
     missing = [s for s in ADAPT10_SEEDS if s not in gates]
-    browser = browser_gate()
+    browser = browser_gate(tag)
     per_seed = {}
     for s, g in sorted(gates.items()):
         passes = {k: (g[k]["pass"] if g[k].get("pass") is not None else None)
@@ -557,7 +630,7 @@ def run_summary(args) -> None:
             "Pending",
             "both seeds are in contention for Outcome A (G1-G5 pass), so G6 "
             "(browser export/parity/UI evidence) is required - run that step, "
-            "write head11_browser.json, re-run --summary.")
+            f"write {tag}_browser.json, re-run --summary.")
     elif g7_pass:
         decision, reason = (
             "A - Ship-eligible",
@@ -583,8 +656,10 @@ def run_summary(args) -> None:
     out = {
         "generated_utc": datetime.now(timezone.utc)
         .strftime("%Y-%m-%d %H:%M:%S UTC"),
-        "protocol": "docs/rejection_experiment/"
-                    "iteration11_head_adaptation_protocol.md §6 G7 / §7",
+        "protocol": f"docs/rejection_experiment/{protocol} §7"
+        if is_head12 else "docs/rejection_experiment/"
+        "iteration11_head_adaptation_protocol.md §6 G7 / §7",
+        "iteration": "head12-distillation" if is_head12 else "head11",
         "per_seed": per_seed,
         "g7_seed_consistency": {
             "rule": "both seeds must satisfy G2 and every other gate "
@@ -614,13 +689,15 @@ def run_summary(args) -> None:
             "web_model_dir_rewritten": False,
             "note": "no promotion unless Outcome A triggers §8; production "
                     "artifacts and the 0.0702 threshold are read-only "
-                    "throughout Iteration 11",
+                    f"throughout {'Iteration 12' if is_head12 else 'Iteration 11'}",
         },
     }
-    (OUT_DIR / "head11_seed_consistency.json").write_text(
+    decision_file = ("iteration12_decision.md" if is_head12
+                     else "iteration11_decision.md")
+    (OUT_DIR / f"{tag}_seed_consistency.json").write_text(
         json.dumps(out, indent=2) + "\n", encoding="utf-8")
-    (OUT_DIR / "iteration11_decision.md").write_text(
-        decision_md(out), encoding="utf-8")
+    (OUT_DIR / decision_file).write_text(
+        decision_md(out, tag=tag, protocol=protocol), encoding="utf-8")
     print(f"[summary] seeds scored: {sorted(per_seed)}; G6 "
           f"{browser.get('status')}; G7 pass={g7_pass}")
     print(f"[summary] decision: {decision}")
@@ -631,14 +708,17 @@ def yn3(v) -> str:
     return "PENDING" if v is None else ("PASS" if v else "FAIL")
 
 
-def decision_md(out: dict) -> str:
+def decision_md(out: dict, tag: str = "head11",
+                protocol: str = "iteration11_head_adaptation_protocol.md") -> str:
     ps, g7 = out["per_seed"], out["g7_seed_consistency"]
-    L = ["# Iteration 11 decision - classification-head-only adaptation", "",
+    title = ("# Iteration 12 decision - distillation-constrained adaptation"
+             if tag == "head12"
+             else "# Iteration 11 decision - classification-head-only adaptation")
+    L = [title, "",
          f"- decision: **{out['decision']}**",
          f"- reason: {out['decision_reason']}",
-         "- protocol: `docs/rejection_experiment/"
-         "iteration11_head_adaptation_protocol.md` §7 vocabulary, decided by "
-         "the numbers", "",
+         f"- protocol: `docs/rejection_experiment/{protocol}` §7 vocabulary,"
+         " decided by the numbers", "",
          "| Seed | G1 | G2 | G3 | G4 | G5 | G6 | fresh acc | fresh macro-F1 "
          "| fresh FRR |", "|---|---|---|---|---|---|---|---|---|---|"]
     for s in sorted(ps):
@@ -675,22 +755,31 @@ def decision_md(out: dict) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(
-        description="WasteLens Iteration-11 evaluator: pre-registered gates "
-                    "for a classification-head-only candidate (protocol §6) "
-                    "plus the LOOP-12 rejection-isolation test; --summary "
-                    "computes G7 and the §7 decision.")
+        description="WasteLens Iteration-11/12 evaluator: pre-registered gates "
+                    "for a classification-head-only candidate (head11 §6; "
+                    "head12 via --tag/--gates/--protocol) plus the "
+                    "rejection-isolation test; --summary computes G7/G8 "
+                    "and the decision.")
     ap.add_argument("--seed", type=int, choices=ADAPT10_SEEDS,
                     help="evaluate one trained seed")
     ap.add_argument("--model", default=None,
                     help="candidate .keras (default: models/checkpoints/"
-                         "wastelens_rej_head11s{SEED}_final.keras)")
+                         "wastelens_rej_{tag}s{SEED}_final.keras)")
+    ap.add_argument("--tag", default="head11",
+                    help="artifact prefix: head11 (default) | head12")
+    ap.add_argument("--protocol",
+                    default="iteration11_head_adaptation_protocol.md",
+                    help="protocol doc filename for evidence strings")
+    ap.add_argument("--gates", default="head11_gates.json",
+                    help="gate table: head11_gates.json (default) | "
+                         "head12_gates.json")
     ap.add_argument("--baseline", default=str(SHIPPED),
                     help="in-run shipped baseline for re-measurement (§6)")
     ap.add_argument("--skip-audit", action="store_true",
                     help="skip the §3 dataset-drift audit (debug only)")
     ap.add_argument("--summary", action="store_true",
-                    help="G7 two-seed summary -> head11_seed_consistency.json "
-                         "+ iteration11_decision.md")
+                    help="G7 two-seed summary -> {tag}_seed_consistency.json "
+                         "+ iteration{nn}_decision.md")
     args = ap.parse_args()
     if args.summary:
         run_summary(args)
@@ -699,7 +788,7 @@ def main() -> None:
         ap.error("--seed (42|43) is required unless --summary is given")
     if args.model is None:
         args.model = str(Path("models/checkpoints") /
-                         f"wastelens_rej_head11s{args.seed}_final.keras")
+                         f"wastelens_rej_{args.tag}s{args.seed}_final.keras")
     run_one(args)
 
 

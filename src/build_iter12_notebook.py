@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 OUT = Path("notebooks/iteration12_distillation_colab.ipynb")
-PINNED = "36470ec883d07da4f640266896320a3a4ad31204"
+PINNED = "e017f34dbb487ec21a5633bd965543fbd8de7e9d"
 
 
 def md(text):
@@ -91,12 +91,17 @@ cells.append(code(["%cd /content/WasteLens\n",
 cells.append(md("## S5 - evaluate both seeds (threshold 0.0702, gates per protocol)"))
 cells.append(code([
     "%cd /content/WasteLens\n",
-    "!python -u src/eval_distill_adaptation.py --seed 42\n",
-    "!python -u src/eval_distill_adaptation.py --seed 43\n",
+    "!python -u src/eval_head_adaptation.py --seed 42 "
+    "--tag head12 --protocol iteration12_distillation_protocol.md "
+    "--gates head12_gates.json\n",
+    "!python -u src/eval_head_adaptation.py --seed 43 "
+    "--tag head12 --protocol iteration12_distillation_protocol.md "
+    "--gates head12_gates.json\n",
 ]))
 cells.append(code([
     "%cd /content/WasteLens\n",
-    "!python -u src/eval_distill_adaptation.py --summary\n",
+    "!python -u src/eval_head_adaptation.py --summary "
+    "--tag head12 --protocol iteration12_distillation_protocol.md\n",
 ]))
 cells.append(md("## S6 - evidence bundle (download to laptop)"))
 cells.append(code([
