@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 OUT = Path("notebooks/iteration12_distillation_colab.ipynb")
-PINNED = "0c3e58126f72c15d57eed372b412a024fd556175"
+PINNED = "d930d3c07ec183e1fa8fbf3c686488bac8922612"
 
 
 def md(text):
