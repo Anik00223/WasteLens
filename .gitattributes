@@ -1,0 +1,7 @@
+# Byte-level dataset locks registered in the Iteration-10/11/12 protocols
+# are MD5s of the CRLF form of the two manifests, registered on the
+# Windows workstation (adapt acae0933..., fresh 99540f56...). The git
+# blobs themselves are LF; force the registered CRLF checkout on every
+# platform so Colab (Linux) reproduces the locked bytes exactly.
+docs/rejection_experiment/adaptation_set_manifest.json text eol=crlf
+docs/rejection_experiment/fresh_set_manifest.json text eol=crlf
