@@ -255,6 +255,10 @@
   // Do not change it without re-running the calibration.
   var REJECT_THRESHOLD = 0.0702;
 
+  // Diagnostic flag: set to false to silence OOD rejection console logging
+  // in normal user-facing operation.
+  var DEBUG_LOGGING = true;
+
   // Pure decision layer: rejection first (its operating point was validated on
   // supported inputs only), then the existing ambiguity rule. DOM-free so the
   // exact shipped logic can be unit-tested.
@@ -279,6 +283,13 @@
       state = 'uncertain';
     } else {
       state = 'supported';
+    }
+    if (DEBUG_LOGGING) {
+      console.log('[WasteLens OOD debug] ' +
+        'reject=' + rejectProb.toFixed(6) +
+        ' threshold=' + REJECT_THRESHOLD.toFixed(6) +
+        ' state=' + state +
+        ' bins=[' + probs.map(function (p) { return p.toFixed(4); }).join(', ') + ']');
     }
     return { state: state, best: best, second: second,
              top: probs[best], margin: margin, reject: rejectProb };

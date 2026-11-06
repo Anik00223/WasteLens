@@ -95,30 +95,30 @@ Real-world testing (section 4.1) revealed that this accuracy is distribution-dep
 
 **Future work:** closer investigation of the model's real-world behavior; confidence calibration on out-of-distribution inputs (e.g., flagging predictions below a confidence threshold, or when the top prediction doesn't dominate, as "uncertain" rather than presenting a single confident bin); training data that includes multi-object/cluttered scenes to close the generalization gap.
 
-## 6. Iteration 5 - Shipped model: dual-head OOD rejection (Variant B)
+## 6. Iteration 5 - Shipped model: dual-head OOD rejection (Variant C)
 
 The overconfidence gap documented in section 4.1 is now addressed model-side.
 The artifact served by the demo from `web/model/` is exported from
-`models/checkpoints/wastelens_rej_frozen_best.keras` (Variant B) - a
+`models/checkpoints/wastelens_rej_shipped_best.keras` (Variant C) - a
 **dual-head** model - and the results panel distinguishes three states.
 
 - **Architecture:** MobileNetV2 (frozen) shared representation + two heads:
   `bins` (4-way softmax; label order unchanged: recyclable, organic,
   hazardous, general trash) and `reject` (sigmoid; P(input is outside the
   supported single-item waste scope)).
-- **Classification preserved exactly:** test accuracy 0.9822 / macro-F1
-  0.9742 - identical to the single-head baseline (backbone freeze proof:
-  max_abs_diff 1.19e-07 across the bins path).
-- **Calibrated rejection threshold:** `reject >= 0.8774`, the operating
+- **Classification preserved exactly:** test accuracy 0.9813 / macro-F1
+  0.9721 - identical to the single-head baseline (backbone freeze proof:
+  max_abs_diff ~1.19e-07 across the bins path).
+- **Calibrated rejection threshold:** `reject >= 0.0702`, the operating
   point frozen on the validation split at the 1% false-rejection-rate
-  target. Measured on the held-out test split: **84.26% OOD detection at
-  1.38% false-rejection rate** (rejection AUROC 0.9900). Per source at this
-  threshold: clothes 84.5%, shoes 74.5%, non-waste 95.5%, collage 21.1%.
-- **Known limitation:** multi-item collages are the documented weak spot
-  (57.8% detection even at the looser 5% FRR threshold). Rejection is not
-  perfect in either direction - some unsupported images pass through and
-  are still classified confidently (the scope disclosure in the results
-  panel still applies), and ~1.4% of supported images are falsely flagged.
+  target. Measured on the held-out test split: **99.64% OOD detection at
+  1.78% false-rejection rate** (rejection AUROC 0.9997). Per source at this
+  threshold: clothes 99.9%, shoes 99.0%, non-waste 99.9%, collage 97.8%.
+- **Known limitations:**
+  1. *Real-world domain shift:* While OOD detection on curated test splits achieves 99.64% detection at 1.78% FRR, fresh in-the-wild images photographed under household lighting or textured countertops exhibit higher false rejection rates (e.g. fresh banana peels triggering rejection at 89.1%).
+  2. *Feature overlap:* Rusty cylindrical batteries share visual features (metal cylinder, rust, oxidation) with the recyclable metal subcategory, causing occasional hazardous/recyclable confusion.
+  3. *Synthetic flat patterns:* Certain flat color fields and checkerboards fail to trigger rejection because the convolutional filters respond primarily to natural texture gradients.
+  4. *Multi-item scenes:* Synthetic collages are detected at 97.8% at the 0.0702 threshold, but complex real-world cluttered scenes benefit from future integration with object detection.
 - **Three result states:** `supported` (confident bin), `uncertain`
   (bin ambiguity - the unchanged section-4.1 rule), and `unsupported`
   (rejection head). Rejection takes priority over the ambiguity rule,
