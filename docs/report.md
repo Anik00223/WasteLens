@@ -126,6 +126,39 @@ The artifact served by the demo from `web/model/` is exported from
   visually and semantically distinct treatments; neither `uncertain` nor
   `unsupported` claims the image is "definitely not waste".
 
+## 6.1 Qualitative Real-World Demonstration Observations
+
+To evaluate how the shipped dual-head model behaves during interactive end-to-end demonstrations, informal qualitative tests were performed on representative physical items. These observations serve as operational case studies and sanity checks, not formal benchmark metrics (which are reported on the held-out test split in Section 3 and Section 6).
+
+| Input | Observed Result | Assessment | Failure Mode / Note |
+|---|---|---|---|
+| Plastic bottle | Recyclable, 100% | Accepted | Correct in-distribution classification |
+| Banana peel | Organic 95.2%, rejection 89.1% | False rejection | Domain shift: background/lighting elevated rejection above 0.0702 threshold |
+| Rusty battery-like objects | Recyclable 96.8% | Potential misclassification | Visual overlap with recyclable metal cylinders; ground-truth verification needed |
+| Mixed household waste | Unsupported, rejection 97.0% | Rejected | Correct single-item scope enforcement on cluttered scenes |
+| Shoe | Unsupported, rejection 99.3% | Rejected | Correct OOD rejection of unsupported apparel |
+| Mobile phone | Recyclable, 100% | False acceptance | Rejection failure: glass/metal textures triggered confident recyclable classification |
+
+### Analysis of Qualitative Errors
+
+1. **False Rejection (Type I Error — Banana Peel):**
+   - *Observation:* The classification head correctly identified the item as `organic` with 95.2% confidence, but the rejection head produced an 89.1% rejection score, exceeding the calibrated threshold ($0.0702$), resulting in an `Unsupported` verdict.
+   - *Root Cause:* The training data for `biological` consists of stock/studio photos on clean, uniform backgrounds. Photos taken on household surfaces (wood, laminate countertops) with natural ambient shadows drift outside the narrow feature manifold of the training set. Because the rejection threshold is strictly calibrated on in-distribution validation data (1% target FRR), background variance triggers false rejection.
+
+2. **False Acceptance (Type II Error — Mobile Phone):**
+   - *Observation:* A modern mobile phone was classified as `recyclable` with 100% confidence, and the rejection head failed to flag it ($P(\text{reject}) < 0.0702$).
+   - *Root Cause:* Electronic devices were not included in the negative OOD training pool (which was constructed from dropped clothes/shoes, CIFAR-10, and collages). The sleek rectangular form factor, glass screen, and metallic edges strongly activate feature filters associated with recyclable materials (specifically glass and metal). The model lacks semantic understanding of electronics and falsely accepts the item as recyclable.
+
+3. **Classification Confusion (Rusty Battery-like Objects):**
+   - *Observation:* The object was classified as `recyclable` (96.8%) rather than `hazardous`.
+   - *Root Cause:* Cylindrical metallic casings share low-level visual features (metallic sheen, cylindrical geometry, rust/corrosion) with scrap metal and tin cans (`recyclable`). Combined with the large training set imbalance favoring recyclable items (~68% vs 11.5% for hazardous), degraded or rusty batteries risk misclassification into the majority metal stream unless ground-truth labels and distinctive brand markings are clearly visible.
+
+### Documented Limitations of the Current OOD Detector
+
+- **Background and Environment Sensitivity:** The rejection head is calibrated against studio-like framing; real-world domestic environments induce domain shift and elevate false rejections on valid waste.
+- **Coverage of Negative Space:** Unseen complex non-waste items possessing metallic, glassy, or plastic textures (e.g., consumer electronics, toys) are vulnerable to false acceptance because OOD rejection cannot cover the infinite complement of supported waste without explicit exposure or broad semantic representations.
+- **Single-Item Assumption:** Cluttered or multi-item scenes trigger rejection (as seen with mixed household waste at 97.0%), enforcing the single-item photo requirement rather than decomposing the scene into multiple waste streams.
+
 Evidence: `docs/rejection_experiment/outcome_decision.md` (adoption
 decision), `rejection_report_frozen.md` (metrics),
 `product_test_outputs.json` (real product-output tests),

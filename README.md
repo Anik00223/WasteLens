@@ -288,11 +288,28 @@ To run a live interactive demonstration using Google Colab's cloud environment:
 
 ## 14. Documented Real-World Limitations
 
-1. **Domain Shift on In-the-Wild Photos (Banana Peel Observation):**
+### Qualitative Manual Demonstration Results
+
+In addition to benchmark metrics on held-out test splits, informal qualitative testing was performed during live demonstrations:
+
+| Input | Observed Result | Assessment | Failure Mode / Note |
+|---|---|---|---|
+| **Plastic bottle** | Recyclable, 100% | Accepted | Correct in-distribution classification |
+| **Banana peel** | Organic 95.2%, rejection 89.1% | False rejection | Domain shift: background/lighting elevated rejection above 0.0702 threshold |
+| **Rusty battery-like objects** | Recyclable 96.8% | Potential misclassification | Visual overlap with recyclable metal cylinders; ground-truth verification needed |
+| **Mixed household waste** | Unsupported, rejection 97.0% | Rejected | Correct single-item scope enforcement on cluttered scenes |
+| **Shoe** | Unsupported, rejection 99.3% | Rejected | Correct OOD rejection of unsupported apparel |
+| **Mobile phone** | Recyclable, 100% | False acceptance | Rejection failure: glass/metal textures triggered confident recyclable classification |
+
+### Analysis of Limitations
+
+1. **Domain Shift & False Rejections (Banana Peel Observation):**
    The training dataset consists predominantly of single objects photographed on plain, uniform backgrounds. When tested on real-world mobile photographs with complex countertop or kitchen textures, feature drift can cause elevated rejection scores (e.g., a real banana peel scoring `reject = 89.1%` despite `organic = 95.2%`). Independent evaluation on fresh real-world images demonstrated a 33.3% false rejection rate at the strict 0.0702 threshold.
-2. **Metal vs. Battery Confusion (Rusty Cylinders):**
+2. **Negative Space Holes & False Acceptances (Mobile Phone Observation):**
+   Unseen non-waste manufactured items containing glass, polished plastic, and aluminum frames (such as mobile phones) activate low-level edge and texture detectors similar to recyclable glass and metal containers. Because the OOD training data cannot cover all non-waste objects, the model falsely accepts them as recyclable with high confidence.
+3. **Metal vs. Battery Confusion (Rusty Cylinders):**
    Recyclable metal cans and hazardous cylindrical batteries share visual features (cylindrical aspect ratio, metallic reflections, rust/oxidation). Because `recyclable` comprises 68% of the training distribution versus 11.5% for `hazardous`, the model can bias towards predicting rusty cylindrical batteries as recyclable.
-3. **Synthetic Texture Probes:**
+4. **Synthetic Texture Probes:**
    Certain flat synthetic color fields and high-frequency uniform noise patterns fail to trigger rejection, as the convolutional filters respond primarily to edge and shape gradients.
 
 ---
