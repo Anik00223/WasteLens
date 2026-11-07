@@ -225,8 +225,8 @@ To empirically assess the operational behavior and limitations of Multi-Region A
 | **A2** | Single Item | Plastic bottle filling frame | Recyclable 100.0% | 1 Region (Full Scene) | Clean single detection |
 | **A3** | Single Item | Banana peel on natural surface | Unsupported (reject 82.6%) | 0 Regions (all windows OOD) | Domain shift false rejection |
 | **A4** | Single Item | Button cell batteries | Recyclable 91.8% | 3 Regions (BR, BL, TC) | Regional duplication / misclassification |
-| **B1** | Two Items | Two separated soda cans | Unsupported (reject 14.4%) | 3 Regions (Center, TL: Can 1, TR: Can 2) | Useful separation with bridging center |
-| **B2** | Two Items | Bowl & bottle on ledge | Unsupported (reject 9.5%) | 3 Regions (BR: Bottle, BL: Bowl, Center) | Useful separation; background rejected |
+| **B1** | Two Items | Two separated soda cans | Unsupported (reject 14.4%) | 3 Regions (Center, TL: Can 1, TR: Can 2) | Coarse quadrant crops; includes redundant bridging center |
+| **B2** | Two Items | Bowl & bottle on ledge | Unsupported (reject 9.5%) | 3 Regions (BR: Bottle, BL: Bowl, Center) | Coarse regional proposals; background excluded |
 | **C1** | 3–5 Items | Litter on ground | Recyclable 100.0% | 4 Regions (BL, BR, TR, Center) | Coarse itemization |
 | **C2** | 3–5 Items | Cardboard boxes on street | Unsupported (reject 76.4%) | 0 Regions (all windows OOD) | Domain shift (street asphalt) |
 | **D1** | Mixed Clutter | Beach litter on sand | Unsupported (reject 70.5%) | 2 Regions (TL, TR) | Background rejected, partial items detected |
@@ -239,7 +239,7 @@ To empirically assess the operational behavior and limitations of Multi-Region A
 #### Empirical Assessment: READY WITH LIMITATIONS
 
 The empirical audit establishes that the Multi-Region Analysis feature is **Partially Useful (Ready with Limitations)**:
-- **Demonstrated Utility:** In scenes with distinct items separated across quadrants (Tests B1, B2, D1), the proposal grid successfully breaks down the scene into identifiable waste streams while Single Item mode rejects the entire image as ambiguous clutter. Background surfaces outside the waste objects are cleanly excluded.
+- **Demonstrated Utility:** In scenes where items happen to align with distinct quadrants (Tests B1, B2, D1), the proposal grid provides coarse regional indications where Single Item mode rejects the entire image as ambiguous clutter. Background surfaces outside the waste objects are cleanly excluded. However, this relies on coincidental spatial placement across fixed proposal windows, not learned object localization.
 - **Operational Failure Modes:**
   1. *Quadrant Duplication on Centered Objects (Tests A1, A4):* A large single object situated in the image center intersects all four quadrant windows ($[0,0,0.6,0.6]$, $[0,0.4,0.6,1]$, etc.). Because non-overlapping quadrants have an $\text{IoU} < 0.30$, the duplicate suppression algorithm cannot merge them without aggressively suppressing valid multi-item layouts elsewhere. This can produce 3 to 5 candidate region boxes for a single item.
   2. *Bridging Center Proposals (Tests B1, B2):* The central window ($[0.2, 0.2, 0.8, 0.8]$) spans across separated objects, frequently producing an extra "bridging" proposal between two distinct items.

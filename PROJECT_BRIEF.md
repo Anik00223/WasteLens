@@ -55,10 +55,10 @@ A browser-based waste/garbage image classifier. The user either uploads an image
      - **Uncertain:** The input is recognized within waste scope, but confidence or classification margin is ambiguous.
      - **Unsupported:** The input is rejected as non-waste, complex clutter, or out-of-distribution ($\text{reject} \ge 0.0702$).
 2. **Multi-Region Analysis Mode (Experimental Feature):**
-   - A client-side experimental feature for scenes containing multiple separated waste items.
+   - An experimental client-side heuristic examining fixed spatial regions in scenes containing multiple waste items.
    - Evaluates a deterministic grid of 8 fixed spatial proposal windows (full scene, center, and overlapping quadrants) via a single batched `tf.image.cropAndResize` forward pass.
    - Evaluates each proposal window against the frozen $0.0702$ rejection threshold and suppresses overlapping duplicates via IoU.
-   - **Technical Honesty:** These rectangles represent **fixed spatial proposals**, not trained object-detection bounding boxes. WasteLens does not implement trained bounding-box regression (e.g., YOLO or SSD).
+   - **Technical Honesty:** These rectangles represent **fixed spatial proposals**, not trained object-detection bounding boxes. Does not reliably separate individual objects; WasteLens does not implement trained bounding-box regression (e.g., YOLO or SSD).
    - **Documented Experimental Limitations:**
      - May produce duplicate regions on single centered items (quadrants have $\text{IoU} < 0.30$).
      - May produce bridging proposals across physically separated items.

@@ -193,11 +193,11 @@ To maintain technical honesty, WasteLens strictly delineates three distinct leve
    - Holistic image evaluation using MobileNetV2 with calibrated dual-head OOD rejection (`REJECT_THRESHOLD = 0.0702`) and ambiguity margins.
    - Produces three discrete states: `Supported`, `Uncertain`, `Unsupported`.
 2. **Experimental Multi-Region Analysis (Candidate Proposals MVP):**
-   - A client-side experimental feature for scenes containing multiple separated waste items.
+   - An experimental client-side heuristic examining fixed spatial regions in scenes containing multiple waste items.
    - Evaluates a deterministic grid of 8 fixed spatial proposal windows via batched `tf.image.cropAndResize`.
    - Filters non-waste windows with the frozen 0.0702 rejection threshold and suppresses overlapping duplicates via IoU.
    - Displays a persistent experimental notice in the UI: *"Experimental Multi-Waste Analysis: This mode examines several fixed image regions. It may duplicate, miss or incorrectly classify objects. For the most reliable results, use Single Item mode."*
-   - Rectangles represent **fixed spatial proposals**, not trained object-detection bounding boxes.
+   - Rectangles represent **fixed spatial proposals**, not trained object-detection bounding boxes. Does not reliably separate individual objects.
 3. **True Object Detection (Future Work — Unimplemented):**
    - End-to-end bounding box regression and object localization (e.g., YOLO, SSD, Faster R-CNN).
    - WasteLens does **not** implement a trained object detector; it relies on image-level classification over candidate proposals.
@@ -332,8 +332,8 @@ To assess the practical utility and limitations of the Multi-Region Analysis mod
 | **A2** | Single Item | Plastic bottle filling frame | Recyclable 100.0% | 1 Region (Full Scene) | Clean single detection |
 | **A3** | Single Item | Banana peel on natural surface | Unsupported (reject 82.6%) | 0 Regions (all windows OOD) | Domain shift false rejection |
 | **A4** | Single Item | Button cell batteries | Recyclable 91.8% | 3 Regions (BR, BL, TC) | Regional duplication / misclassification |
-| **B1** | Two Items | Two separated soda cans | Unsupported (reject 14.4%) | 3 Regions (Center, TL: Can 1, TR: Can 2) | Useful separation with bridging center |
-| **B2** | Two Items | Bowl & bottle on ledge | Unsupported (reject 9.5%) | 3 Regions (BR: Bottle, BL: Bowl, Center) | Useful separation; background rejected |
+| **B1** | Two Items | Two separated soda cans | Unsupported (reject 14.4%) | 3 Regions (Center, TL: Can 1, TR: Can 2) | Coarse quadrant crops; includes redundant bridging center |
+| **B2** | Two Items | Bowl & bottle on ledge | Unsupported (reject 9.5%) | 3 Regions (BR: Bottle, BL: Bowl, Center) | Coarse regional proposals; background excluded |
 | **C1** | 3–5 Items | Litter on ground | Recyclable 100.0% | 4 Regions (BL, BR, TR, Center) | Coarse itemization |
 | **C2** | 3–5 Items | Cardboard boxes on street | Unsupported (reject 76.4%) | 0 Regions (all windows OOD) | Domain shift (street asphalt) |
 | **D1** | Mixed Clutter | Beach litter on sand | Unsupported (reject 70.5%) | 2 Regions (TL, TR) | Background rejected, partial items detected |
@@ -343,7 +343,7 @@ To assess the practical utility and limitations of the Multi-Region Analysis mod
 | **E3** | Non-Waste OOD | Computer keyboard | Unsupported (reject 97.3%) | 1 Region (TL crop) | Rejection leakage in crop window |
 | **E4** | Non-Waste OOD | Outdoor park landscape | Unsupported (reject 97.6%) | 0 Regions (8/8 windows rejected) | Clean 100% OOD rejection |
 
-**Overall Audit Finding:** **READY WITH LIMITATIONS** (Partially Useful). Multi-Region Analysis successfully separates distinct items in moderate two-item scenes where Single-Item mode rejects the entire frame. However, its heuristic proposal architecture exhibits four clear operational failure modes:
+**Overall Audit Finding:** **READY WITH LIMITATIONS** (Partially Useful). Multi-Region Analysis evaluates coarse candidate regions across the scene where Single-Item mode rejects the entire frame. However, because it relies on an experimental fixed-window heuristic rather than learned object detection, it exhibits five major operational limitations:
 1. **Quadrant Duplication on Centered Objects:** When an item occupies the image center, multiple non-overlapping quadrant crops capture parts of the same item. Because disjoint quadrants have $\text{IoU} < 0.30$, IoU suppression cannot eliminate them without risking suppression of legitimate multi-item layouts.
 2. **Bridging Center Proposals:** In two-item scenes, the center proposal window ($[0.2, 0.2, 0.8, 0.8]$) frequently encompasses parts of both items, generating a third redundant proposal.
 3. **Domain Shift False Rejections:** Natural outdoor surfaces (dirt, gravel, asphalt) trigger high rejection scores ($> 0.0702$) across all proposal windows, resulting in zero candidate regions even when waste is visible.
