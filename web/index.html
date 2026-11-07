@@ -1491,12 +1491,13 @@
         <div class="engine-meta">
           MobileNetV2 Dual-Head<br>
           TensorFlow.js 4.22.0 (WebGL)<br>
-          OOD Threshold: <strong>0.0702</strong>
+          OOD Threshold: <strong>0.0702</strong><br>
+          Multi-Waste: <em>Experimental</em>
         </div>
         <div class="stats-strip">
           <div class="stat-pill">
             <div class="num">98.1%</div>
-            <div class="lbl">Test Acc</div>
+            <div class="lbl">Single-Item Acc.</div>
           </div>
           <div class="stat-pill">
             <div class="num">0 ms</div>
@@ -1888,13 +1889,53 @@
 
       <div class="info-card" style="margin-bottom: 32px;">
         <div class="info-card-body">
-          WasteLens maintains technical honesty regarding edge classification limitations.
-          A formal 13-image empirical benchmark evaluated under headless Chrome established a finding of <strong>READY WITH LIMITATIONS</strong>:
-          <ul>
-            <li><strong>Quadrant Duplication on Centered Items:</strong> Large centered items overlap non-adjacent quadrants ($\text{IoU} < 0.30$), occasionally producing 3 to 5 candidate region boxes for a single item.</li>
-            <li><strong>Bridging Center Proposals:</strong> The central proposal window spans separated objects, generating an extra bridging proposal between distinct items.</li>
-            <li><strong>Domain Shift False Rejection:</strong> Domestic countertops or textured asphalt drift from studio training framing, occasionally scoring above the $0.0702$ threshold on valid waste.</li>
-            <li><strong>Trained Object Detection (Future Work):</strong> True bounding-box localization (YOLOv8-nano) requires dense regression anchors and is planned for future iterations.</li>
+          WasteLens maintains complete technical honesty regarding model capabilities and spatial heuristic boundaries.
+          A formal 13-image empirical benchmark evaluated under headless Chrome established an overall finding of <strong>READY WITH LIMITATIONS</strong>.
+
+          <table class="audit-table" style="width:100%; margin-top:16px; margin-bottom:16px; border-collapse:collapse; font-size:13px;">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--border-subtle); color: var(--text-muted); text-align: left;">
+                <th style="padding: 8px 12px;">Dimension</th>
+                <th style="padding: 8px 12px;">Single Item Mode (Production Default)</th>
+                <th style="padding: 8px 12px;">Multi-Region Mode (Experimental Heuristic)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border-subtle);">
+                <td style="padding: 8px 12px; font-weight:600;">Architecture</td>
+                <td style="padding: 8px 12px;">MobileNetV2 Dual-Head Classifier (ImageNet backbone)</td>
+                <td style="padding: 8px 12px;">8-Window Fixed Spatial Proposals + Batched cropAndResize</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-subtle);">
+                <td style="padding: 8px 12px; font-weight:600;">Validation Accuracy</td>
+                <td style="padding: 8px 12px; color: var(--accent-emerald);">98.13% (1,233 test images, single item)</td>
+                <td style="padding: 8px 12px; color: var(--cat-organic);">Partially Useful (53.8% plausible regions in audit)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-subtle);">
+                <td style="padding: 8px 12px; font-weight:600;">OOD Rejection Gate</td>
+                <td style="padding: 8px 12px;">Calibrated 0.0702 threshold (99.64% OOD detection)</td>
+                <td style="padding: 8px 12px;">Per-window 0.0702 threshold (filters non-waste windows)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-subtle);">
+                <td style="padding: 8px 12px; font-weight:600;">Localization Method</td>
+                <td style="padding: 8px 12px;">Holistic frame evaluation (no bounding boxes)</td>
+                <td style="padding: 8px 12px;">Fixed candidate proposal windows (not trained bounding boxes)</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 12px; font-weight:600;">Academic Status</td>
+                <td style="padding: 8px 12px; color: var(--accent-emerald);">Fully Verified Core Submission</td>
+                <td style="padding: 8px 12px; color: var(--text-muted);">Experimental Feature (Documented Limitations)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top: 12px; font-weight:600; color: var(--text-primary);">Documented Architectural Limitations:</div>
+          <ul style="margin-top: 6px;">
+            <li><strong>Quadrant Duplication on Centered Items:</strong> Large centered items overlap non-adjacent quadrants ($\text{IoU} < 0.30$), producing 3 to 5 candidate region boxes for a single item.</li>
+            <li><strong>Bridging Center Proposals:</strong> In two-item layouts, the central proposal window spans between separated objects, generating a redundant bridging proposal.</li>
+            <li><strong>Domain Shift False Rejection:</strong> Domestic countertops or textured backgrounds drift from studio training framing, occasionally scoring above $0.0702$ on valid waste items.</li>
+            <li><strong>Non-Waste Edge Confusions:</strong> Isolated apparel or non-waste objects without contextual background can produce false-positive candidate regions.</li>
+            <li><strong>Trained Object Detection (Future Work):</strong> True bounding-box localization with dense anchor regressions (such as YOLOv8-nano or SSD) requires full instance-level bounding box annotations and is planned for future iterations.</li>
           </ul>
         </div>
       </div>
@@ -2284,7 +2325,7 @@
 
     if (!result.accepted || result.accepted.length === 0) {
       els.multiSummaryTitle.textContent = '0 Candidate Waste Regions';
-      els.multiItemsList.innerHTML = '<div class="multi-empty-state">No candidate waste regions identified. All examined proposal windows were flagged as unsupported non-waste or ambiguous.</div>';
+      els.multiItemsList.innerHTML = '<div class="multi-empty-state"><strong>No Candidate Waste Regions Identified</strong><br>All examined proposal windows were flagged as unsupported non-waste background, ambiguous, or out-of-distribution (rejection threshold 0.0702).<br><em>Tip: For individual items on plain surfaces, use Single Item mode for highest classification reliability.</em></div>';
     } else {
       els.multiSummaryTitle.textContent = result.accepted.length + (result.accepted.length === 1 ? ' Candidate Waste Region' : ' Candidate Waste Regions');
       els.multiItemsList.innerHTML = '';
