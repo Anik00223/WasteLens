@@ -322,9 +322,9 @@ In addition to benchmark metrics on held-out test splits, informal qualitative t
 | **Shoe** | Unsupported, rejection 99.3% | Rejected | Correct OOD rejection of unsupported apparel |
 | **Mobile phone** | Recyclable, 100% | False acceptance | Rejection failure: glass/metal textures triggered confident recyclable classification |
 
-### 14.2 Multi-Waste Real-World Validation Audit (13-Image Benchmark)
+### 14.2 Multi-Waste Real-World Validation Audit (14-Image Benchmark)
 
-To assess the practical utility and limitations of the Multi-Region Analysis mode, a headless browser audit was conducted across 13 diverse real-world images spanning five categories:
+To assess the practical utility and limitations of the Multi-Region Analysis mode, a headless browser audit was conducted across 14 diverse real-world images spanning five categories:
 
 | ID | Category | Scene Description | Single-Item Result | Multi-Region Analysis Result | Assessment |
 |---|---|---|---|---|---|

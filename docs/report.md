@@ -215,9 +215,9 @@ Rather than executing 8 sequential model inferences with recurrent DOM and WebGL
 - **Candidate Region Breakdown:** Detailed list displaying proposal window location, margin, confidence, and actionable binning guidelines.
 - **Automated Verification:** Validated via 42 Python contract tests, 60 JavaScript decision logic tests, and headless Chrome CDP end-to-end automation.
 
-### 7.6 Real-World Multi-Waste Validation Audit (13-Image Benchmark)
+### 7.6 Real-World Multi-Waste Validation Audit (14-Image Benchmark)
 
-To empirically assess the operational behavior and limitations of Multi-Region Analysis on genuine waste photography, a headless browser audit was executed across 13 diverse images spanning five experimental categories:
+To empirically assess the operational behavior and limitations of Multi-Region Analysis on genuine waste photography, a headless browser audit was executed across 14 diverse images spanning five experimental categories:
 
 | ID | Category | Scene Description | Single-Item Result | Multi-Region Analysis Result | Assessment |
 |---|---|---|---|---|---|
