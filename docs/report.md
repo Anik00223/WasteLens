@@ -167,15 +167,22 @@ decision), `rejection_report_frozen.md` (metrics),
 supersedes the confidence-rejection *future-work* options noted in
 sections 4.1 and 5 - they are now implemented model-side.
 
-## 7. Multi-Waste Candidate Region Analysis (MVP Extension)
+## 7. Experimental Multi-Region Analysis (Candidate Proposals MVP)
 
 ### 7.1 Motivation and Problem Context
 The baseline single-item system enforces a strict single-object photo constraint: when presented with cluttered multi-waste scenes, the dual-head rejection head appropriately triggers an `unsupported` verdict (as demonstrated by mixed household waste rejection at $97.0\%$). However, domestic disposal scenarios frequently involve scenes containing multiple distinct waste items (e.g. an aluminum can next to food waste).
 
-To provide actionable guidance without claiming or fabricating a true trained object detector (such as YOLO or Faster R-CNN), WasteLens introduces a **Multi-Waste Analysis Mode** powered by spatial candidate proposals, native TensorFlow.js batching, and IoU duplicate suppression.
+To provide actionable guidance without claiming or fabricating a true trained object detector (such as YOLO or Faster R-CNN), WasteLens introduces a **Multi-Region Analysis Mode** powered by spatial candidate proposals, native TensorFlow.js batching, and IoU duplicate suppression.
 
 ### 7.2 Engineering Architecture and Technical Honesty
-- **No Fabricated Object Detection:** WasteLens explicitly distinguishes image-level candidate region classification from trained bounding-box regression. The model weights, 4-class taxonomy, and calibrated rejection threshold ($0.0702$) are strictly preserved.
+- **Three-Level Conceptual Delineation:**
+  1. *Single-Item Classification (Default):* Full-image inference with frozen MobileNetV2 backbone, 4-class classification head, and calibrated OOD rejection at $0.0702$.
+  2. *Multi-Region Candidate Analysis (Experimental MVP):* Fixed 8-window spatial proposal grid evaluated via single-pass batched inference, per-window dual-head rejection, and IoU duplicate suppression.
+  3. *True Object Detection (Future Work):* End-to-end bounding box regression and feature localization (e.g. YOLOv8, SSD). This is **not** implemented in WasteLens.
+- **Honest User-Facing Terminology:**
+  - Bounding boxes are explicitly identified as **fixed spatial proposal windows**, not trained object-detection bounding boxes.
+  - Results are presented as **"Candidate Waste Regions"** rather than "Detected Objects".
+  - Mode is designated as **"Multi-Region Analysis"** with an active experimental advisory notice.
 - **Deterministic 8-Window Spatial Proposal Grid:**
   1. `Full Scene`: $[0.0, 0.0, 1.0, 1.0]$ (Holistic context)
   2. `Center Region`: $[0.20, 0.20, 0.80, 0.80]$ (Focal center)
@@ -194,14 +201,58 @@ Rather than executing 8 sequential model inferences with recurrent DOM and WebGL
 3. `model.predict(batchTensor)` evaluates all candidate windows in a single forward pass, returning $[8, 4]$ category probabilities and $[8, 1]$ rejection scores.
 
 ### 7.4 Rejection Filtering and Non-Maximum Suppression (NMS)
-1. **OOD Exclusion:** Each candidate window is independently evaluated against `REJECT_THRESHOLD = 0.0702`. Windows containing empty backgrounds, non-waste surfaces, or multi-object visual confusion are excluded from the detected items count and disclosed under the "Excluded Non-Waste Regions" summary.
+1. **OOD Exclusion:** Each candidate window is independently evaluated against `REJECT_THRESHOLD = 0.0702`. Windows containing empty backgrounds, non-waste surfaces, or multi-object visual confusion are excluded from the candidate regions count and disclosed under the "Excluded Non-Waste Regions" summary.
 2. **Confidence-Prioritized Ranking:** Valid candidate regions are sorted with confident supported windows prioritized over uncertain windows, ordered by top class probability.
 3. **IoU Duplicate Suppression:**
    - For candidate pairs with identical predicted categories: if $\text{IoU} \ge 0.30$, the lower-ranked candidate is suppressed as a redundant crop of the same physical object.
    - For candidate pairs with conflicting categories: if $\text{IoU} \ge 0.60$, spatial overlap is resolved in favor of the higher-confidence candidate.
 
 ### 7.5 User Interface and Verification
-- **Dual-Mode UI:** Segmented selector (`Single Item` vs `Multi Waste`). Toggling modes re-evaluates the active image without re-uploading.
-- **Responsive Visual Overlays:** Color-coded bounding boxes positioned via percentage CSS styling with item number, class chip, and confidence tags.
-- **Item Breakdown Cards:** Detailed list displaying region location, margin, confidence, and actionable binning guidelines.
+- **Single Item Default:** The interface initializes in Single Item mode for maximum reliability and classification fidelity.
+- **Visible Experimental Advisory:** When switched to Multi-Region Analysis, a warning notice is displayed:
+  > *Experimental Multi-Waste Analysis: This mode examines several fixed image regions. It may duplicate, miss or incorrectly classify objects. For the most reliable results, use Single Item mode.*
+- **Responsive Visual Overlays:** Color-coded proposal window outlines positioned via percentage CSS styling with region identifier (`Region #N`), category chip, and confidence.
+- **Candidate Region Breakdown:** Detailed list displaying proposal window location, margin, confidence, and actionable binning guidelines.
 - **Automated Verification:** Validated via 42 Python contract tests, 60 JavaScript decision logic tests, and headless Chrome CDP end-to-end automation.
+
+### 7.6 Real-World Multi-Waste Validation Audit (13-Image Benchmark)
+
+To empirically assess the operational behavior and limitations of Multi-Region Analysis on genuine waste photography, a headless browser audit was executed across 13 diverse images spanning five experimental categories:
+
+| ID | Category | Scene Description | Single-Item Result | Multi-Region Analysis Result | Assessment |
+|---|---|---|---|---|---|
+| **A1** | Single Item | Centered 12-oz aluminium can | Recyclable 100.0% | 5 Regions (Center, TL, TR, BL, BR) | Quadrant duplication |
+| **A2** | Single Item | Plastic bottle filling frame | Recyclable 100.0% | 1 Region (Full Scene) | Clean single detection |
+| **A3** | Single Item | Banana peel on natural surface | Unsupported (reject 82.6%) | 0 Regions (all windows OOD) | Domain shift false rejection |
+| **A4** | Single Item | Button cell batteries | Recyclable 91.8% | 3 Regions (BR, BL, TC) | Regional duplication / misclassification |
+| **B1** | Two Items | Two separated soda cans | Unsupported (reject 14.4%) | 3 Regions (Center, TL: Can 1, TR: Can 2) | Useful separation with bridging center |
+| **B2** | Two Items | Bowl & bottle on ledge | Unsupported (reject 9.5%) | 3 Regions (BR: Bottle, BL: Bowl, Center) | Useful separation; background rejected |
+| **C1** | 3–5 Items | Litter on ground | Recyclable 100.0% | 4 Regions (BL, BR, TR, Center) | Coarse itemization |
+| **C2** | 3–5 Items | Cardboard boxes on street | Unsupported (reject 76.4%) | 0 Regions (all windows OOD) | Domain shift (street asphalt) |
+| **D1** | Mixed Clutter | Beach litter on sand | Unsupported (reject 70.5%) | 2 Regions (TL, TR) | Background rejected, partial items detected |
+| **D2** | Mixed Clutter | Indoor mixed waste pile | Recyclable 100.0% | 1 Region (Full Scene) | Overly coarse full-scene fallback |
+| **E1** | Non-Waste OOD | Shoes on plain background | Recyclable 100.0% | 1 Region (Full Scene) | False acceptance (leather/fabric) |
+| **E2** | Non-Waste OOD | Folded cotton shirt | Recyclable 100.0% | 1 Region (Full Scene) | False acceptance (fabric texture) |
+| **E3** | Non-Waste OOD | Computer keyboard | Unsupported (reject 97.3%) | 1 Region (TL crop) | Rejection leakage in crop window |
+| **E4** | Non-Waste OOD | Outdoor park landscape | Unsupported (reject 97.6%) | 0 Regions (8/8 windows rejected) | Clean 100% OOD rejection |
+
+#### Empirical Assessment: READY WITH LIMITATIONS
+
+The empirical audit establishes that the Multi-Region Analysis feature is **Partially Useful (Ready with Limitations)**:
+- **Demonstrated Utility:** In scenes with distinct items separated across quadrants (Tests B1, B2, D1), the proposal grid successfully breaks down the scene into identifiable waste streams while Single Item mode rejects the entire image as ambiguous clutter. Background surfaces outside the waste objects are cleanly excluded.
+- **Operational Failure Modes:**
+  1. *Quadrant Duplication on Centered Objects (Tests A1, A4):* A large single object situated in the image center intersects all four quadrant windows ($[0,0,0.6,0.6]$, $[0,0.4,0.6,1]$, etc.). Because non-overlapping quadrants have an $\text{IoU} < 0.30$, the duplicate suppression algorithm cannot merge them without aggressively suppressing valid multi-item layouts elsewhere. This can produce 3 to 5 candidate region boxes for a single item.
+  2. *Bridging Center Proposals (Tests B1, B2):* The central window ($[0.2, 0.2, 0.8, 0.8]$) spans across separated objects, frequently producing an extra "bridging" proposal between two distinct items.
+  3. *Domain Shift False Rejections (Tests A3, C2):* Complex natural or urban backgrounds (asphalt, soil, textured wood) trigger OOD rejection scores exceeding $0.0702$ across every proposal window, yielding 0 candidate regions despite visible waste.
+  4. *Crop Window Rejection Leakage (Tests E1, E2, E3):* High-texture non-waste objects cropped into regional windows can activate edge detectors that score below the $0.0702$ rejection threshold, causing false acceptance into the recyclable bin.
+
+#### Architectural Summary: Fixed Spatial Proposals vs. Object Detection
+
+| Feature | WasteLens Multi-Region Mode | True Object Detection (e.g., YOLOv8) |
+|---|---|---|
+| **Mechanism** | Fixed heuristic spatial grid (8 windows) | Anchor-free or anchor-based regression |
+| **Localization** | Approximate proposal boundaries | Pixel-accurate tight bounding boxes |
+| **Classification** | Image-level MobileNetV2 head on crops | Dense feature map multi-scale prediction |
+| **Training Data** | Single-item classification dataset | Bounding-box annotated detection dataset |
+| **Model Footprint** | Zero additional weights (uses same TF.js model) | Separate 10MB–50MB detector model |
+| **Status** | Implemented as experimental client-side MVP | Unimplemented (identified as future work) |

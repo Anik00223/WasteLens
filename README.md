@@ -184,23 +184,27 @@ The decision layer operates in strict priority order:
 
 The frontend is implemented as a standalone static application in `web/index.html` (zero server dependencies):
 
-### 10.1 Dual Operational Modes
-- **Single Item Mode (Default):**
-  - Optimized for standard waste categorization.
-  - Holistic classification via MobileNetV2 with full-image dual-head inference.
-  - Three outcome states (`Supported`, `Uncertain`, `Unsupported`).
-- **Multi-Waste Analysis Mode (Candidate Proposals MVP):**
-  - Designed for multi-object scenes (e.g. bottle + can + organic waste).
-  - Generates a deterministic 8-window spatial proposal grid covering global, center, and overlapping quadrants.
-  - Executes single-pass batched `tf.image.cropAndResize` inference in TensorFlow.js.
-  - Evaluates each candidate window against the calibrated OOD rejection threshold ($0.0702$), excluding non-waste background surfaces with transparent disclosure.
-  - Applies Non-Maximum Suppression (NMS) with IoU ($0.30$ same-class threshold, $0.60$ cross-class threshold) to remove duplicate crops.
-  - Renders responsive bounding-box overlays on the image preview and an itemized breakdown list with binning guidelines.
-  - *Engineering Honesty:* Explicitly documented as multi-region candidate classification, NOT a trained YOLO bounding-box regression model.
+### 10.1 Conceptual Architecture: Three Distinct Levels
+
+To maintain technical honesty, WasteLens strictly delineates three distinct levels of image analysis:
+
+1. **Official Single-Item Classification (Default):**
+   - The primary, fully verified application mode.
+   - Holistic image evaluation using MobileNetV2 with calibrated dual-head OOD rejection (`REJECT_THRESHOLD = 0.0702`) and ambiguity margins.
+   - Produces three discrete states: `Supported`, `Uncertain`, `Unsupported`.
+2. **Experimental Multi-Region Analysis (Candidate Proposals MVP):**
+   - A client-side experimental feature for scenes containing multiple separated waste items.
+   - Evaluates a deterministic grid of 8 fixed spatial proposal windows via batched `tf.image.cropAndResize`.
+   - Filters non-waste windows with the frozen 0.0702 rejection threshold and suppresses overlapping duplicates via IoU.
+   - Displays a persistent experimental notice in the UI: *"Experimental Multi-Waste Analysis: This mode examines several fixed image regions. It may duplicate, miss or incorrectly classify objects. For the most reliable results, use Single Item mode."*
+   - Rectangles represent **fixed spatial proposals**, not trained object-detection bounding boxes.
+3. **True Object Detection (Future Work — Unimplemented):**
+   - End-to-end bounding box regression and object localization (e.g., YOLO, SSD, Faster R-CNN).
+   - WasteLens does **not** implement a trained object detector; it relies on image-level classification over candidate proposals.
 
 ### 10.2 Client-Side Reliability
 - **Privacy & Speed:** Model and weight shards run 100% locally in the browser with WebGL acceleration (fallback to CPU/Wasm).
-- **Responsive Controls:** Instant mode switching without re-uploading the loaded photograph.
+- **Responsive Controls:** Instant mode switching between Single Item and Multi-Region without re-uploading the photograph.
 - **Client Safeguards:** Checks against `file://` protocol misuse, missing weight shards, and invalid image formats.
 
 ---
@@ -305,7 +309,7 @@ To run a live interactive demonstration using Google Colab's cloud environment:
 
 ## 14. Documented Real-World Limitations
 
-### Qualitative Manual Demonstration Results
+### 14.1 Qualitative Manual Demonstration Results (Single-Item Mode)
 
 In addition to benchmark metrics on held-out test splits, informal qualitative testing was performed during live demonstrations:
 
@@ -318,7 +322,36 @@ In addition to benchmark metrics on held-out test splits, informal qualitative t
 | **Shoe** | Unsupported, rejection 99.3% | Rejected | Correct OOD rejection of unsupported apparel |
 | **Mobile phone** | Recyclable, 100% | False acceptance | Rejection failure: glass/metal textures triggered confident recyclable classification |
 
-### Analysis of Limitations
+### 14.2 Multi-Waste Real-World Validation Audit (13-Image Benchmark)
+
+To assess the practical utility and limitations of the Multi-Region Analysis mode, a headless browser audit was conducted across 13 diverse real-world images spanning five categories:
+
+| ID | Category | Scene Description | Single-Item Result | Multi-Region Analysis Result | Assessment |
+|---|---|---|---|---|---|
+| **A1** | Single Item | Centered 12-oz aluminium can | Recyclable 100.0% | 5 Regions (Center, TL, TR, BL, BR) | Quadrant duplication |
+| **A2** | Single Item | Plastic bottle filling frame | Recyclable 100.0% | 1 Region (Full Scene) | Clean single detection |
+| **A3** | Single Item | Banana peel on natural surface | Unsupported (reject 82.6%) | 0 Regions (all windows OOD) | Domain shift false rejection |
+| **A4** | Single Item | Button cell batteries | Recyclable 91.8% | 3 Regions (BR, BL, TC) | Regional duplication / misclassification |
+| **B1** | Two Items | Two separated soda cans | Unsupported (reject 14.4%) | 3 Regions (Center, TL: Can 1, TR: Can 2) | Useful separation with bridging center |
+| **B2** | Two Items | Bowl & bottle on ledge | Unsupported (reject 9.5%) | 3 Regions (BR: Bottle, BL: Bowl, Center) | Useful separation; background rejected |
+| **C1** | 3–5 Items | Litter on ground | Recyclable 100.0% | 4 Regions (BL, BR, TR, Center) | Coarse itemization |
+| **C2** | 3–5 Items | Cardboard boxes on street | Unsupported (reject 76.4%) | 0 Regions (all windows OOD) | Domain shift (street asphalt) |
+| **D1** | Mixed Clutter | Beach litter on sand | Unsupported (reject 70.5%) | 2 Regions (TL, TR) | Background rejected, partial items detected |
+| **D2** | Mixed Clutter | Indoor mixed waste pile | Recyclable 100.0% | 1 Region (Full Scene) | Overly coarse full-scene fallback |
+| **E1** | Non-Waste OOD | Shoes on plain background | Recyclable 100.0% | 1 Region (Full Scene) | False acceptance (leather/fabric) |
+| **E2** | Non-Waste OOD | Folded cotton shirt | Recyclable 100.0% | 1 Region (Full Scene) | False acceptance (fabric texture) |
+| **E3** | Non-Waste OOD | Computer keyboard | Unsupported (reject 97.3%) | 1 Region (TL crop) | Rejection leakage in crop window |
+| **E4** | Non-Waste OOD | Outdoor park landscape | Unsupported (reject 97.6%) | 0 Regions (8/8 windows rejected) | Clean 100% OOD rejection |
+
+**Overall Audit Finding:** **READY WITH LIMITATIONS** (Partially Useful). Multi-Region Analysis successfully separates distinct items in moderate two-item scenes where Single-Item mode rejects the entire frame. However, its heuristic proposal architecture exhibits four clear operational failure modes:
+1. **Quadrant Duplication on Centered Objects:** When an item occupies the image center, multiple non-overlapping quadrant crops capture parts of the same item. Because disjoint quadrants have $\text{IoU} < 0.30$, IoU suppression cannot eliminate them without risking suppression of legitimate multi-item layouts.
+2. **Bridging Center Proposals:** In two-item scenes, the center proposal window ($[0.2, 0.2, 0.8, 0.8]$) frequently encompasses parts of both items, generating a third redundant proposal.
+3. **Domain Shift False Rejections:** Natural outdoor surfaces (dirt, gravel, asphalt) trigger high rejection scores ($> 0.0702$) across all proposal windows, resulting in zero candidate regions even when waste is visible.
+4. **False Acceptance on Regional Crops:** Crop windows containing non-waste items with plastic or metallic textures can trigger false acceptance as recyclable.
+
+*Key Takeaway:* The candidate rectangles indicate **fixed spatial proposal windows**, not trained bounding-box regressions. For mission-critical single-item sorting, users should always rely on Single-Item mode.
+
+### 14.3 Analysis of Underlying Limitations
 
 1. **Domain Shift & False Rejections (Banana Peel Observation):**
    The training dataset consists predominantly of single objects photographed on plain, uniform backgrounds. When tested on real-world mobile photographs with complex countertop or kitchen textures, feature drift can cause elevated rejection scores (e.g., a real banana peel scoring `reject = 89.1%` despite `organic = 95.2%`). Independent evaluation on fresh real-world images demonstrated a 33.3% false rejection rate at the strict 0.0702 threshold.

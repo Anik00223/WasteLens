@@ -233,6 +233,16 @@
     gap: 10px;
     margin: 4px 0 12px;
   }
+  .multi-experimental-notice {
+    background: var(--warning-soft);
+    border: 1px solid rgba(224, 176, 108, 0.4);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: var(--warning);
+    line-height: 1.45;
+  }
   .multi-summary-title {
     font-size: 22px;
     font-weight: 700;
@@ -407,10 +417,13 @@
       </div>
 
       <div id="multiResultPanel" hidden>
-        <div class="bin-label">Multi-Waste Analysis</div>
+        <div class="bin-label">Multi-Region Analysis</div>
         <div class="multi-header-row">
-          <div class="multi-summary-title" id="multiSummaryTitle">Detected Items</div>
+          <div class="multi-summary-title" id="multiSummaryTitle">Candidate Waste Regions</div>
           <div class="multi-timing-badge" id="multiTimingBadge"></div>
+        </div>
+        <div class="multi-experimental-notice" role="note">
+          <strong>Experimental Multi-Waste Analysis:</strong> This mode examines several fixed image regions. It may duplicate, miss or incorrectly classify objects. For the most reliable results, use Single Item mode.
         </div>
         <div id="multiItemsList" class="multi-items-list"></div>
         <div id="multiRejectedSection" class="multi-rejected-section" hidden>
@@ -418,7 +431,7 @@
           <div id="multiRejectedList" class="multi-rejected-list"></div>
         </div>
         <div class="scope-note">
-          <strong>Candidate Region Methodology:</strong> Evaluates 8 spatial candidate windows in a single batched MobileNetV2 pass with IoU duplicate suppression and dual-head OOD rejection (threshold 0.0702). This provides candidate-region classification for scenes with multiple items; it is not an end-to-end trained object detector (YOLO).
+          <strong>Fixed Spatial Proposal Methodology:</strong> Evaluates 8 fixed candidate proposal windows in a single batched MobileNetV2 pass with IoU duplicate suppression and dual-head OOD rejection (threshold 0.0702). These rectangles represent fixed spatial proposals, not trained object-detection bounding boxes.
         </div>
       </div>
     </div>
@@ -787,10 +800,10 @@
     els.multiTimingBadge.textContent = dt + ' ms (batched)';
 
     if (!result.accepted || result.accepted.length === 0) {
-      els.multiSummaryTitle.textContent = '0 Supported Items Detected';
-      els.multiItemsList.innerHTML = '<div class="multi-empty-state">No supported waste items identified in candidate regions. The photographed scene appears out-of-distribution, ambiguous, or contains non-waste objects.</div>';
+      els.multiSummaryTitle.textContent = '0 Candidate Waste Regions';
+      els.multiItemsList.innerHTML = '<div class="multi-empty-state">No candidate waste regions identified. All examined proposal windows were flagged as unsupported non-waste or ambiguous.</div>';
     } else {
-      els.multiSummaryTitle.textContent = result.accepted.length + (result.accepted.length === 1 ? ' Item Detected' : ' Items Detected');
+      els.multiSummaryTitle.textContent = result.accepted.length + (result.accepted.length === 1 ? ' Candidate Waste Region' : ' Candidate Waste Regions');
       els.multiItemsList.innerHTML = '';
 
       result.accepted.forEach(function (item, idx) {
@@ -808,7 +821,7 @@
 
         var bLabel = document.createElement('div');
         bLabel.className = 'bbox-label';
-        bLabel.textContent = '#' + num + ' ' + cat.toUpperCase() + ' ' + (item.confidence * 100).toFixed(0) + '%';
+        bLabel.textContent = 'Region #' + num + ' ' + cat.toUpperCase() + ' ' + (item.confidence * 100).toFixed(0) + '%';
         bbox.appendChild(bLabel);
         els.boxOverlay.appendChild(bbox);
 
@@ -820,7 +833,7 @@
 
         var titleDiv = document.createElement('div');
         titleDiv.className = 'multi-item-title';
-        titleDiv.innerHTML = '<span class="multi-item-num">#' + num + '</span> ' +
+        titleDiv.innerHTML = '<span class="multi-item-num">Region #' + num + '</span> ' +
           cat.charAt(0).toUpperCase() + cat.slice(1);
 
         var confDiv = document.createElement('div');
@@ -832,7 +845,7 @@
 
         var metaDiv = document.createElement('div');
         metaDiv.className = 'multi-item-meta';
-        metaDiv.textContent = 'Region: ' + item.regionName + ' \u00b7 Margin: ' + (item.verdict.margin * 100).toFixed(1) + '%' +
+        metaDiv.textContent = 'Proposal Window: ' + item.regionName + ' \u00b7 Margin: ' + (item.verdict.margin * 100).toFixed(1) + '%' +
           (isUncertain ? ' \u00b7 Status: Uncertain' : ' \u00b7 Status: Confident');
 
         var guideDiv = document.createElement('div');
@@ -856,7 +869,7 @@
 
     if (result.rejected && result.rejected.length > 0) {
       els.multiRejectedSection.hidden = false;
-      els.multiRejectedTitle.textContent = result.rejected.length + ' Candidate Region' +
+      els.multiRejectedTitle.textContent = result.rejected.length + ' Proposal Window' +
         (result.rejected.length === 1 ? '' : 's') + ' Excluded (OOD)';
       var rejSummary = result.rejected.map(function (r) {
         return r.regionName + ' (reject ' + (r.verdict.reject * 100).toFixed(1) + '%)';

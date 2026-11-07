@@ -104,7 +104,7 @@ class ApplicationContractTests(unittest.TestCase):
         self.assertEqual(decide([0.90, 0.05, 0.03, 0.02], 0.07019), "supported")
 
     def test_multi_waste_contract_elements(self):
-        """Verify presence of mode switch, candidate regions, IoU, and multi-waste DOM elements."""
+        """Verify presence of mode switch, candidate regions, IoU, experimental notice, and DOM elements."""
         index_html_path = WEB_DIR / "index.html"
         content = index_html_path.read_text(encoding="utf-8")
 
@@ -116,6 +116,10 @@ class ApplicationContractTests(unittest.TestCase):
         self.assertIn("function suppressDuplicateRegions(candidates", content)
         self.assertIn('id="multiResultPanel"', content)
         self.assertIn('id="boxOverlay"', content)
+        self.assertIn("Candidate Waste Regions", content)
+        self.assertIn("Multi-Region Analysis", content)
+        self.assertIn("Experimental Multi-Waste Analysis:", content)
+        self.assertIn("This mode examines several fixed image regions", content)
 
     def test_iou_mathematical_parity(self):
         """Verify IoU calculation matches expected geometry."""
