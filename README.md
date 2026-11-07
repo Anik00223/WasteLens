@@ -20,7 +20,7 @@ The application operates **100% client-side** inside the browser using TensorFlo
 
 The application supports **two operational modes**:
 1. **Single Item (Default):** Holistic image evaluation with dual-head OOD rejection (`REJECT_THRESHOLD = 0.0702`) and ambiguity detection.
-2. **Multi Waste (Candidate Region MVP):** Multi-item analysis using an 8-window spatial proposal grid, single-pass batched `cropAndResize` inference, per-window dual-head OOD filtering, and IoU duplicate suppression.
+2. **Multi-Region Analysis (Experimental Feature):** Multi-item analysis using an 8-window fixed spatial proposal grid, single-pass batched `cropAndResize` inference, per-window dual-head OOD filtering, and IoU duplicate suppression. Evaluates coarse candidate regions; not an end-to-end trained object detector. Substantially less reliable on dense clutter and overlapping objects.
 
 In both modes, the system assigns one of **three distinct verdict states**:
 - **Supported:** Confident classification into one of the four supported waste streams.
@@ -348,6 +348,7 @@ To assess the practical utility and limitations of the Multi-Region Analysis mod
 2. **Bridging Center Proposals:** In two-item scenes, the center proposal window ($[0.2, 0.2, 0.8, 0.8]$) frequently encompasses parts of both items, generating a third redundant proposal.
 3. **Domain Shift False Rejections:** Natural outdoor surfaces (dirt, gravel, asphalt) trigger high rejection scores ($> 0.0702$) across all proposal windows, resulting in zero candidate regions even when waste is visible.
 4. **False Acceptance on Regional Crops:** Crop windows containing non-waste items with plastic or metallic textures can trigger false acceptance as recyclable.
+5. **Dense Clutter and Overlapping Objects:** The fixed 8-window spatial grid lacks fine multi-scale anchors. In scenes with dense clutter or physically overlapping items, multiple items fall into the same candidate crop, causing the model to predict only the visually dominant item or fall back to an overly coarse full-scene prediction.
 
 *Key Takeaway:* The candidate rectangles indicate **fixed spatial proposal windows**, not trained bounding-box regressions. For mission-critical single-item sorting, users should always rely on Single-Item mode.
 

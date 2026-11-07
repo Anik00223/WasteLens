@@ -245,6 +245,7 @@ The empirical audit establishes that the Multi-Region Analysis feature is **Part
   2. *Bridging Center Proposals (Tests B1, B2):* The central window ($[0.2, 0.2, 0.8, 0.8]$) spans across separated objects, frequently producing an extra "bridging" proposal between two distinct items.
   3. *Domain Shift False Rejections (Tests A3, C2):* Complex natural or urban backgrounds (asphalt, soil, textured wood) trigger OOD rejection scores exceeding $0.0702$ across every proposal window, yielding 0 candidate regions despite visible waste.
   4. *Crop Window Rejection Leakage (Tests E1, E2, E3):* High-texture non-waste objects cropped into regional windows can activate edge detectors that score below the $0.0702$ rejection threshold, causing false acceptance into the recyclable bin.
+  5. *Dense Clutter and Overlapping Objects (Tests C1, D2):* The fixed 8-window spatial grid lacks fine multi-scale anchors. In scenes with dense clutter or physically overlapping items, multiple items fall into the same candidate crop, causing the model to predict only the visually dominant item or fall back to an overly coarse full-scene prediction.
 
 #### Architectural Summary: Fixed Spatial Proposals vs. Object Detection
 
