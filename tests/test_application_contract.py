@@ -103,6 +103,90 @@ class ApplicationContractTests(unittest.TestCase):
         # 5. Just below threshold with high top and margin -> supported
         self.assertEqual(decide([0.90, 0.05, 0.03, 0.02], 0.07019), "supported")
 
+    def test_multi_waste_contract_elements(self):
+        """Verify presence of mode switch, candidate regions, IoU, and multi-waste DOM elements."""
+        index_html_path = WEB_DIR / "index.html"
+        content = index_html_path.read_text(encoding="utf-8")
+
+        self.assertIn('id="modeSingle"', content)
+        self.assertIn('id="modeMulti"', content)
+        self.assertIn('Analysis mode:', content)
+        self.assertIn("var CANDIDATE_REGIONS = [", content)
+        self.assertIn("function calculateIoU(boxA, boxB)", content)
+        self.assertIn("function suppressDuplicateRegions(candidates", content)
+        self.assertIn('id="multiResultPanel"', content)
+        self.assertIn('id="boxOverlay"', content)
+
+    def test_iou_mathematical_parity(self):
+        """Verify IoU calculation matches expected geometry."""
+        def calculate_iou(box_a, box_b):
+            ymin = max(box_a[0], box_b[0])
+            xmin = max(box_a[1], box_b[1])
+            ymax = min(box_a[2], box_b[2])
+            xmax = min(box_a[3], box_b[3])
+            inter_h = max(0.0, ymax - ymin)
+            inter_w = max(0.0, xmax - xmin)
+            inter_area = inter_h * inter_w
+            area_a = max(0.0, box_a[2] - box_a[0]) * max(0.0, box_a[3] - box_a[1])
+            area_b = max(0.0, box_b[2] - box_b[0]) * max(0.0, box_b[3] - box_b[1])
+            union_area = area_a + area_b - inter_area
+            if union_area <= 0:
+                return 0.0
+            return inter_area / union_area
+
+        self.assertAlmostEqual(calculate_iou([0, 0, 1, 1], [0, 0, 1, 1]), 1.0)
+        self.assertAlmostEqual(calculate_iou([0, 0, 0.4, 0.4], [0.6, 0.6, 1.0, 1.0]), 0.0)
+        self.assertAlmostEqual(calculate_iou([0.2, 0.2, 0.8, 0.8], [0, 0, 1, 1]), 0.36)
+
+    def test_suppress_duplicate_regions_behavior(self):
+        """Verify NMS duplicate suppression separates OOD and filters overlapping duplicates."""
+        def calculate_iou(box_a, box_b):
+            ymin = max(box_a[0], box_b[0])
+            xmin = max(box_a[1], box_b[1])
+            ymax = min(box_a[2], box_b[2])
+            xmax = min(box_a[3], box_b[3])
+            inter = max(0.0, ymax - ymin) * max(0.0, xmax - xmin)
+            area_a = (box_a[2] - box_a[0]) * (box_a[3] - box_a[1])
+            area_b = (box_b[2] - box_b[0]) * (box_b[3] - box_b[1])
+            union = area_a + area_b - inter
+            return inter / union if union > 0 else 0.0
+
+        def suppress_duplicates(candidates, same_thresh=0.30, diff_thresh=0.60):
+            rejected = [c for c in candidates if c.get("state") == "unsupported"]
+            valid = [c for c in candidates if c.get("state") != "unsupported"]
+            valid.sort(key=lambda c: (1 if c.get("state") == "supported" else 0, c.get("top", 0)), reverse=True)
+
+            accepted = []
+            suppressed = []
+            for cand in valid:
+                is_dup = False
+                for acc in accepted:
+                    iou = calculate_iou(cand["box"], acc["box"])
+                    if cand["best"] == acc["best"] and iou >= same_thresh:
+                        is_dup = True
+                        break
+                    elif iou >= diff_thresh:
+                        is_dup = True
+                        break
+                if is_dup:
+                    suppressed.append(cand)
+                else:
+                    accepted.append(cand)
+            return accepted, suppressed, rejected
+
+        c_full = {"id": 1, "box": [0, 0, 1, 1], "state": "supported", "best": 0, "top": 0.95}
+        c_center = {"id": 2, "box": [0.2, 0.2, 0.8, 0.8], "state": "supported", "best": 0, "top": 0.99}
+        c_bottom_right = {"id": 3, "box": [0.4, 0.4, 1.0, 1.0], "state": "supported", "best": 1, "top": 0.96}
+        c_ood = {"id": 4, "box": [0, 0.4, 0.6, 1.0], "state": "unsupported", "best": 0, "top": 0.60}
+
+        accepted, suppressed, rejected = suppress_duplicates([c_full, c_center, c_bottom_right, c_ood])
+        self.assertEqual(len(rejected), 1)
+        self.assertEqual(rejected[0]["id"], 4)
+        self.assertEqual(len(accepted), 2)
+        self.assertEqual([c["id"] for c in accepted], [2, 3])
+        self.assertEqual(len(suppressed), 1)
+        self.assertEqual(suppressed[0]["id"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

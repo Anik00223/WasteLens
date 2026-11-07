@@ -36,9 +36,11 @@ A browser-based waste/garbage image classifier. The user either uploads an image
 - User accounts, authentication, or cloud storage
 - Anything beyond a single-page web demo
 
-## 6. Official Architecture and OOD Extension
+## 6. Official Architecture, OOD Extension, and Multi-Waste MVP
 
 - **Official Backbone:** MobileNetV2 (frozen ImageNet weights, 224x224x3 input).
 - **Dual-Head Architecture:** 4-class classification head (`predictions`, softmax) + Out-of-Distribution rejection head (`reject`, sigmoid).
 - **Verdict States:** Supported, Uncertain, and Unsupported (with calibrated rejection threshold $0.0702$).
+- **Multi-Waste Analysis Mode:** Candidate spatial proposals (8 bounded regions), single-pass batched `cropAndResize` inference, per-window dual-head OOD filtering, and Non-Maximum Suppression (NMS) duplicate reduction.
+- **Engineering Transparency:** Documented as multi-region candidate classification, not an end-to-end trained object detector (YOLO).
 - **Deployment:** 100% client-side in-browser inference via TensorFlow.js 4.22.0 (`web/index.html`). No FastAPI or server-side ML backend.

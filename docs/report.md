@@ -166,3 +166,42 @@ decision), `rejection_report_frozen.md` (metrics),
 `shipping_report.md` (Iteration 5 check enumeration). This section
 supersedes the confidence-rejection *future-work* options noted in
 sections 4.1 and 5 - they are now implemented model-side.
+
+## 7. Multi-Waste Candidate Region Analysis (MVP Extension)
+
+### 7.1 Motivation and Problem Context
+The baseline single-item system enforces a strict single-object photo constraint: when presented with cluttered multi-waste scenes, the dual-head rejection head appropriately triggers an `unsupported` verdict (as demonstrated by mixed household waste rejection at $97.0\%$). However, domestic disposal scenarios frequently involve scenes containing multiple distinct waste items (e.g. an aluminum can next to food waste).
+
+To provide actionable guidance without claiming or fabricating a true trained object detector (such as YOLO or Faster R-CNN), WasteLens introduces a **Multi-Waste Analysis Mode** powered by spatial candidate proposals, native TensorFlow.js batching, and IoU duplicate suppression.
+
+### 7.2 Engineering Architecture and Technical Honesty
+- **No Fabricated Object Detection:** WasteLens explicitly distinguishes image-level candidate region classification from trained bounding-box regression. The model weights, 4-class taxonomy, and calibrated rejection threshold ($0.0702$) are strictly preserved.
+- **Deterministic 8-Window Spatial Proposal Grid:**
+  1. `Full Scene`: $[0.0, 0.0, 1.0, 1.0]$ (Holistic context)
+  2. `Center Region`: $[0.20, 0.20, 0.80, 0.80]$ (Focal center)
+  3. `Top-Left Quadrant`: $[0.0, 0.0, 0.60, 0.60]$
+  4. `Top-Right Quadrant`: $[0.0, 0.40, 0.60, 1.0]$
+  5. `Bottom-Left Quadrant`: $[0.40, 0.0, 1.0, 0.60]$
+  6. `Bottom-Right Quadrant`: $[0.40, 0.40, 1.0, 1.0]$
+  7. `Top-Center Window`: $[0.05, 0.20, 0.65, 0.80]$
+  8. `Bottom-Center Window`: $[0.35, 0.20, 0.95, 0.80]$
+  The overlapping quadrant structure ($20\%$ coordinate overlap between $0.40$ and $0.60$) ensures waste items straddling boundaries are not truncated.
+
+### 7.3 Single Forward-Pass Batched Inference
+Rather than executing 8 sequential model inferences with recurrent DOM and WebGL memory transfers, WasteLens utilizes native batch tensor operations:
+1. `tf.image.cropAndResize(pixels.expandDims(0), boxes, boxIndices, [224, 224])` extracts and resizes all 8 spatial candidate crops in parallel.
+2. The batch tensor $[8, 224, 224, 3]$ is normalized via $(x / 127.5) - 1.0$.
+3. `model.predict(batchTensor)` evaluates all candidate windows in a single forward pass, returning $[8, 4]$ category probabilities and $[8, 1]$ rejection scores.
+
+### 7.4 Rejection Filtering and Non-Maximum Suppression (NMS)
+1. **OOD Exclusion:** Each candidate window is independently evaluated against `REJECT_THRESHOLD = 0.0702`. Windows containing empty backgrounds, non-waste surfaces, or multi-object visual confusion are excluded from the detected items count and disclosed under the "Excluded Non-Waste Regions" summary.
+2. **Confidence-Prioritized Ranking:** Valid candidate regions are sorted with confident supported windows prioritized over uncertain windows, ordered by top class probability.
+3. **IoU Duplicate Suppression:**
+   - For candidate pairs with identical predicted categories: if $\text{IoU} \ge 0.30$, the lower-ranked candidate is suppressed as a redundant crop of the same physical object.
+   - For candidate pairs with conflicting categories: if $\text{IoU} \ge 0.60$, spatial overlap is resolved in favor of the higher-confidence candidate.
+
+### 7.5 User Interface and Verification
+- **Dual-Mode UI:** Segmented selector (`Single Item` vs `Multi Waste`). Toggling modes re-evaluates the active image without re-uploading.
+- **Responsive Visual Overlays:** Color-coded bounding boxes positioned via percentage CSS styling with item number, class chip, and confidence tags.
+- **Item Breakdown Cards:** Detailed list displaying region location, margin, confidence, and actionable binning guidelines.
+- **Automated Verification:** Validated via 42 Python contract tests, 60 JavaScript decision logic tests, and headless Chrome CDP end-to-end automation.

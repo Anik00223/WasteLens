@@ -1,26 +1,31 @@
 # WasteLens — AI-Powered Waste Classification with Dual-Head OOD Rejection
 
-[![Tests](https://img.shields.io/badge/Python%20Tests-39%20passed-brightgreen.svg)]()
-[![JS Tests](https://img.shields.io/badge/JS%20Decision%20Tests-46%20passed-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Python%20Tests-42%20passed-brightgreen.svg)]()
+[![JS Tests](https://img.shields.io/badge/JS%20Decision%20Tests-60%20passed-brightgreen.svg)]()
 [![Architecture](https://img.shields.io/badge/Architecture-MobileNetV2%20Dual--Head-blue.svg)]()
+[![Modes](https://img.shields.io/badge/Modes-Single%20Item%20%7C%20Multi--Waste-purple.svg)]()
 [![Inference](https://img.shields.io/badge/Inference-Client--Side%20TensorFlow.js-orange.svg)]()
 
 > **B.Tech AI & ML Capstone Project**<br>
-> **Official Implementation:** MobileNetV2 + TensorFlow.js 4.22.0 client-side inference + Dual-head Out-of-Distribution (OOD) rejection.<br>
+> **Official Implementation:** MobileNetV2 + TensorFlow.js 4.22.0 client-side inference + Dual-head Out-of-Distribution (OOD) rejection + Multi-waste candidate region analysis.<br>
 > **Repository:** [https://github.com/Anik00223/WasteLens](https://github.com/Anik00223/WasteLens)
 
 ---
 
 ## 1. Project Overview
 
-**WasteLens** is an intelligent waste image classification system designed to make automated recycling practical and reliable. Unlike conventional image classifiers that force every input into a pre-defined waste category, WasteLens combines transfer learning with an integrated **Out-of-Distribution (OOD) rejection mechanism**.
+**WasteLens** is an intelligent waste image classification system designed to make automated recycling practical and reliable. Unlike conventional image classifiers that force every input into a pre-defined waste category, WasteLens combines transfer learning with an integrated **Out-of-Distribution (OOD) rejection mechanism** and **multi-waste candidate region analysis**.
 
 The application operates **100% client-side** inside the browser using TensorFlow.js. No images are uploaded to a remote server, ensuring privacy, instant inference, and offline operability.
 
-The system evaluates incoming images and assigns one of **three distinct verdict states**:
+The application supports **two operational modes**:
+1. **Single Item (Default):** Holistic image evaluation with dual-head OOD rejection (`REJECT_THRESHOLD = 0.0702`) and ambiguity detection.
+2. **Multi Waste (Candidate Region MVP):** Multi-item analysis using an 8-window spatial proposal grid, single-pass batched `cropAndResize` inference, per-window dual-head OOD filtering, and IoU duplicate suppression.
+
+In both modes, the system assigns one of **three distinct verdict states**:
 - **Supported:** Confident classification into one of the four supported waste streams.
 - **Uncertain:** The input is recognized as waste, but classification confidence or margin is ambiguous.
-- **Unsupported:** The input is detected as outside the supported single-item waste scope (e.g., non-waste objects, complex cluttered scenes, synthetic patterns).
+- **Unsupported:** The input is detected as outside the supported waste scope (e.g., non-waste objects, complex cluttered scenes, synthetic patterns).
 
 ---
 
@@ -175,15 +180,27 @@ The decision layer operates in strict priority order:
 
 ---
 
-## 10. Web Application Features
+## 10. Web Application Features & Operational Modes
 
-The frontend is implemented as a standalone static application in `web/index.html`:
-- **Direct Local Inference:** Model and weight shards are fetched and evaluated locally in the browser.
-- **Three Result States:**
-  - **Supported:** Displays the classified bin, confidence meter, and per-class probability breakdown.
-  - **Uncertain:** Amber warning card advising the user that the item is ambiguous or boundary-line.
-  - **Unsupported:** Red rejection card notifying the user that the image is outside the supported single-item waste scope.
-- **Input Support:** Drag-and-drop file upload, file browser selector, and mobile camera capture.
+The frontend is implemented as a standalone static application in `web/index.html` (zero server dependencies):
+
+### 10.1 Dual Operational Modes
+- **Single Item Mode (Default):**
+  - Optimized for standard waste categorization.
+  - Holistic classification via MobileNetV2 with full-image dual-head inference.
+  - Three outcome states (`Supported`, `Uncertain`, `Unsupported`).
+- **Multi-Waste Analysis Mode (Candidate Proposals MVP):**
+  - Designed for multi-object scenes (e.g. bottle + can + organic waste).
+  - Generates a deterministic 8-window spatial proposal grid covering global, center, and overlapping quadrants.
+  - Executes single-pass batched `tf.image.cropAndResize` inference in TensorFlow.js.
+  - Evaluates each candidate window against the calibrated OOD rejection threshold ($0.0702$), excluding non-waste background surfaces with transparent disclosure.
+  - Applies Non-Maximum Suppression (NMS) with IoU ($0.30$ same-class threshold, $0.60$ cross-class threshold) to remove duplicate crops.
+  - Renders responsive bounding-box overlays on the image preview and an itemized breakdown list with binning guidelines.
+  - *Engineering Honesty:* Explicitly documented as multi-region candidate classification, NOT a trained YOLO bounding-box regression model.
+
+### 10.2 Client-Side Reliability
+- **Privacy & Speed:** Model and weight shards run 100% locally in the browser with WebGL acceleration (fallback to CPU/Wasm).
+- **Responsive Controls:** Instant mode switching without re-uploading the loaded photograph.
 - **Client Safeguards:** Checks against `file://` protocol misuse, missing weight shards, and invalid image formats.
 
 ---
@@ -239,12 +256,12 @@ cd WasteLens
 ```
 
 ### 2. Run Test Suites
-Verify model integrity, manifests, and contract rules:
+Verify model integrity, manifests, contract rules, and multi-waste NMS logic:
 ```bash
-# Run all Python unit tests (39 tests)
+# Run all Python unit tests (42 tests)
 pytest -v
 
-# Run JavaScript decision logic tests (46 tests)
+# Run JavaScript decision and multi-waste logic tests (60 tests)
 node src/test_decision_logic.js
 
 # Verify browser model multi-output execution

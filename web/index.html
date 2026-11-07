@@ -147,6 +147,190 @@
   .bar-row.predicted.uncertain .bar-pct { color: var(--warning); }
   .result-error { color: var(--danger); font-size: 14.5px; }
   .result-error:empty { display: none; }
+  .mode-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .mode-label {
+    font-size: 13.5px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .mode-toggle {
+    display: inline-flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+  }
+  .mode-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .mode-btn:hover { color: var(--text); }
+  .mode-btn.active {
+    background: var(--surface-2);
+    color: var(--accent);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+  }
+  .stage {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    line-height: 0;
+  }
+  .stage img {
+    display: block;
+    max-width: 100%;
+    max-height: 340px;
+    object-fit: contain;
+  }
+  .box-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+  }
+  .bbox {
+    position: absolute;
+    border: 2px solid var(--accent);
+    background: rgba(63, 185, 138, 0.12);
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: all 0.15s ease;
+  }
+  .bbox.cat-recyclable { border-color: #3fb98a; background: rgba(63, 185, 138, 0.14); }
+  .bbox.cat-organic { border-color: #e0b06c; background: rgba(224, 176, 108, 0.14); }
+  .bbox.cat-hazardous { border-color: #e06c7d; background: rgba(224, 108, 125, 0.14); }
+  .bbox.cat-general-trash { border-color: #79a6d2; background: rgba(121, 166, 210, 0.14); }
+  .bbox.uncertain { border-style: dashed; }
+  .bbox-label {
+    position: absolute;
+    top: -1px; left: -1px;
+    background: rgba(14, 17, 22, 0.92);
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 2px 6px;
+    border-radius: 3px 0 4px 0;
+    white-space: nowrap;
+  }
+  .multi-header-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 4px 0 12px;
+  }
+  .multi-summary-title {
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .multi-timing-badge {
+    font-size: 12px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .multi-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .multi-item-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition: border-color 0.15s ease;
+  }
+  .multi-item-card.cat-recyclable { border-left: 4px solid #3fb98a; }
+  .multi-item-card.cat-organic { border-left: 4px solid #e0b06c; }
+  .multi-item-card.cat-hazardous { border-left: 4px solid #e06c7d; }
+  .multi-item-card.cat-general-trash { border-left: 4px solid #79a6d2; }
+  .multi-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .multi-item-title {
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .multi-item-num {
+    background: var(--surface);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    padding: 1px 6px;
+  }
+  .multi-item-conf {
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .multi-item-meta {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .multi-item-guideline {
+    font-size: 13px;
+    color: var(--text);
+    background: var(--surface);
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    line-height: 1.4;
+  }
+  .multi-item-warn {
+    color: var(--warning);
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  .multi-rejected-section {
+    background: rgba(224, 108, 125, 0.08);
+    border: 1px solid rgba(224, 108, 125, 0.25);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+  }
+  .multi-rejected-title {
+    color: var(--danger);
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .multi-rejected-list {
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+  .multi-empty-state {
+    padding: 18px;
+    text-align: center;
+    color: var(--muted);
+    background: var(--surface-2);
+    border-radius: 10px;
+    font-size: 14px;
+  }
   footer { color: var(--muted); font-size: 12.5px; margin-top: 22px; text-align: center; }
 </style>
 </head>
@@ -165,6 +349,14 @@
     </div>
   </section>
 
+  <div class="mode-bar">
+    <span class="mode-label">Analysis mode:</span>
+    <div class="mode-toggle" role="radiogroup" aria-label="Analysis mode">
+      <button type="button" class="mode-btn active" id="modeSingle" role="radio" aria-checked="true" title="Classify a single waste item photo (default)">Single Item</button>
+      <button type="button" class="mode-btn" id="modeMulti" role="radio" aria-checked="false" title="Analyze multiple waste items via multi-region candidate proposals">Multi Waste</button>
+    </div>
+  </div>
+
   <section class="card">
     <label id="dropzone" class="dropzone disabled" for="fileInput" tabindex="0" role="button"
            aria-label="Take a photo or choose an image to classify">
@@ -180,7 +372,10 @@
 
   <section id="results" class="card results" hidden>
     <div class="preview-box">
-      <img id="preview" alt="Selected photo preview" hidden>
+      <div id="stage" class="stage" hidden>
+        <img id="preview" alt="Selected photo preview">
+        <div id="boxOverlay" class="box-overlay" aria-hidden="true"></div>
+      </div>
       <div class="placeholder" id="placeholder">Analyzing&hellip;</div>
     </div>
     <div>
@@ -208,6 +403,22 @@
           non-waste images are outside the model's training data &mdash; even a
           confident answer can be wrong. Photograph one item at a time on a
           plain background for best results.
+        </div>
+      </div>
+
+      <div id="multiResultPanel" hidden>
+        <div class="bin-label">Multi-Waste Analysis</div>
+        <div class="multi-header-row">
+          <div class="multi-summary-title" id="multiSummaryTitle">Detected Items</div>
+          <div class="multi-timing-badge" id="multiTimingBadge"></div>
+        </div>
+        <div id="multiItemsList" class="multi-items-list"></div>
+        <div id="multiRejectedSection" class="multi-rejected-section" hidden>
+          <div class="multi-rejected-title" id="multiRejectedTitle">Excluded Non-Waste Regions</div>
+          <div id="multiRejectedList" class="multi-rejected-list"></div>
+        </div>
+        <div class="scope-note">
+          <strong>Candidate Region Methodology:</strong> Evaluates 8 spatial candidate windows in a single batched MobileNetV2 pass with IoU duplicate suppression and dual-head OOD rejection (threshold 0.0702). This provides candidate-region classification for scenes with multiple items; it is not an end-to-end trained object detector (YOLO).
         </div>
       </div>
     </div>
@@ -294,22 +505,132 @@
     return { state: state, best: best, second: second,
              top: probs[best], margin: margin, reject: rejectProb };
   }
+
+  // Candidate spatial proposal regions for multi-waste analysis (normalized [ymin, xmin, ymax, xmax]).
+  // Fast, deterministic 8-window spatial grid covering global scene, center focus, and overlapping quadrants.
+  var CANDIDATE_REGIONS = [
+    { id: 'full', name: 'Full Scene', box: [0.0, 0.0, 1.0, 1.0] },
+    { id: 'center', name: 'Center Region', box: [0.20, 0.20, 0.80, 0.80] },
+    { id: 'top_left', name: 'Top-Left', box: [0.0, 0.0, 0.60, 0.60] },
+    { id: 'top_right', name: 'Top-Right', box: [0.0, 0.40, 0.60, 1.0] },
+    { id: 'bottom_left', name: 'Bottom-Left', box: [0.40, 0.0, 1.0, 0.60] },
+    { id: 'bottom_right', name: 'Bottom-Right', box: [0.40, 0.40, 1.0, 1.0] },
+    { id: 'top_center', name: 'Top-Center', box: [0.05, 0.20, 0.65, 0.80] },
+    { id: 'bottom_center', name: 'Bottom-Center', box: [0.35, 0.20, 0.95, 0.80] }
+  ];
+
+  // Intersection over Union (IoU) between two bounding boxes [ymin, xmin, ymax, xmax].
+  function calculateIoU(boxA, boxB) {
+    if (!Array.isArray(boxA) || boxA.length !== 4 || !Array.isArray(boxB) || boxB.length !== 4) {
+      throw new TypeError('calculateIoU expects two 4-element box arrays [ymin, xmin, ymax, xmax]');
+    }
+    var ymin = Math.max(boxA[0], boxB[0]);
+    var xmin = Math.max(boxA[1], boxB[1]);
+    var ymax = Math.min(boxA[2], boxB[2]);
+    var xmax = Math.min(boxA[3], boxB[3]);
+    var interH = Math.max(0, ymax - ymin);
+    var interW = Math.max(0, xmax - xmin);
+    var interArea = interH * interW;
+    var areaA = Math.max(0, boxA[2] - boxA[0]) * Math.max(0, boxA[3] - boxA[1]);
+    var areaB = Math.max(0, boxB[2] - boxB[0]) * Math.max(0, boxB[3] - boxB[1]);
+    var unionArea = areaA + areaB - interArea;
+    if (unionArea <= 0) return 0;
+    return interArea / unionArea;
+  }
+
+  // Non-Maximum Suppression (NMS) for candidate waste regions.
+  // Filters out unsupported OOD crops (reject >= 0.0702), prioritizes high-confidence supported
+  // items, and suppresses duplicate proposals using IoU spatial overlap thresholds.
+  function suppressDuplicateRegions(candidates, sameClassThreshold, diffClassThreshold) {
+    if (!Array.isArray(candidates)) {
+      throw new TypeError('suppressDuplicateRegions expects an array of candidates');
+    }
+    var sameThresh = typeof sameClassThreshold === 'number' ? sameClassThreshold : 0.30;
+    var diffThresh = typeof diffClassThreshold === 'number' ? diffClassThreshold : 0.60;
+
+    var rejected = [];
+    var valid = [];
+    for (var i = 0; i < candidates.length; i++) {
+      var c = candidates[i];
+      if (c.verdict && c.verdict.state === 'unsupported') {
+        rejected.push(c);
+      } else {
+        valid.push(c);
+      }
+    }
+
+    // Sort valid candidates: 'supported' first, then by top confidence descending
+    valid.sort(function (a, b) {
+      var stateScoreA = a.verdict.state === 'supported' ? 1 : 0;
+      var stateScoreB = b.verdict.state === 'supported' ? 1 : 0;
+      if (stateScoreA !== stateScoreB) return stateScoreB - stateScoreA;
+      return b.verdict.top - a.verdict.top;
+    });
+
+    var accepted = [];
+    var suppressed = [];
+
+    for (var j = 0; j < valid.length; j++) {
+      var cand = valid[j];
+      var isDup = false;
+      var dupReason = '';
+      for (var k = 0; k < accepted.length; k++) {
+        var acc = accepted[k];
+        var iou = calculateIoU(cand.box, acc.box);
+        if (cand.verdict.best === acc.verdict.best && iou >= sameThresh) {
+          isDup = true;
+          dupReason = 'same_class_overlap (IoU ' + iou.toFixed(3) + ' >= ' + sameThresh + ') with #' + acc.id;
+          break;
+        } else if (iou >= diffThresh) {
+          isDup = true;
+          dupReason = 'high_spatial_overlap (IoU ' + iou.toFixed(3) + ' >= ' + diffThresh + ') with #' + acc.id;
+          break;
+        }
+      }
+      if (isDup) {
+        suppressed.push({ candidate: cand, reason: dupReason });
+      } else {
+        accepted.push(cand);
+      }
+    }
+
+    return {
+      accepted: accepted,
+      suppressed: suppressed,
+      rejected: rejected
+    };
+  }
   // === DECISION-END ===
+
+  var BIN_GUIDELINES = {
+    'recyclable': 'Clean & dry bottles, cans, paper, or clean cardboard \u2192 Blue recycling bin.',
+    'organic': 'Food scraps, fruit/vegetable peels, organic trimmings \u2192 Green compost bin.',
+    'hazardous': 'Batteries, electronics, chemicals \u2192 Do not put in curbside bins. Take to hazardous drop-off facility.',
+    'general trash': 'Non-recyclable packaging, composite materials, soiled wrappers \u2192 Black general trash bin.'
+  };
 
   var model = null;
   var modelReady = false;
   var busy = false;
   var lastObjectUrl = null;
+  var currentLoadedImage = null;
+  var currentMode = 'single';
 
   var els = {
     status: document.getElementById('status'),
     statusIcon: document.getElementById('statusIcon'),
     statusTitle: document.getElementById('statusTitle'),
     statusDetail: document.getElementById('statusDetail'),
+    modeSingle: document.getElementById('modeSingle'),
+    modeMulti: document.getElementById('modeMulti'),
     dropzone: document.getElementById('dropzone'),
+    dzTitle: document.getElementById('dzTitle'),
+    dzHint: document.getElementById('dzHint'),
     fileInput: document.getElementById('fileInput'),
     results: document.getElementById('results'),
+    stage: document.getElementById('stage'),
     preview: document.getElementById('preview'),
+    boxOverlay: document.getElementById('boxOverlay'),
     placeholder: document.getElementById('placeholder'),
     resultError: document.getElementById('resultError'),
     resultPanel: document.getElementById('resultPanel'),
@@ -319,7 +640,14 @@
     confCap: document.getElementById('confCap'),
     uncertainNote: document.getElementById('uncertainNote'),
     unsupportedNote: document.getElementById('unsupportedNote'),
-    bars: document.getElementById('bars')
+    bars: document.getElementById('bars'),
+    multiResultPanel: document.getElementById('multiResultPanel'),
+    multiSummaryTitle: document.getElementById('multiSummaryTitle'),
+    multiTimingBadge: document.getElementById('multiTimingBadge'),
+    multiItemsList: document.getElementById('multiItemsList'),
+    multiRejectedSection: document.getElementById('multiRejectedSection'),
+    multiRejectedTitle: document.getElementById('multiRejectedTitle'),
+    multiRejectedList: document.getElementById('multiRejectedList')
   };
 
   function setStatus(state, title, detail) {
@@ -346,20 +674,26 @@
 
   function showAnalyzing() {
     els.results.hidden = false;
+    els.stage.hidden = true;
     els.preview.hidden = true;
+    els.boxOverlay.innerHTML = '';
     els.resultPanel.hidden = true;
+    els.multiResultPanel.hidden = true;
     els.resultError.textContent = '';
     els.placeholder.hidden = false;
     els.placeholder.textContent = 'Analyzing\u2026';
   }
 
   function showImage() {
+    els.stage.hidden = false;
     els.preview.hidden = false;
     els.placeholder.hidden = true;
   }
 
   function showResultError(message) {
     els.resultPanel.hidden = true;
+    els.multiResultPanel.hidden = true;
+    els.boxOverlay.innerHTML = '';
     els.resultError.textContent = message;
   }
 
@@ -383,10 +717,25 @@
     });
   }
 
+  function runMultiInference(img) {
+    return tf.tidy(function () {
+      var pixels = tf.browser.fromPixels(img);
+      var expanded = pixels.expandDims(0);
+      var boxes = tf.tensor2d(CANDIDATE_REGIONS.map(function (r) { return r.box; }), [CANDIDATE_REGIONS.length, 4]);
+      var boxIndices = tf.zeros([CANDIDATE_REGIONS.length], 'int32');
+      var crops = tf.image.cropAndResize(expanded, boxes, boxIndices, IMG_SIZE);
+      var normalized = crops.div(127.5).sub(1);
+      return model.predict(normalized);
+    });
+  }
+
   function renderResult(probs, rejectProb) {
     var verdict = decideVerdict(probs, rejectProb);
     var unsupported = verdict.state === 'unsupported';
     var uncertain = verdict.state === 'uncertain';
+
+    els.boxOverlay.innerHTML = '';
+    els.multiResultPanel.hidden = true;
 
     els.binLabel.textContent = unsupported ? 'Result' : 'Predicted bin';
     els.binName.textContent = unsupported
@@ -432,6 +781,142 @@
     els.resultPanel.hidden = false;
   }
 
+  function renderMultiResult(result, dt) {
+    els.resultPanel.hidden = true;
+    els.boxOverlay.innerHTML = '';
+    els.multiTimingBadge.textContent = dt + ' ms (batched)';
+
+    if (!result.accepted || result.accepted.length === 0) {
+      els.multiSummaryTitle.textContent = '0 Supported Items Detected';
+      els.multiItemsList.innerHTML = '<div class="multi-empty-state">No supported waste items identified in candidate regions. The photographed scene appears out-of-distribution, ambiguous, or contains non-waste objects.</div>';
+    } else {
+      els.multiSummaryTitle.textContent = result.accepted.length + (result.accepted.length === 1 ? ' Item Detected' : ' Items Detected');
+      els.multiItemsList.innerHTML = '';
+
+      result.accepted.forEach(function (item, idx) {
+        var num = idx + 1;
+        var cat = item.category;
+        var catClass = cat.replace(/\s+/g, '-');
+        var isUncertain = item.verdict.state === 'uncertain';
+
+        var bbox = document.createElement('div');
+        bbox.className = 'bbox cat-' + catClass + (isUncertain ? ' uncertain' : '');
+        bbox.style.top = (item.box[0] * 100).toFixed(1) + '%';
+        bbox.style.left = (item.box[1] * 100).toFixed(1) + '%';
+        bbox.style.height = ((item.box[2] - item.box[0]) * 100).toFixed(1) + '%';
+        bbox.style.width = ((item.box[3] - item.box[1]) * 100).toFixed(1) + '%';
+
+        var bLabel = document.createElement('div');
+        bLabel.className = 'bbox-label';
+        bLabel.textContent = '#' + num + ' ' + cat.toUpperCase() + ' ' + (item.confidence * 100).toFixed(0) + '%';
+        bbox.appendChild(bLabel);
+        els.boxOverlay.appendChild(bbox);
+
+        var card = document.createElement('div');
+        card.className = 'multi-item-card cat-' + catClass;
+
+        var topRow = document.createElement('div');
+        topRow.className = 'multi-item-top';
+
+        var titleDiv = document.createElement('div');
+        titleDiv.className = 'multi-item-title';
+        titleDiv.innerHTML = '<span class="multi-item-num">#' + num + '</span> ' +
+          cat.charAt(0).toUpperCase() + cat.slice(1);
+
+        var confDiv = document.createElement('div');
+        confDiv.className = 'multi-item-conf';
+        confDiv.textContent = (item.confidence * 100).toFixed(1) + '%';
+
+        topRow.appendChild(titleDiv);
+        topRow.appendChild(confDiv);
+
+        var metaDiv = document.createElement('div');
+        metaDiv.className = 'multi-item-meta';
+        metaDiv.textContent = 'Region: ' + item.regionName + ' \u00b7 Margin: ' + (item.verdict.margin * 100).toFixed(1) + '%' +
+          (isUncertain ? ' \u00b7 Status: Uncertain' : ' \u00b7 Status: Confident');
+
+        var guideDiv = document.createElement('div');
+        guideDiv.className = 'multi-item-guideline';
+        guideDiv.textContent = BIN_GUIDELINES[cat] || 'Dispose according to local guidelines.';
+
+        card.appendChild(topRow);
+        card.appendChild(metaDiv);
+        card.appendChild(guideDiv);
+
+        if (isUncertain) {
+          var warnDiv = document.createElement('div');
+          warnDiv.className = 'multi-item-warn';
+          warnDiv.textContent = '\u26A0 Low confidence or small probability margin. Verify locally before binning.';
+          card.appendChild(warnDiv);
+        }
+
+        els.multiItemsList.appendChild(card);
+      });
+    }
+
+    if (result.rejected && result.rejected.length > 0) {
+      els.multiRejectedSection.hidden = false;
+      els.multiRejectedTitle.textContent = result.rejected.length + ' Candidate Region' +
+        (result.rejected.length === 1 ? '' : 's') + ' Excluded (OOD)';
+      var rejSummary = result.rejected.map(function (r) {
+        return r.regionName + ' (reject ' + (r.verdict.reject * 100).toFixed(1) + '%)';
+      }).join(', ');
+      els.multiRejectedList.textContent = 'The following spatial proposal windows exceeded the OOD rejection threshold (0.0702) and were classified as non-waste background or out-of-scope: ' + rejSummary + '.';
+    } else {
+      els.multiRejectedSection.hidden = true;
+    }
+
+    showImage();
+    els.multiResultPanel.hidden = false;
+  }
+
+  function executeInference() {
+    if (!currentLoadedImage || !modelReady) return;
+    if (currentMode === 'single') {
+      var outputs = runInference(currentLoadedImage);
+      return Promise.all([outputs[0].data(), outputs[1].data()]).then(function (datas) {
+        outputs[0].dispose();
+        outputs[1].dispose();
+        renderResult(Array.prototype.slice.call(datas[0]), datas[1][0]);
+      });
+    } else {
+      var t0 = performance.now();
+      var outputs = runMultiInference(currentLoadedImage);
+      return Promise.all([outputs[0].data(), outputs[1].data()]).then(function (datas) {
+        var dt = Math.round(performance.now() - t0);
+        outputs[0].dispose();
+        outputs[1].dispose();
+        var binData = datas[0];
+        var rejData = datas[1];
+
+        var candidates = [];
+        for (var i = 0; i < CANDIDATE_REGIONS.length; i++) {
+          var probs = [
+            binData[i * 4 + 0],
+            binData[i * 4 + 1],
+            binData[i * 4 + 2],
+            binData[i * 4 + 3]
+          ];
+          var rejectProb = rejData[i];
+          var verdict = decideVerdict(probs, rejectProb);
+          candidates.push({
+            id: i + 1,
+            regionId: CANDIDATE_REGIONS[i].id,
+            regionName: CANDIDATE_REGIONS[i].name,
+            box: CANDIDATE_REGIONS[i].box,
+            probs: probs,
+            reject: rejectProb,
+            verdict: verdict,
+            category: LABELS[verdict.best],
+            confidence: verdict.top
+          });
+        }
+        var result = suppressDuplicateRegions(candidates);
+        renderMultiResult(result, dt);
+      });
+    }
+  }
+
   function handleFile(file) {
     if (!modelReady || busy || !file) return;
     if (!file.type || file.type.indexOf('image/') !== 0) {
@@ -446,14 +931,10 @@
     if (lastObjectUrl) URL.revokeObjectURL(lastObjectUrl);
     lastObjectUrl = URL.createObjectURL(file);
     loadImage(lastObjectUrl).then(function (img) {
+      currentLoadedImage = img;
       els.preview.src = lastObjectUrl;
       showImage();
-      var outputs = runInference(img); // dual-head: [binsTensor, rejectTensor]
-      return Promise.all([outputs[0].data(), outputs[1].data()]).then(function (datas) {
-        outputs[0].dispose();
-        outputs[1].dispose();
-        renderResult(Array.prototype.slice.call(datas[0]), datas[1][0]);
-      });
+      return executeInference();
     }).catch(function (err) {
       var msg = err && err.message ? err.message : String(err);
       showImage();
@@ -463,6 +944,39 @@
       setDropzoneEnabled(true);
     });
   }
+
+  function setMode(mode) {
+    if (mode === currentMode) return;
+    currentMode = mode;
+    els.modeSingle.classList.toggle('active', mode === 'single');
+    els.modeSingle.setAttribute('aria-checked', mode === 'single' ? 'true' : 'false');
+    els.modeMulti.classList.toggle('active', mode === 'multi');
+    els.modeMulti.setAttribute('aria-checked', mode === 'multi' ? 'true' : 'false');
+
+    if (mode === 'single') {
+      els.dzTitle.textContent = 'Take a photo or choose an image';
+      els.dzHint.innerHTML = 'On your phone this opens the camera &middot; on desktop, pick a file or drag &amp; drop <span class="ext">(JPG&nbsp;/&nbsp;PNG)</span> &middot; one item per photo works best';
+    } else {
+      els.dzTitle.textContent = 'Choose multi-waste photo';
+      els.dzHint.innerHTML = 'Multi-waste mode &middot; analyzes candidate regions across the scene &middot; classifies each item and detects unsupported background';
+    }
+
+    if (currentLoadedImage && !busy) {
+      showAnalyzing();
+      showImage();
+      busy = true;
+      setDropzoneEnabled(false);
+      Promise.resolve(executeInference()).catch(function (err) {
+        showResultError('Inference error: ' + (err.message || err));
+      }).then(function () {
+        busy = false;
+        setDropzoneEnabled(true);
+      });
+    }
+  }
+
+  els.modeSingle.addEventListener('click', function () { setMode('single'); });
+  els.modeMulti.addEventListener('click', function () { setMode('multi'); });
 
   function init() {
     if (window.location.protocol === 'file:') {
