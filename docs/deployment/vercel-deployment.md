@@ -17,7 +17,8 @@ This document records the official production deployment of WasteLens AI to Verc
 | **Vercel Inspector URL** | [https://vercel.com/anik00223s-projects/wastelens-final-submission/286umhzYPRHGsbL23rkMJ3UoFQ61](https://vercel.com/anik00223s-projects/wastelens-final-submission/286umhzYPRHGsbL23rkMJ3UoFQ61) |
 | **Source Git Repository** | [https://github.com/Anik00223/WasteLens](https://github.com/Anik00223/WasteLens) |
 | **Source Git Branch** | `fix/final-submission` |
-| **Source Commit SHA** | `7b6cf575c028376703f45dd971c406e4f7453c20` |
+| **Deployed Code Commit SHA** | `7b6cf575c028376703f45dd971c406e4f7453c20` (verified code in `web/`) |
+| **Documentation Commit SHA** | `3676e369d2cec1ec434e4bf2ab0131492c0e5b1d` |
 | **Deployment Root Directory** | `web/` |
 | **Framework Preset** | `Other` (Static Website) |
 | **Build Command** | None |
