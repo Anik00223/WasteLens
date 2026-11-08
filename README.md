@@ -221,12 +221,12 @@ WasteLens/
 │   └── rejection_experiment/   # OOD training logs, metrics, and decisions
 ├── models/
 │   └── checkpoints/            # Keras model checkpoints (.keras)
-├── notebooks/                  # Colab training and legacy exploration notebooks
-│   ├── WasteLens_Model_Training.ipynb  # Official Colab verification & execution notebook
-│   └── train_colab.ipynb       # Baseline training notebook
+├── notebooks/                  # Colab training, verification, and exploration notebooks
+│   ├── WasteLens_Colab_Verification_Demo.ipynb # Official Colab verification & browser demonstration notebook
+│   └── train_colab.ipynb       # Baseline single-head model-training notebook
 ├── src/                        # Core Python scripts and test utilities
 │   ├── train.py                # Single-head baseline trainer
-│   ├── train_rejection_variantc.py # Shipped dual-head trainer
+│   ├── train_rejection_variantc.py # Official dual-head OOD rejection training implementation
 │   ├── evaluate.py             # Test set evaluator
 │   ├── export_tfjs.py          # Keras to TF.js converter
 │   └── test_decision_logic.js  # JavaScript unit tests
@@ -284,46 +284,37 @@ Open your browser and navigate to: `http://localhost:8000`
 
 ---
 
-## Model Training Notebook
+## 13. Notebooks & Training Pipelines
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1SYnsyTtRQYxvIsuwC-NXcvBxJwGxq8nQ?usp=sharing)
 
-The official Google Colab interactive notebook is tracked directly within the repository:
+WasteLens maintains clean separation between model training pipelines, validation harnesses, and interactive demonstration notebooks:
 
-- **Repository Notebook:** [`notebooks/WasteLens_Model_Training.ipynb`](notebooks/WasteLens_Model_Training.ipynb)
-- **Direct Google Colab Link:** [Open in Google Colab](https://colab.research.google.com/drive/1SYnsyTtRQYxvIsuwC-NXcvBxJwGxq8nQ?usp=sharing)
+### 1. Colab Verification & Browser Demonstration Notebook
+- **Repository Path:** [`notebooks/WasteLens_Colab_Verification_Demo.ipynb`](notebooks/WasteLens_Colab_Verification_Demo.ipynb)
+- **Direct Colab Link:** [Open in Google Colab](https://colab.research.google.com/drive/1SYnsyTtRQYxvIsuwC-NXcvBxJwGxq8nQ?usp=sharing)
+- **Description:** Official verification and browser demonstration notebook. It clones the repository, verifies the exported MobileNetV2 dual-head architecture (`predictions` classification head + `reject` OOD head), confirms that all 3 weight binary shards and label maps are intact, and launches a background static server with `google.colab.kernel.proxyPort` tunneling for real-time browser testing. *(Note: This notebook executes model validation and client-side serving; it does not train the dual-head model from scratch).*
 
-### Workflow in the Notebook
-1. **Repository Setup:** Clones the verified WasteLens codebase into the ephemeral Colab environment (`/content/WasteLens`).
-2. **Model Integrity Verification:** Validates that the dual-head MobileNetV2 architecture (`predictions` classification head + `reject` OOD head), 4-class labels (`recyclable`, `organic`, `hazardous`, `general trash`), and all 3 weight binary shards (`group1-shard[1-3]of3.bin`) exist and load successfully.
-3. **Background Static Server:** Launches an internal Python HTTP server (`http.server`) serving the browser runtime from `web/`.
-4. **Interactive Demo Tunnel:** Uses `google.colab.kernel.proxyPort` and `google.colab.output.eval_js` to generate an interactive browser proxy link for live, zero-installation testing.
+### 2. Baseline Model-Training Notebook
+- **Repository Path:** [`notebooks/train_colab.ipynb`](notebooks/train_colab.ipynb)
+- **Description:** Baseline single-head model-training notebook. Implements dataset downloading, 4-bin taxonomy mapping, MobileNetV2 transfer learning, frozen backbone feature extraction, and baseline evaluation.
+
+### 3. Dual-Head OOD Rejection Training Implementation
+- **Repository Script:** [`src/train_rejection_variantc.py`](src/train_rejection_variantc.py)
+- **Description:** Official training implementation for the final shipped dual-head model (Variant C). Partially unfreezes the shared representation (`fc_256`), trains the 4-class softmax classification head alongside the 1-unit sigmoid OOD rejection head with calibrated loss weighting (bins 2.0 / reject 1.0), and exports the production weights to `web/model/`.
 
 ---
 
-## 13. Google Colab Demonstration Guide
+### Step-by-Step Google Colab Demonstration Guide
 
-To run a live interactive demonstration using Google Colab's cloud environment:
-
-1. Open Google Colab and start a fresh Python 3 runtime.
-2. In a notebook code cell, execute:
-   ```python
-   # 1. Clone the repository
-   !git clone https://github.com/Anik00223/WasteLens.git
-   %cd /content/WasteLens
-
-   # 2. Start the background static server for web/
-   import subprocess
-   import time
-   server = subprocess.Popen(["python3", "-m", "http.server", "8000", "--directory", "web"])
-   time.sleep(2)
-
-   # 3. Generate Colab live web preview URL
-   from google.colab.output import eval_js
-   print("Live WasteLens Demo URL:")
-   print(eval_js("google.colab.kernel.proxyPort(8000)"))
-   ```
-3. Click the generated proxy link to test images directly in your browser.
+To run the live interactive demonstration directly in Google Colab:
+1. Open the [WasteLens Colab Notebook](https://colab.research.google.com/drive/1SYnsyTtRQYxvIsuwC-NXcvBxJwGxq8nQ?usp=sharing).
+2. Run the cells in order:
+   - **Cell 1:** Clones the WasteLens GitHub repository.
+   - **Cell 2:** Verifies the dual-head model topology, labels, and binary weight shards.
+   - **Cell 3:** Starts the background static HTTP server on port 8000.
+   - **Cell 4:** Generates a private proxy link via `google.colab.kernel.proxyPort`.
+3. Click the generated proxy URL to open WasteLens and classify waste images in real time.
 
 ---
 
