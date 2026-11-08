@@ -5,6 +5,7 @@
 [![Architecture](https://img.shields.io/badge/Architecture-MobileNetV2%20Dual--Head-blue.svg)]()
 [![Modes](https://img.shields.io/badge/Modes-Single%20Item%20%7C%20Multi--Waste-purple.svg)]()
 [![Inference](https://img.shields.io/badge/Inference-Client--Side%20TensorFlow.js-orange.svg)]()
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1SYnsyTtRQYxvIsuwC-NXcvBxJwGxq8nQ?usp=sharing)
 
 > **B.Tech AI & ML Capstone Project**<br>
 > **Official Implementation:** MobileNetV2 + TensorFlow.js 4.22.0 client-side inference + Dual-head Out-of-Distribution (OOD) rejection + Multi-waste candidate region analysis.<br>
@@ -221,6 +222,8 @@ WasteLens/
 ├── models/
 │   └── checkpoints/            # Keras model checkpoints (.keras)
 ├── notebooks/                  # Colab training and legacy exploration notebooks
+│   ├── WasteLens_Model_Training.ipynb  # Official Colab verification & execution notebook
+│   └── train_colab.ipynb       # Baseline training notebook
 ├── src/                        # Core Python scripts and test utilities
 │   ├── train.py                # Single-head baseline trainer
 │   ├── train_rejection_variantc.py # Shipped dual-head trainer
@@ -278,6 +281,23 @@ Browsers require an HTTP server to load WebAssembly and model weight shards:
 python -m http.server 8000 --directory web
 ```
 Open your browser and navigate to: `http://localhost:8000`
+
+---
+
+## Model Training Notebook
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1SYnsyTtRQYxvIsuwC-NXcvBxJwGxq8nQ?usp=sharing)
+
+The official Google Colab interactive notebook is tracked directly within the repository:
+
+- **Repository Notebook:** [`notebooks/WasteLens_Model_Training.ipynb`](notebooks/WasteLens_Model_Training.ipynb)
+- **Direct Google Colab Link:** [Open in Google Colab](https://colab.research.google.com/drive/1SYnsyTtRQYxvIsuwC-NXcvBxJwGxq8nQ?usp=sharing)
+
+### Workflow in the Notebook
+1. **Repository Setup:** Clones the verified WasteLens codebase into the ephemeral Colab environment (`/content/WasteLens`).
+2. **Model Integrity Verification:** Validates that the dual-head MobileNetV2 architecture (`predictions` classification head + `reject` OOD head), 4-class labels (`recyclable`, `organic`, `hazardous`, `general trash`), and all 3 weight binary shards (`group1-shard[1-3]of3.bin`) exist and load successfully.
+3. **Background Static Server:** Launches an internal Python HTTP server (`http.server`) serving the browser runtime from `web/`.
+4. **Interactive Demo Tunnel:** Uses `google.colab.kernel.proxyPort` and `google.colab.output.eval_js` to generate an interactive browser proxy link for live, zero-installation testing.
 
 ---
 
