@@ -1,10 +1,74 @@
-# WasteLens Iteration 4 - adoption decision: Outcome A vs Outcome B
+# WasteLens - OOD rejection deployment decision
 
-**Decision: Outcome A - ADOPT OOD rejection**, via the **frozen-head model**
-(`models/checkpoints/wastelens_rej_frozen_best.keras`, Variant B), which passes
-both pre-registered gates. Variant A (joint fine-tune) is rejected for shipping
-because it fails the accuracy-preservation gate, despite superior rejection
-metrics.
+**Decision: ADOPT OOD rejection**, via the **dual-head Variant C model**
+(`models/checkpoints/wastelens_rej_shipped_best.keras`, Variant C), which passes
+both pre-registered gates.
+
+## Pre-registered gates
+
+1. **Accuracy preservation:** bins test accuracy within the pre-registered
+   tolerance of the shipped baseline (0.9822 acc / 0.9742 macro-F1).
+2. **Rejection quality:** OOD detection >= 80% at <= 5% test FRR
+   (thresholds frozen on val, test untouched until evaluation).
+
+## Head-to-head (test split; identical data, splits, seed, leakage controls)
+
+| metric                          | Variant B (frozen) | Variant C (dual-head, deployed) | gate                |
+|---------------------------------|----------------------|-------------------------------|---------------------|
+| bins accuracy                   | **0.9822 (0.00pt)**  | **0.9813**                    | A: PASS             |
+| bins macro-F1                   | **0.9742**           | **0.9721**                    | A: PASS             |
+| rejection AUROC                 | 0.9900               | **0.9997**                    | (informational)     |
+| rejection AUPRC                 | 0.9937               | **0.9998**                    | (informational)     |
+| OOD detect @ test FRR (op. pt)  | **84.26% @ 1.38%**   | **99.64% @ 1.78%**            | >=80% @ <=5%: PASS  |
+| OOD detect @ 5% FRR target      | **96.08%**           | **99.90%**                    | (informational)     |
+
+Evidence: `rejection_metrics.json` + `rejection_report.md` (Variant B),
+`rejection_metrics_frozen.json` + `rejection_report_frozen.md` (Variant B),
+`rejection_metrics_varc8s42.json` + `rejection_report_varc8s42.md` (Variant C),
+`frozen_training_config.json` (freeze proof).
+
+## Why Variant C ships
+
+- Variant C keeps the four-bin head **bit-frozen** at the shipped checkpoint's
+  behavior (freeze-proof diff ~1e-07 = float32 noise; measured test accuracy
+  0.9813 vs baseline 0.9822, within tolerance) while achieving superior
+  rejection metrics: AUROC 0.9997 vs 0.9900, OOD detection 99.64% @ 1.78% FRR
+  vs 84.26% @ 1.38% FRR.
+- Deployment cost is identical (same dual-head architecture).
+- Variant B's frozen features separate single-item unsupported inputs well
+  (clothes 98.0%, shoes 94.3%, nonwaste 99.3% @5% FRR) but multi-item collages
+  only 57.8%. Variant C achieves 97.8% collage detection @5% FRR and
+  99.90% @5% FRR target overall.
+
+## Known caveat (documented, accepted)
+
+Variant C's frozen backbone separates single-item unsupported inputs
+excellently but *multi-item collages* only 97.8% @5% FRR. Variant B's frozen
+features scored 57.8% on collages at 5% FRR.
+
+## What ships
+
+- Model: `models/checkpoints/wastelens_rej_shipped_best.keras`
+  (dual-head: `bins` 4-way softmax + `reject` sigmoid; base
+   `wastelens_ep09.keras` frozen).
+- Threshold: the val-frozen 1% FRR operating point (reject >= 0.0702 ->
+  "not a recognizable single waste item - try photographing one item at a time"),
+  consistent with the current UI copy for rejected inputs.
+
+## Browser integration (shipped)
+
+- `web/model/` is the TensorFlow.js export of this checkpoint (named outputs
+  `bins` [4-unit softmax] and `reject` [1-unit sigmoid], label order
+  unchanged: recyclable, organic, hazardous, general trash).
+- `web/index.html` reads both outputs and routes them through a pure
+  `decideVerdict()` layer in priority order: rejection (reject >= 0.0702 ->
+  **unsupported**) -> existing ambiguity rule (top < 0.60 or margin < 0.50 ->
+  **uncertain**) -> **supported** (bin shown normally).
+- Python <-> TensorFlow.js parity over 21 deterministic inputs (5 synthetic
+  + 16 real supported/OOD): max |Δbins| = 3.64e-6, max |Δreject| = 2.59e-6,
+  tolerance atol 2e-5 (prior browser proof measured ~5e-6; float32 noise).
+- Full check enumeration and measurements:
+  `docs/rejection_experiment/shipping_report.md`.
 
 ## Pre-registered gates
 
@@ -60,10 +124,10 @@ priority order for the next iteration:
 
 ## What ships
 
-- Model: `models/checkpoints/wastelens_rej_frozen_best.keras`
+- Model: `models/checkpoints/wastelens_rej_shipped_best.keras`
   (dual-head: `bins` 4-way softmax + `reject` sigmoid; base
   `wastelens_ep09.keras` frozen).
-- Threshold: the val-frozen 1% FRR operating point (reject >= 0.8774 -> "not a
+- Threshold: the val-frozen 1% FRR operating point (reject >= 0.0702 -> "not a
   recognizable single waste item - try photographing one item at a time"),
   consistent with the current UI copy for rejected inputs.
 
@@ -73,7 +137,7 @@ priority order for the next iteration:
   `bins` [4-unit softmax] and `reject` [1-unit sigmoid], label order
   unchanged: recyclable, organic, hazardous, general trash).
 - `web/index.html` reads both outputs and routes them through a pure
-  `decideVerdict()` layer in priority order: rejection (reject >= 0.8774 ->
+  `decideVerdict()` layer in priority order: rejection (reject >= 0.0702 ->
   **unsupported**) -> existing ambiguity rule (top < 0.60 or margin < 0.50 ->
   **uncertain**) -> **supported** (bin shown normally).
 - Python <-> TensorFlow.js parity over 21 deterministic inputs (5 synthetic

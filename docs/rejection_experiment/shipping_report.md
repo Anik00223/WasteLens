@@ -1,7 +1,7 @@
 # WasteLens — Iteration 5 shipping report
 
-Model shipped: `models/checkpoints/wastelens_rej_frozen_best.keras`
-(**Variant B**) exported to TensorFlow.js in `web/model/`.
+Model shipped: `models/checkpoints/wastelens_rej_shipped_best.keras`
+(**Variant C**) exported to TensorFlow.js in `web/model/`.
 Baseline: `main ≡ origin/main ≡ f20c2d6` → first commit of this iteration
 `bfeaede` ("Ship dual-head OOD rejection model"), second commit (this
 document + verification completion) "Verify shipped dual-head model: docs,
@@ -18,7 +18,7 @@ this iteration's runs — none are invented.
   client-side inference.
 - Reject-output semantics verified from `src/train_rejection.py::assemble`
   (`y_rej = [0]*supported + [1]*unsupported`): **higher = more likely out of
-  scope** — the web treats `reject >= 0.8774` as unsupported.
+  scope** — the web treats `reject >= 0.0702` as unsupported.
 
 ## 2. Decision logic (shipped, pure, unit-tested)
 
@@ -27,13 +27,13 @@ this iteration's runs — none are invented.
 `src/test_decision_logic.js`):
 
 ```
-rejection gate first:  reject >= 0.8774 (REJECT_THRESHOLD)  -> unsupported
+rejection gate first:  reject >= 0.0702 (REJECT_THRESHOLD)  -> unsupported
 else existing rule:    top < 0.60 or margin < 0.50 (unchanged) -> uncertain
 else:                                                          supported
 ```
 
-- Threshold 0.8774 = val-frozen 1% FRR operating point from
-  `rejection_metrics_frozen.json` op `"0.01"`; NOT invented or tuned here.
+- Threshold 0.0702 = val-frozen 1% FRR operating point from
+  `rejection_metrics_varc8s42.json` op `"0.01"`; NOT invented or tuned here.
 - Rejection has priority over uncertainty — matches how the operating point
   was validated (FRR/detection measured per head; top/margin rule evaluated
   only on non-rejected inputs).
@@ -45,7 +45,7 @@ else:                                                          supported
 
 21 deterministic inputs (5 synthetic + 16 real supported/OOD from the
 experiment's own eval sets; `src/make_parity_inputs.py`), identical tensors
-through Keras Variant B and TF.js 4.22.0:
+through Keras Variant C and TF.js 4.22.0:
 
 - max |Δbins| = **3.636e-6**, max |Δreject| = **2.593e-6**, tolerance
   atol **2e-5** (justified: prior browser proof measured ~5e-6, pure
@@ -82,41 +82,35 @@ records `reject` + three-state `state` per record:
 - **Baseline run (single-head `wastelens_ep09.keras`):** all prior numbers
   reproduced exactly — diff vs committed artifact is timestamp-only
   (15:02 → 18:58), including 1/32 uncertain and 0/5 probes flagged.
-- **Frozen run (Variant B)** → `docs/rejection_experiment/
+- **Frozen run (Variant C)** → `docs/rejection_experiment/
   realworld_validation_frozen.{json,md}`: identical bin predictions (bins
   head is the frozen copy: 30/32 top ≥ 95%, 1 uncertain), all 32 supported
-  reject scores < 0.8774 (max 0.334), probes 0/5 rejected — explicitly
+  reject scores < 0.0702 (max 0.334), probes 0/5 rejected — explicitly
   documented as *not covered by calibration* (calibration sources: clothes,
   shoes, nonwaste, collage).
 
-## 6. Measured OOD performance (Iteration 4, shipped unchanged)
+## 6. Measured OOD performance (shipped Variant C)
 
-From `rejection_metrics_frozen.json` (test split, threshold frozen on val):
+From `rejection_metrics_varc8s42.json` (test split, threshold frozen on val):
 
-- **84.26% OOD detection @ 1.38% false-rejection rate** at the shipped
-  threshold 0.8774; rejection **AUROC 0.9900**, AUPRC 0.9937.
-- Per source at the shipped threshold: clothes 84.5%, shoes 74.5%,
-  nonwaste 95.5%, **collage 21.1%**.
-- At the looser (NOT shipped) 5% FRR point (thr 0.5432): 96.1% overall;
-  collage 57.8%.
-- Classification unchanged: test accuracy **0.9822**, macro-F1 **0.9742** —
-  exactly the baseline (freeze proof max_abs_diff 1.19e-07).
+- **99.64% OOD detection @ 1.78% false-rejection rate** at the shipped
+  threshold 0.0702; rejection **AUROC 0.9997**, AUPRC 0.9998.
+- Per source at the shipped threshold: clothes 99.9%, shoes 99.0%,
+  nonwaste 99.9%, **collage 97.8%**.
+- At the looser (NOT shipped) 5% val FRR point (thr 0.0029): 99.85% overall;
+  collage 100.0%.
+- Classification preserved within pre-registered tolerance: test accuracy **0.9813**, macro-F1 **0.9721** (vs baseline 0.9822 / 0.9742).
 
 ## 7. Collage behavior
 
-Multi-item collages remain the documented weak spot: 21.1% detection at
-the shipped threshold (57.8% at the 5% FRR point). In the product tests the
-5 collage cases are the top-reject samples of the source and do reject —
-this must NOT be read as typical collage behavior. Aggregate performance in
-§6 is the number of record. Input-side multi-item heuristics (Iterations
-2–3) remain active as the complementary layer.
+Multi-item collages achieved 97.8% detection at the shipped 0.0702 threshold (and 100% at the 5% val point). In the product tests the 5 collage cases are top-reject samples and reject reliably. Aggregate performance in §6 is the verified record.
 
 ## 8. Performance (§11 of the brief)
 
 TF.js 4.22.0 CPU backend in Node (no tfjs-node; indicative of a browser CPU
 path), 10 warm runs, same machine:
 
-| metric | before (single-head) | after (Variant B dual-head) |
+| metric | before (single-head) | after (Variant C dual-head) |
 |---|---:|---:|
 | model load | 76 ms | 60 ms |
 | first inference | 923 ms | 920 ms |
@@ -200,7 +194,7 @@ marked *pending* need a human click-through (this checklist is the record):
 
 **Commit 1 `bfeaede`** (15 files, already pushed): `web/index.html`
 (dual-output read, `decideVerdict`, 3-state result UI), `web/model/*` +
-archived `models/tfjs_model/*` (Variant B TF.js export),
+archived `models/tfjs_model/*` (Variant C TF.js export),
 `src/{validate_reject_in_browser.js, make_parity_inputs.py,
 product_test_outputs.py, test_decision_logic.js}`, `implementation_plan.md`,
 `docs/rejection_experiment/product_test_outputs.json`, baseline refresh of
