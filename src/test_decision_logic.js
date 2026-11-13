@@ -131,6 +131,62 @@ function runUnitCases(decide, SHIPPED_THRESHOLD) {
         Object.keys(v).sort(), ['best', 'margin', 'reject', 'second', 'state', 'top']);
 }
 
+function namesABin(text) {
+  return /recyclable|organic|hazardous|general trash|put this in/i.test(text || '');
+}
+
+function runPresentationCases(decide, present) {
+  const roseProbs = [0.535, 0.465, 0, 0];
+  const roseOod = 0.0459;
+  const rose = decide(roseProbs, roseOod);
+  check('regression: rose-like top=[0.535,0.465,0,0] ood=0.0459 -> uncertain',
+        rose.state, 'uncertain');
+  check('regression: rose-like is not accepted/supported',
+        rose.state === 'supported', false);
+  check('regression: rose-like OOD gate does not reject (score below threshold)',
+        roseOod < 0.0702, true);
+
+  const roseUi = present(rose, ['recyclable', 'organic', 'hazardous', 'general trash']);
+  check('regression: rose UI does not assign a waste bin', roseUi.assignBin, false);
+  check('regression: rose headline is Uncertain, not Recyclable',
+        roseUi.headlineValue, 'Uncertain');
+  check('regression: rose headline label is Final verdict',
+        roseUi.headlineLabel, 'Final verdict');
+  check('regression: rose still reports raw top prediction',
+        roseUi.topPrediction, 'Recyclable \u2014 53.5%');
+  check('regression: rose disposal is the generic cannot-assign message',
+        roseUi.disposal,
+        'The model cannot confidently assign this image to a supported waste category. Verify the item before disposal.');
+  check('regression: rose disposal does not recommend a bin',
+        namesABin(roseUi.disposal), false);
+  check('regression: rose reason cites confidence and margin',
+        roseUi.reason,
+        'Low confidence and insufficient separation between the leading classes.');
+  check('regression: rose does not highlight a predicted bin bar',
+        roseUi.highlightBest, false);
+
+  const acceptedProbs = [0.98, 0.01, 0.005, 0.005];
+  const accepted = decide(acceptedProbs, 0.01);
+  const acceptedUi = present(accepted);
+  check('regression: dominant in-scope example stays supported',
+        accepted.state, 'supported');
+  check('regression: accepted UI assigns the waste bin', acceptedUi.assignBin, true);
+  check('regression: accepted UI displays Recyclable as the bin',
+        acceptedUi.headlineValue, 'Recyclable');
+  check('regression: accepted UI uses Predicted bin label',
+        acceptedUi.headlineLabel, 'Predicted bin');
+  check('regression: accepted UI has no cannot-assign disposal copy',
+        acceptedUi.disposal, '');
+
+  const ood = decide(acceptedProbs, 0.95);
+  const oodUi = present(ood);
+  check('regression: high OOD score stays unsupported', ood.state, 'unsupported');
+  check('regression: OOD UI does not assign a waste bin', oodUi.assignBin, false);
+  check('regression: OOD UI displays Unsupported', oodUi.headlineValue, 'Unsupported');
+  check('regression: OOD UI disposal does not recommend a bin',
+        namesABin(oodUi.disposal), false);
+}
+
 function runProductCases(decide) {
   if (!fs.existsSync(PRED_FILE)) {
     failCount++;

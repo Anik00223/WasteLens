@@ -2151,6 +2151,8 @@
     resultPanel: document.getElementById('resultPanel'),
     binName: document.getElementById('binName'),
     binLabel: document.getElementById('binLabel'),
+    topPredBlock: document.getElementById('topPredBlock'),
+    topPredValue: document.getElementById('topPredValue'),
     confidence: document.getElementById('confidence'),
     confCap: document.getElementById('confCap'),
     oodScoreVal: document.getElementById('oodScoreVal'),
@@ -2250,6 +2252,7 @@
 
   function renderResult(probs, rejectProb) {
     var verdict = decideVerdict(probs, rejectProb);
+    var ui = presentVerdict(verdict);
     var unsupported = verdict.state === 'unsupported';
     var uncertain = verdict.state === 'uncertain';
 
@@ -2273,6 +2276,7 @@
     }
 
     els.uncertainNote.hidden = !uncertain;
+    if (uncertain) els.uncertainNote.textContent = ui.disposal;
     els.unsupportedNote.hidden = !unsupported;
 
     if (els.guidelineCallout && els.guidelineText) {
@@ -2291,7 +2295,7 @@
     LABELS.forEach(function (label, i) {
       var row = document.createElement('div');
       row.className = 'bar-row'
-        + (!unsupported && i === verdict.best ? ' predicted' : '')
+        + (ui.highlightBest && i === verdict.best ? ' predicted' : '')
         + (uncertain ? ' uncertain' : '');
       var nameDiv = document.createElement('div');
       nameDiv.className = 'bar-label';
