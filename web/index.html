@@ -129,6 +129,17 @@
   .conf-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
   .conf-num { font-size: 40px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .conf-cap { color: var(--muted); font-size: 14px; }
+  .top-pred { font-size: 16px; font-weight: 600; margin: 2px 0 14px; color: var(--text); }
+  .decision-metrics {
+    display: grid; gap: 6px 16px; margin: 0 0 14px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    font-size: 13.5px;
+  }
+  .decision-metrics dt { color: var(--muted); margin: 0; }
+  .decision-metrics dd {
+    margin: 0; text-align: right; font-variant-numeric: tabular-nums; color: var(--text);
+  }
+  .reason-note { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
   .uncertain-note { color: var(--warning); font-size: 14px; margin: -6px 0 14px; }
   .unsupported-note { color: var(--danger); font-size: 14px; margin: -6px 0 14px; }
   .scope-note {
@@ -186,14 +197,26 @@
     <div>
       <div id="resultError" class="result-error" role="alert"></div>
       <div id="resultPanel" hidden>
-        <div class="bin-label" id="binLabel">Predicted bin</div>
+        <div class="bin-label" id="binLabel">Final verdict</div>
         <div class="bin-name"><span class="chip" id="binName">&ndash;</span></div>
+        <div id="topPredBlock" hidden>
+          <div class="bin-label">Top prediction</div>
+          <div class="top-pred" id="topPredValue">&ndash;</div>
+        </div>
         <div class="conf-row">
           <div class="conf-num" id="confidence">&ndash;</div>
           <div class="conf-cap" id="confCap">model confidence</div>
         </div>
+        <dl class="decision-metrics" id="decisionMetrics">
+          <dt>OOD rejection score</dt><dd id="oodScore">&ndash;</dd>
+          <dt>OOD threshold</dt><dd id="oodThreshold">&ndash;</dd>
+          <dt>Confidence threshold</dt><dd id="confThreshold">&ndash;</dd>
+          <dt>Class margin</dt><dd id="classMargin">&ndash;</dd>
+          <dt>Required margin</dt><dd id="reqMargin">&ndash;</dd>
+        </dl>
+        <div class="reason-note" id="reasonNote" hidden></div>
         <div class="uncertain-note" id="uncertainNote" hidden>
-          Low confidence &mdash; the model is not sure which bin this is. Double-check locally before disposing.
+          The model cannot confidently assign this image to a supported waste category. Verify the item before disposal.
         </div>
         <div class="unsupported-note" id="unsupportedNote" hidden>
           This image appears to be outside WasteLens's supported single-item
@@ -283,6 +306,53 @@
     return { state: state, best: best, second: second,
              top: probs[best], margin: margin, reject: rejectProb };
   }
+
+  // Map the raw verdict to UI copy. Does not change gates or scores.
+  // Raw top class is never treated as an accepted bin unless state === 'supported'.
+  function presentVerdict(verdict, labels) {
+    labels = labels || LABELS;
+    var accepted = verdict.state === 'supported';
+    var uncertain = verdict.state === 'uncertain';
+    var unsupported = verdict.state === 'unsupported';
+    var topName = labels[verdict.best];
+    var titled = topName.charAt(0).toUpperCase() + topName.slice(1);
+    var topPct = (verdict.top * 100).toFixed(1) + '%';
+    var lowTop = verdict.top < UNCERTAIN.MIN_TOP - 1e-9;
+    var lowMargin = verdict.margin + 1e-9 < UNCERTAIN.MIN_MARGIN;
+    var reason = '';
+    if (unsupported) {
+      reason = 'The rejection head scored this image above the OOD threshold.';
+    } else if (uncertain) {
+      if (lowTop && lowMargin) {
+        reason = 'Low confidence and insufficient separation between the leading classes.';
+      } else if (lowTop) {
+        reason = 'Low confidence \u2014 the model is not sure which bin this is.';
+      } else {
+        reason = 'Insufficient separation between the leading classes.';
+      }
+    }
+    var cannotAssign =
+      'The model cannot confidently assign this image to a supported waste category. Verify the item before disposal.';
+    return {
+      assignBin: accepted,
+      headlineLabel: accepted ? 'Predicted bin' : 'Final verdict',
+      headlineValue: accepted ? titled : (uncertain ? 'Uncertain' : 'Unsupported'),
+      topPrediction: titled + ' \u2014 ' + topPct,
+      showTopPrediction: !accepted,
+      confidenceText: unsupported
+        ? (verdict.reject * 100).toFixed(1) + '%'
+        : topPct,
+      confidenceCaption: unsupported ? 'rejection confidence' : 'model confidence',
+      oodScoreText: Number(verdict.reject).toFixed(4),
+      oodThresholdText: REJECT_THRESHOLD.toFixed(4),
+      confidenceThresholdText: (UNCERTAIN.MIN_TOP * 100).toFixed(0) + '%',
+      marginText: (verdict.margin * 100).toFixed(1) + '%',
+      requiredMarginText: (UNCERTAIN.MIN_MARGIN * 100).toFixed(0) + '%',
+      reason: reason,
+      disposal: accepted ? '' : cannotAssign,
+      highlightBest: accepted
+    };
+  }
   // === DECISION-END ===
 
   var model = null;
@@ -304,8 +374,16 @@
     resultPanel: document.getElementById('resultPanel'),
     binName: document.getElementById('binName'),
     binLabel: document.getElementById('binLabel'),
+    topPredBlock: document.getElementById('topPredBlock'),
+    topPredValue: document.getElementById('topPredValue'),
     confidence: document.getElementById('confidence'),
     confCap: document.getElementById('confCap'),
+    oodScore: document.getElementById('oodScore'),
+    oodThreshold: document.getElementById('oodThreshold'),
+    confThreshold: document.getElementById('confThreshold'),
+    classMargin: document.getElementById('classMargin'),
+    reqMargin: document.getElementById('reqMargin'),
+    reasonNote: document.getElementById('reasonNote'),
     uncertainNote: document.getElementById('uncertainNote'),
     unsupportedNote: document.getElementById('unsupportedNote'),
     bars: document.getElementById('bars')
@@ -374,27 +452,34 @@
 
   function renderResult(probs, rejectProb) {
     var verdict = decideVerdict(probs, rejectProb);
+    var ui = presentVerdict(verdict);
     var unsupported = verdict.state === 'unsupported';
     var uncertain = verdict.state === 'uncertain';
 
-    els.binLabel.textContent = unsupported ? 'Result' : 'Predicted bin';
-    els.binName.textContent = unsupported
-      ? 'Unsupported'
-      : LABELS[verdict.best].charAt(0).toUpperCase() + LABELS[verdict.best].slice(1);
+    els.binLabel.textContent = ui.headlineLabel;
+    els.binName.textContent = ui.headlineValue;
     els.binName.classList.toggle('unsupported', unsupported);
     els.binName.classList.toggle('uncertain', uncertain);
-    els.confidence.textContent = unsupported
-      ? (verdict.reject * 100).toFixed(1) + '%'
-      : (verdict.top * 100).toFixed(1) + '%';
-    els.confCap.textContent = unsupported ? 'rejection confidence' : 'model confidence';
+    els.topPredBlock.hidden = !ui.showTopPrediction;
+    els.topPredValue.textContent = ui.topPrediction;
+    els.confidence.textContent = ui.confidenceText;
+    els.confCap.textContent = ui.confidenceCaption;
+    els.oodScore.textContent = ui.oodScoreText;
+    els.oodThreshold.textContent = ui.oodThresholdText;
+    els.confThreshold.textContent = ui.confidenceThresholdText;
+    els.classMargin.textContent = ui.marginText;
+    els.reqMargin.textContent = ui.requiredMarginText;
+    els.reasonNote.hidden = !ui.reason;
+    els.reasonNote.textContent = ui.reason ? ('Reason: ' + ui.reason) : '';
     els.uncertainNote.hidden = !uncertain;
+    if (uncertain) els.uncertainNote.textContent = ui.disposal;
     els.unsupportedNote.hidden = !unsupported;
 
     els.bars.innerHTML = '';
     LABELS.forEach(function (label, i) {
       var row = document.createElement('div');
       row.className = 'bar-row'
-        + (!unsupported && i === verdict.best ? ' predicted' : '')
+        + (ui.highlightBest && i === verdict.best ? ' predicted' : '')
         + (uncertain ? ' uncertain' : '');
       var nameDiv = document.createElement('div');
       nameDiv.className = 'bar-label';
