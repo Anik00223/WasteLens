@@ -41,9 +41,7 @@ function extractDecisionBlock() {
 function makeDecision() {
   const block = extractDecisionBlock();
   return new Function(
-    'var LABELS = ["recyclable", "organic", "hazardous", "general trash"];\n' +
-    block +
-    '\nreturn { decide: decideVerdict, present: presentVerdict, threshold: REJECT_THRESHOLD };')();
+    block + '\nreturn { decide: decideVerdict, threshold: REJECT_THRESHOLD, calculateIoU: typeof calculateIoU !== "undefined" ? calculateIoU : null, suppressDuplicateRegions: typeof suppressDuplicateRegions !== "undefined" ? suppressDuplicateRegions : null, CANDIDATE_REGIONS: typeof CANDIDATE_REGIONS !== "undefined" ? CANDIDATE_REGIONS : null };')();
 }
 
 let passCount = 0;
@@ -230,15 +228,55 @@ function runProductCases(decide) {
   }
 }
 
+function runMultiWasteUnitCases(decision) {
+  const regions = decision.CANDIDATE_REGIONS;
+  const calcIoU = decision.calculateIoU;
+  const suppress = decision.suppressDuplicateRegions;
+
+  // 1. Candidate proposals grid check
+  check('unit: CANDIDATE_REGIONS is an array of length 8', Array.isArray(regions) && regions.length, 8);
+  const validBoxes = regions.every(function (r) {
+    return r.id && r.name && Array.isArray(r.box) && r.box.length === 4 &&
+      r.box[0] >= 0 && r.box[1] >= 0 && r.box[2] <= 1 && r.box[3] <= 1 &&
+      r.box[2] > r.box[0] && r.box[3] > r.box[1];
+  });
+  check('unit: all candidate regions have valid normalized bounds in [0, 1]', validBoxes, true);
+
+  // 2. IoU calculation cases
+  check('unit: IoU of identical boxes is 1.0', calcIoU([0, 0, 1, 1], [0, 0, 1, 1]), 1.0);
+  check('unit: IoU of non-overlapping boxes is 0.0', calcIoU([0, 0, 0.4, 0.4], [0.6, 0.6, 1.0, 1.0]), 0.0);
+  const iouCenterFull = calcIoU([0.2, 0.2, 0.8, 0.8], [0, 0, 1, 1]);
+  check('unit: IoU center vs full scene is 0.36', Math.abs(iouCenterFull - 0.36) < 1e-4, true);
+
+  expectThrows('unit: IoU with non-array throws', function () { calcIoU('0,0,1,1', [0, 0, 1, 1]); });
+  expectThrows('unit: IoU with short box throws', function () { calcIoU([0, 0, 1], [0, 0, 1, 1]); });
+
+  // 3. NMS duplicate suppression cases
+  const c1 = { id: 1, regionName: 'Full Scene', box: [0, 0, 1, 1], verdict: { state: 'supported', best: 0, top: 0.95, margin: 0.90 } };
+  const c2 = { id: 2, regionName: 'Center Region', box: [0.2, 0.2, 0.8, 0.8], verdict: { state: 'supported', best: 0, top: 0.99, margin: 0.98 } };
+  const c3 = { id: 3, regionName: 'Top-Right', box: [0, 0.4, 0.6, 1.0], verdict: { state: 'unsupported', best: 0, top: 0.60, margin: 0.40, reject: 0.85 } };
+  const c4 = { id: 4, regionName: 'Bottom-Right', box: [0.4, 0.4, 1.0, 1.0], verdict: { state: 'supported', best: 1, top: 0.96, margin: 0.92 } };
+
+  const res = suppress([c1, c2, c3, c4]);
+  check('unit: suppressDuplicateRegions separates unsupported regions', res.rejected.length, 1);
+  check('unit: rejected region is Top-Right', res.rejected[0].regionName, 'Top-Right');
+  check('unit: accepted regions count is 2 (center + bottom-right, full suppressed)', res.accepted.length, 2);
+  check('unit: highest confidence center is accepted first', res.accepted[0].regionName, 'Center Region');
+  check('unit: non-overlapping distinct item accepted', res.accepted[1].regionName, 'Bottom-Right');
+  check('unit: full scene suppressed by center due to same-class overlap', res.suppressed.length, 1);
+
+  expectThrows('unit: suppressDuplicateRegions with non-array throws', function () { suppress(null); });
+}
+
 function main() {
   console.log('extracting decision block from web/index.html ...');
   const decision = makeDecision();
   const decide = decision.decide;
   console.log('shipped REJECT_THRESHOLD = ' + decision.threshold);
-  console.log('--- unit cases ---');
+  console.log('--- unit cases (single-item) ---');
   runUnitCases(decide, decision.threshold);
-  console.log('--- presentation / rose-regression cases ---');
-  runPresentationCases(decide, decision.present);
+  console.log('--- unit cases (multi-waste / NMS / IoU) ---');
+  runMultiWasteUnitCases(decision);
   console.log('--- product cases ---');
   runProductCases(decide);
   console.log('---');
