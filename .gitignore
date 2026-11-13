@@ -18,3 +18,8 @@ scratch/
 docs/rejection_experiment/frozen_tensorboard/
 docs/rejection_experiment/tensorboard/
 
+# Vercel deployment metadata
+.vercel/
+*.local
+
+

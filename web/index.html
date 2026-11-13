@@ -1,784 +1,246 @@
 <!DOCTYPE html>
-<!-- WasteLens — client-side waste classifier. Visual system: cursor-DESIGN.md -->
+<!-- WasteLens - single-file browser demo (HTML/CSS/JS, no build step).
+     Serve this folder over HTTP (e.g. `python -m http.server` from web/)
+     and load the exported TF.js model into web/model/ (model.json + shards). -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#f7f7f4">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0e1116">
 <link rel="icon" href="data:,">
-<title>WasteLens — which bin does this go in?</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>WasteLens - what bin does this go in?</title>
 <style>
   :root {
-    --primary: #f54e00;
-    --primary-active: #d04200;
-    --ink: #26251e;
-    --body: #5a5852;
-    --muted: #807d72;
-    --muted-soft: #a09c92;
-    --hairline: #e6e5e0;
-    --hairline-soft: #efeee8;
-    --hairline-strong: #cfcdc4;
-    --canvas: #f7f7f4;
-    --canvas-soft: #fafaf7;
-    --surface: #ffffff;
-    --surface-strong: #e6e5e0;
-    --on-primary: #ffffff;
-    --thinking: #dfa88f;
-    --grep: #9fc9a2;
-    --read: #9fbbe0;
-    --edit: #c0a8dd;
-    --done: #c08532;
-    --success: #1f8a65;
-    --danger: #cf2d56;
-    --text-primary: #26251e;
-    --emerald-light: #1f8a65;
-    --warning: #c08532;
-    --sans: "Helvetica Neue", Helvetica, system-ui, Arial, sans-serif;
-    --mono: "JetBrains Mono", ui-monospace, monospace;
-    --nav-h: 64px;
-    --max: 1120px;
+    --bg: #0e1116;
+    --surface: #161b23;
+    --surface-2: #1d232e;
+    --border: #273040;
+    --text: #e7eaf1;
+    --muted: #8d95a6;
+    --accent: #3fb98a;
+    --accent-soft: rgba(63, 185, 138, 0.14);
+    --danger: #e06c7d;
+    --warning: #e0b06c;
+    --warning-soft: rgba(224, 176, 108, 0.14);
+    --radius: 16px;
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; }
   body {
-    margin: 0;
-    background: var(--canvas);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 16px;
-    font-weight: 400;
+    background:
+      radial-gradient(1100px 700px at 80% -10%, rgba(63, 185, 138, 0.07), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     line-height: 1.5;
+    min-height: 100vh;
   }
-  a { color: inherit; text-decoration: none; }
-  button, input { font-family: inherit; }
-
-  .topnav {
-    position: sticky;
-    top: 0;
-    z-index: 40;
-    height: var(--nav-h);
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    padding: 0 28px;
-    background: var(--canvas);
-    border-bottom: 1px solid var(--hairline);
-  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 28px 18px 40px; }
+  header { margin-bottom: 22px; }
   .wordmark {
-    font-size: 18px;
-    font-weight: 500;
-    letter-spacing: -0.3px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 26px; font-weight: 700; letter-spacing: 0.2px;
   }
-  .wordmark i {
-    width: 8px; height: 8px; border-radius: 99px;
-    background: var(--primary);
-    display: inline-block;
-    font-style: normal;
+  .wordmark .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
   }
-  .nav-desktop { display: flex; gap: 22px; flex: 1; }
-  .nav-desktop a, .drawer a {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--body);
-  }
-  .nav-desktop a:hover, .drawer a:hover { color: var(--ink); }
-  .nav-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-  .menu-btn {
-    display: none;
-    width: 40px; height: 40px;
-    border: 1px solid var(--hairline-strong);
-    background: var(--surface);
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  .menu-btn svg { width: 18px; height: 18px; }
-
-  .drawer {
-    display: none;
-    position: fixed;
-    inset: var(--nav-h) 0 auto 0;
-    background: var(--canvas);
-    border-bottom: 1px solid var(--hairline);
-    padding: 12px 28px 20px;
-    z-index: 39;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .drawer.open { display: flex; }
-
-  .status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    max-width: 280px;
-  }
-  .status .copy { min-width: 0; }
-  .status .title {
-    display: block;
-    font-size: 13px;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .status .detail {
-    display: block;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 220px;
-  }
-  .status-spinner {
-    width: 14px; height: 14px; flex: none;
-    border: 1.5px solid var(--hairline-strong);
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  .status .mark { font-size: 14px; width: 14px; text-align: center; color: var(--success); }
-  .status.error .title { color: var(--danger); }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 40px;
-    padding: 0 18px;
-    border-radius: 8px;
-    border: 1px solid transparent;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1;
-    cursor: pointer;
-    background: transparent;
-    color: var(--ink);
-  }
-  .btn svg { width: 15px; height: 15px; }
-  .btn-primary { background: var(--primary); color: var(--on-primary); }
-  .btn-primary:hover { background: var(--primary-active); }
-  .btn-secondary { background: var(--surface); border-color: var(--hairline-strong); }
-  .btn-secondary:hover { border-color: var(--ink); }
-  .btn-ink { background: var(--ink); color: var(--canvas); height: 44px; padding: 0 20px; }
-  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
-
-  #workspace, .section { scroll-margin-top: 80px; }
-  .hero { padding: 80px 0 40px; }
-  .eyebrow {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.88px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin: 0 0 16px;
-  }
-  .hero h1 {
-    margin: 0;
-    max-width: 14ch;
-    font-size: 72px;
-    font-weight: 400;
-    line-height: 1.05;
-    letter-spacing: -2.16px;
-  }
-  .lede {
-    max-width: 52ch;
-    margin: 20px 0 0;
-    color: var(--body);
-    font-size: 16px;
-    letter-spacing: 0.08px;
-  }
-  .hero-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
-  .timeline { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
-  .pill {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.88px;
-    text-transform: uppercase;
-    border-radius: 999px;
-    padding: 4px 10px;
-    color: var(--ink);
-  }
-  .pill.thinking { background: var(--thinking); }
-  .pill.grep { background: var(--grep); }
-  .pill.read { background: var(--read); }
-  .pill.edit { background: var(--edit); }
-  .pill.done { background: var(--done); color: #fff; }
-
-  .ide {
-    background: var(--surface);
-    border: 1px solid var(--hairline);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 80px;
-  }
-  .ide-chrome {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 12px 16px;
-    background: var(--canvas-soft);
-    border-bottom: 1px solid var(--hairline);
-    flex-wrap: wrap;
-  }
-  .chrome-dots { display: flex; gap: 6px; }
-  .chrome-dots span { width: 8px; height: 8px; border-radius: 99px; background: var(--hairline-strong); }
-  .chrome-path {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .mode-toggle { display: flex; border: 1px solid var(--hairline-strong); border-radius: 8px; overflow: hidden; background: var(--surface); }
-  .mode-btn {
-    border: 0;
-    background: transparent;
-    color: var(--body);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 8px 12px;
-    cursor: pointer;
-  }
-  .mode-btn .mode-tag {
-    margin-left: 6px;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    color: var(--muted-soft);
-  }
-  .mode-btn.active { background: var(--ink); color: var(--canvas); }
-  .mode-btn.active .mode-tag { color: var(--canvas-soft); }
-
-  .ide-body { display: grid; grid-template-columns: 1fr 1.05fr; min-height: 520px; }
-  .pane { padding: 24px; }
-  .pane + .pane { border-left: 1px solid var(--hairline); }
-  .pane-label {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 16px;
-  }
-
-  .dropzone {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    min-height: 220px;
-    padding: 28px;
-    border: 1px dashed var(--hairline-strong);
-    border-radius: 12px;
-    background: var(--canvas-soft);
-    cursor: pointer;
-  }
-  .dropzone:hover, .dropzone.dragging { border-color: var(--ink); background: var(--surface); }
-  .dropzone.disabled { opacity: 0.55; cursor: not-allowed; }
-  .dropzone svg { width: 28px; height: 28px; stroke: var(--ink); }
-  .dz-title { font-size: 22px; font-weight: 400; letter-spacing: -0.11px; }
-  .dz-hint { color: var(--body); font-size: 14px; max-width: 42ch; }
-  input[type="file"] { display: none; }
-  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-  .meta-list {
-    margin: 28px 0 0;
-    padding: 0;
-    list-style: none;
-    border-top: 1px solid var(--hairline);
-  }
-  .meta-list li {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--hairline-soft);
-    font-size: 14px;
-  }
-  .meta-list span { color: var(--muted); }
-  .meta-list code { font-family: var(--mono); font-size: 12px; }
-
-  .placeholder {
-    min-height: 280px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 8px;
-    color: var(--muted);
-    font-size: 14px;
-  }
-  .placeholder strong { color: var(--ink); font-weight: 500; font-size: 18px; }
-  .preview-stage-wrap {
-    position: relative;
-    background: var(--canvas-soft);
-    border: 1px solid var(--hairline);
-    border-radius: 8px;
-    overflow: hidden;
-    min-height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .stage { position: relative; width: 100%; }
-  .stage img { display: block; width: 100%; max-height: 320px; object-fit: contain; }
-  .box-overlay { position: absolute; inset: 0; pointer-events: none; }
-  .bbox { position: absolute; border: 1.5px solid var(--ink); }
-  .bbox.uncertain { border-style: dashed; }
-  .bbox.cat-recyclable { border-color: #1f8a65; }
-  .bbox.cat-organic { border-color: #c08532; }
-  .bbox.cat-hazardous { border-color: #cf2d56; }
-  .bbox.cat-general-trash { border-color: #3d6ea8; }
-  .bbox-label {
-    position: absolute;
-    left: 0; top: 0;
-    background: var(--ink);
-    color: var(--canvas);
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 2px 6px;
-    white-space: nowrap;
-  }
-  .scan-laser {
-    display: none;
-    position: absolute;
-    left: 0; right: 0;
-    height: 2px;
-    background: var(--primary);
-    animation: scan 1.4s ease-in-out infinite;
-    z-index: 2;
-  }
-  .scanning .scan-laser { display: block; }
-  @keyframes scan { 0% { top: 8%; } 100% { top: 88%; } }
-
-  .bin-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.88px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-top: 20px;
-  }
-  .bin-name { margin: 6px 0 16px; }
-  .chip {
-    font-size: 36px;
-    font-weight: 400;
-    letter-spacing: -0.72px;
-    line-height: 1.15;
-  }
-  .chip.uncertain { color: var(--done); }
-  .chip.unsupported { color: var(--danger); }
-  .top-pred { margin: 2px 0 16px; font-size: 16px; font-weight: 500; }
-  .metrics {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border: 1px solid var(--hairline);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .metric { padding: 14px 16px; background: var(--canvas-soft); }
-  .metric + .metric { border-left: 1px solid var(--hairline); }
-  .metric-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.88px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .conf-num, .ood-score-val {
-    display: block;
-    margin-top: 4px;
-    font-family: var(--mono);
-    font-size: 22px;
-  }
-  .ood-thresh-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 4px; }
-  .alert-note {
-    display: flex;
-    gap: 10px;
-    margin-top: 14px;
-    padding: 14px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    border: 1px solid var(--hairline);
-    background: var(--canvas-soft);
-  }
-  .alert-note svg { width: 18px; height: 18px; flex: none; margin-top: 2px; }
-  .uncertain-note { color: var(--ink); }
-  .unsupported-note { color: var(--danger); }
-  .bars-header {
-    margin: 18px 0 8px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .bar-row {
-    display: grid;
-    grid-template-columns: 110px 1fr 52px;
-    gap: 10px;
-    align-items: center;
-    margin: 8px 0;
-  }
-  .bar-label { font-size: 13px; color: var(--body); }
-  .bar-row.predicted .bar-label { color: var(--ink); font-weight: 600; }
-  .bar-track { height: 6px; background: var(--hairline); border-radius: 99px; overflow: hidden; }
-  .bar-fill { height: 100%; width: 0; background: var(--ink); transition: width 0.45s ease; }
-  .bar-pct { font-family: var(--mono); font-size: 12px; text-align: right; color: var(--muted); }
-  .bar-row.predicted .bar-pct { color: var(--ink); }
-  .guideline-callout, .scope-note, .multi-experimental-notice {
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 1px solid var(--hairline);
-    color: var(--body);
-    font-size: 14px;
-    display: flex;
-    gap: 8px;
-  }
-  .guideline-callout svg { width: 16px; height: 16px; flex: none; margin-top: 3px; }
-  .scope-note { display: block; }
-  .result-error { color: var(--danger); font-size: 14px; margin-top: 12px; }
-  .result-error:empty { display: none; }
-
-  .multi-header-row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
-  .multi-summary-title { font-size: 22px; letter-spacing: -0.11px; }
-  .multi-timing-badge { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-  .multi-item-card {
-    margin-top: 12px;
-    padding: 14px 16px;
-    border: 1px solid var(--hairline);
-    border-radius: 8px;
-    background: var(--canvas-soft);
-  }
-  .multi-item-top { display: flex; justify-content: space-between; gap: 12px; }
-  .multi-item-num { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-right: 6px; }
-  .multi-item-conf { font-family: var(--mono); }
-  .multi-item-meta, .multi-item-guideline, .multi-item-warn, .multi-empty-state {
-    margin-top: 6px;
-    font-size: 13px;
-    color: var(--body);
-  }
-  .multi-item-warn { color: var(--done); }
-  .multi-rejected-section { margin-top: 16px; }
-  .multi-rejected-title { font-size: 14px; font-weight: 600; }
-  .multi-rejected-list { font-size: 13px; color: var(--body); margin-top: 6px; }
-
-  .section { padding: 80px 0; border-top: 1px solid var(--hairline); }
-  .section h2 {
-    margin: 0 0 8px;
-    font-size: 36px;
-    font-weight: 400;
-    letter-spacing: -0.72px;
-    line-height: 1.2;
-  }
-  .section-intro { max-width: 58ch; color: var(--body); margin: 0 0 32px; }
-
-  .stream-grid, .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .tagline { color: var(--muted); margin: 4px 0 0; font-size: 15px; }
   .card {
     background: var(--surface);
-    border: 1px solid var(--hairline);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+  .status { display: flex; align-items: flex-start; gap: 12px; min-height: 0; }
+  .status .spinner {
+    width: 18px; height: 18px; flex: none;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    margin-top: 3px;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .status .mark { font-size: 18px; flex: 0 0 22px; width: 22px; max-width: 22px; overflow: hidden; text-align: center; line-height: 1.4; align-self: flex-start; display: block; }
+  .status .copy { flex: 1 1 auto; min-width: 0; }
+  .status .title { font-weight: 600; }
+  .status .detail { color: var(--muted); font-size: 14px; margin-top: 2px; overflow-wrap: anywhere; }
+  .status.error .title { color: var(--danger); }
+  .status.ready .mark { color: var(--accent); }
+  .dropzone {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    padding: 30px 18px;
+    border: 1.5px dashed var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    user-select: none;
+  }
+  .dropzone:hover, .dropzone:focus-visible, .dropzone.dragging {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    outline: none;
+  }
+  .dropzone.disabled { opacity: 0.55; cursor: not-allowed; }
+  .dropzone svg { width: 34px; height: 34px; stroke: var(--accent); }
+  .dropzone .dz-title { font-weight: 600; font-size: 16px; }
+  .dropzone .dz-hint { color: var(--muted); font-size: 13.5px; max-width: 52ch; }
+  .dropzone .dz-hint .ext { white-space: nowrap; }
+  .dropzone kbd {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1px 6px; font-size: 12px; color: var(--muted);
+  }
+  input[type="file"] { display: none; }
+  .results { display: grid; gap: 16px; }
+  @media (min-width: 700px) {
+    .results { grid-template-columns: 300px 1fr; align-items: start; }
+  }
+  .preview-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 24px;
+    overflow: hidden;
+    min-height: 180px;
+    display: flex; align-items: center; justify-content: center;
   }
-  .card h3 { margin: 8px 0; font-size: 18px; font-weight: 600; }
-  .card p, .card li { color: var(--body); font-size: 15px; }
-  .index {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
+  .preview-box img { display: block; max-width: 100%; max-height: 340px; object-fit: contain; }
+  .placeholder { color: var(--muted); font-size: 14px; padding: 24px; text-align: center; }
+  .bin-label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; }
+  .bin-name { font-size: 30px; font-weight: 700; margin: 2px 0 14px; }
+  .bin-name .chip {
+    display: inline-block; padding: 4px 14px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent);
+    border: 1px solid rgba(63, 185, 138, 0.35);
   }
-  .dest { margin-top: 20px; font-size: 13px; color: var(--ink); }
-  .card.ink { background: var(--ink); color: var(--canvas); border-color: var(--ink); }
-  .card.ink p, .card.ink li { color: #d9d6cc; }
-  .card.ink .index { color: #a09c92; }
-  .card ul { padding-left: 18px; margin: 8px 0 0; }
-
-  .audit { width: 100%; border-collapse: collapse; font-size: 14px; }
-  .audit th, .audit td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--hairline); vertical-align: top; }
-  .audit th { font-size: 11px; letter-spacing: 0.88px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-  .audit td:first-child { font-weight: 600; width: 22%; }
-
-  footer {
-    padding: 64px 0 48px;
-    border-top: 1px solid var(--hairline);
-    color: var(--body);
-    font-size: 14px;
+  .bin-name .chip.uncertain {
+    background: var(--warning-soft); color: var(--warning);
+    border: 1px solid rgba(224, 176, 108, 0.4);
   }
-  footer strong { color: var(--ink); font-weight: 500; }
-
-  @media (max-width: 860px) {
-    .nav-desktop, .status .detail { display: none; }
-    .menu-btn { display: inline-flex; align-items: center; justify-content: center; }
-    .hero { padding: 48px 0 24px; }
-    .hero h1 { font-size: 44px; letter-spacing: -1.2px; }
-    .ide-body, .stream-grid, .split { grid-template-columns: 1fr; }
-    .pane + .pane { border-left: 0; border-top: 1px solid var(--hairline); }
-    .metrics { grid-template-columns: 1fr; }
-    .metric + .metric { border-left: 0; border-top: 1px solid var(--hairline); }
-    .topnav { padding: 0 16px; }
-    .wrap { padding: 0 16px; }
+  .bin-name .chip.unsupported {
+    background: rgba(224, 108, 125, 0.14); color: var(--danger);
+    border: 1px solid rgba(224, 108, 125, 0.4);
   }
+  .conf-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+  .conf-num { font-size: 40px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .conf-cap { color: var(--muted); font-size: 14px; }
+  .top-pred { font-size: 16px; font-weight: 600; margin: 2px 0 14px; color: var(--text); }
+  .decision-metrics {
+    display: grid; gap: 6px 16px; margin: 0 0 14px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    font-size: 13.5px;
+  }
+  .decision-metrics dt { color: var(--muted); margin: 0; }
+  .decision-metrics dd {
+    margin: 0; text-align: right; font-variant-numeric: tabular-nums; color: var(--text);
+  }
+  .reason-note { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+  .uncertain-note { color: var(--warning); font-size: 14px; margin: -6px 0 14px; }
+  .unsupported-note { color: var(--danger); font-size: 14px; margin: -6px 0 14px; }
+  .scope-note {
+    color: var(--muted); font-size: 13.5px; line-height: 1.55;
+    margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);
+  }
+  .bar-row { display: grid; grid-template-columns: 110px 1fr 52px; gap: 10px; align-items: center; margin: 8px 0; }
+  .bar-row .bar-label { font-size: 13.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-row.predicted .bar-label { color: var(--text); font-weight: 600; }
+  .bar-track { height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; background: var(--border); transition: width 0.5s ease; }
+  .bar-row.predicted .bar-fill { background: linear-gradient(90deg, var(--accent), #6dd6a8); }
+  .bar-row .bar-pct { font-size: 13px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+  .bar-row.predicted .bar-pct { color: var(--accent); }
+  .bar-row.predicted.uncertain .bar-fill { background: linear-gradient(90deg, var(--warning), #ecd2a3); }
+  .bar-row.predicted.uncertain .bar-pct { color: var(--warning); }
+  .result-error { color: var(--danger); font-size: 14.5px; }
+  .result-error:empty { display: none; }
+  footer { color: var(--muted); font-size: 12.5px; margin-top: 22px; text-align: center; }
 </style>
 </head>
 <body>
-<header class="topnav">
-  <a class="wordmark" href="#workspace"><i></i>WasteLens</a>
-  <nav class="nav-desktop" aria-label="Primary">
-    <a href="#workspace">Workspace</a>
-    <a href="#categories">Streams</a>
-    <a href="#architecture">Model</a>
-    <a href="#audit">Audit</a>
-  </nav>
-  <div class="nav-actions">
-    <div id="status" class="status" aria-live="polite">
-      <div class="status-spinner" id="statusIcon"></div>
-      <div class="copy">
-        <span class="title" id="statusTitle">Loading model&hellip;</span>
-        <span class="detail" id="statusDetail">Fetching model from web/model/</span>
-      </div>
-    </div>
-    <a class="btn btn-primary" href="#workspace">Classify</a>
-    <button type="button" class="menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-    </button>
-  </div>
-</header>
-<aside class="drawer" id="sidebar">
-  <a href="#workspace">Workspace</a>
-  <a href="#categories">Streams</a>
-  <a href="#architecture">Model</a>
-  <a href="#audit">Audit</a>
-</aside>
+<div class="wrap">
+  <header>
+    <div class="wordmark"><span class="dot"></span> WasteLens</div>
+    <p class="tagline">Snap a photo, find out which bin it belongs in. Runs entirely in your browser.</p>
+  </header>
 
-<main>
-  <section class="hero">
-    <div class="wrap">
-      <p class="eyebrow">On-device waste classification</p>
-      <div class="hero-row">
-        <h1>Which bin does this go in.</h1>
-      </div>
-      <p class="lede">Photograph one item. MobileNetV2 runs in the browser, then three gates decide whether a bin is actually assigned: out-of-scope, confidence, and margin.</p>
-      <div class="timeline" aria-label="Inference stages">
-        <span class="pill thinking">Load</span>
-        <span class="pill read">Read</span>
-        <span class="pill grep">Classify</span>
-        <span class="pill edit">Gate</span>
-        <span class="pill done">Verdict</span>
-      </div>
+  <section id="status" class="card status" aria-live="polite">
+    <div class="spinner" id="statusIcon"></div>
+    <div class="copy">
+      <div class="title" id="statusTitle">Loading model&hellip;</div>
+      <div class="detail" id="statusDetail">Fetching the TensorFlow.js model from web/model/</div>
     </div>
   </section>
 
-  <section id="workspace">
-    <div class="wrap">
-      <div class="ide">
-        <div class="ide-chrome">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="chrome-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-            <div class="chrome-path">wastelens / classify.ts</div>
-          </div>
-          <div class="mode-toggle" role="radiogroup" aria-label="Analysis mode">
-            <button type="button" class="mode-btn active" id="modeSingle" role="radio" aria-checked="true">
-              Single item <span class="mode-tag">Default</span>
-            </button>
-            <button type="button" class="mode-btn" id="modeMulti" role="radio" aria-checked="false">
-              Multi waste <span class="mode-tag">Experimental</span>
-            </button>
-          </div>
+  <section class="card">
+    <label id="dropzone" class="dropzone disabled" for="fileInput" tabindex="0" role="button"
+           aria-label="Take a photo or choose an image to classify">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/>
+        <circle cx="12" cy="13" r="3.4"/>
+      </svg>
+      <span class="dz-title" id="dzTitle">Take a photo or choose an image</span>
+      <span class="dz-hint" id="dzHint">On your phone this opens the camera &middot; on desktop, pick a file or drag &amp; drop <span class="ext">(JPG&nbsp;/&nbsp;PNG)</span> &middot; one item per photo works best</span>
+    </label>
+    <input type="file" id="fileInput" accept="image/*" capture="environment">
+  </section>
+
+  <section id="results" class="card results" hidden>
+    <div class="preview-box">
+      <img id="preview" alt="Selected photo preview" hidden>
+      <div class="placeholder" id="placeholder">Analyzing&hellip;</div>
+    </div>
+    <div>
+      <div id="resultError" class="result-error" role="alert"></div>
+      <div id="resultPanel" hidden>
+        <div class="bin-label" id="binLabel">Final verdict</div>
+        <div class="bin-name"><span class="chip" id="binName">&ndash;</span></div>
+        <div id="topPredBlock" hidden>
+          <div class="bin-label">Top prediction</div>
+          <div class="top-pred" id="topPredValue">&ndash;</div>
         </div>
-        <div class="ide-body">
-          <div class="pane">
-            <div class="pane-label">input</div>
-            <label id="dropzone" class="dropzone disabled" for="fileInput" tabindex="0" role="button" aria-label="Take a photo or choose an image to classify">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/>
-                <circle cx="12" cy="13" r="3.2"/>
-              </svg>
-              <span class="dz-title" id="dzTitle">Take a photo or choose an image</span>
-              <span class="dz-hint" id="dzHint">On a phone this opens the camera. On desktop, drop a file or browse <span class="ext">(JPG / PNG)</span>. One item on a plain background works best.</span>
-            </label>
-            <input type="file" id="fileInput" accept="image/*" capture="environment">
-            <div class="actions">
-              <button type="button" class="btn btn-primary" id="btnAnalyze">Analyze</button>
-              <button type="button" class="btn btn-secondary" id="btnBrowse">Browse</button>
-              <button type="button" class="btn btn-secondary" id="btnReset">Reset</button>
-            </div>
-            <ul class="meta-list">
-              <li><span>Backbone</span><code>MobileNetV2</code></li>
-              <li><span>OOD threshold</span><code>0.0702</code></li>
-              <li><span>Min confidence</span><code>0.60</code></li>
-              <li><span>Min margin</span><code>0.50</code></li>
-              <li><span>Network</span><code>none — stays on device</code></li>
-            </ul>
-          </div>
-          <div class="pane">
-            <div class="pane-label">verdict</div>
-            <div id="emptyWorkspaceState" class="placeholder">
-              <strong>No photograph yet.</strong>
-              <span>Drop an image on the left. The result appears here after the gates run.</span>
-            </div>
-            <div id="results" hidden>
-              <div class="preview-stage-wrap" id="previewStageWrap">
-                <div class="scan-laser" id="scanLaser" aria-hidden="true"></div>
-                <div id="stage" class="stage" hidden>
-                  <img id="preview" alt="Selected photo preview">
-                  <div id="boxOverlay" class="box-overlay" aria-hidden="true"></div>
-                </div>
-                <div class="placeholder" id="placeholder">
-                  <strong>Reading the frame.</strong>
-                  <span>Running the local model.</span>
-                </div>
-              </div>
-              <div id="resultError" class="result-error" role="alert"></div>
-              <div id="resultPanel" hidden>
-                <div class="bin-label" id="binLabel">Predicted bin</div>
-                <div class="bin-name"><span class="chip" id="binName">&ndash;</span></div>
-                <div id="topPredBlock" hidden>
-                  <div class="bin-label">Top prediction</div>
-                  <div class="top-pred" id="topPredValue">&ndash;</div>
-                </div>
-                <div class="metrics">
-                  <div class="metric">
-                    <div class="metric-label" id="confCap">model confidence</div>
-                    <span class="conf-num" id="confidence">&ndash;</span>
-                  </div>
-                  <div class="metric">
-                    <div class="metric-label">OOD rejection score</div>
-                    <span class="ood-score-val" id="oodScoreVal">0.0000</span>
-                    <div class="ood-thresh-sub">Threshold 0.0702</div>
-                  </div>
-                </div>
-                <div class="alert-note uncertain-note" id="uncertainNote" hidden>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
-                  <div>Low confidence. The model is not sure which bin this is. Check the item before disposing.</div>
-                </div>
-                <div class="alert-note unsupported-note" id="unsupportedNote" hidden>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 8l8 8M16 8l-8 8"/></svg>
-                  <div>This image sits outside the supported single-item waste scope. Non-waste objects, clutter, and unsupported types can be rejected.</div>
-                </div>
-                <div class="bars-header">Category probability</div>
-                <div id="bars"></div>
-                <div class="guideline-callout" id="guidelineCallout">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
-                  <span id="guidelineText">Clean and dry bottles, cans, paper, or cardboard go in the recycling bin.</span>
-                </div>
-                <div class="scope-note">Trained on single-item photos. A confident answer can still be wrong on clutter, multiple objects, or non-waste images.</div>
-              </div>
-              <div id="multiResultPanel" hidden>
-                <div class="bin-label">Multi-region analysis</div>
-                <div class="multi-header-row">
-                  <div class="multi-summary-title" id="multiSummaryTitle">Candidate waste regions</div>
-                  <div class="multi-timing-badge" id="multiTimingBadge"></div>
-                </div>
-                <div class="multi-experimental-notice">Experimental. Fixed windows can duplicate, miss, or mislabel objects. Single item is the reliable path.</div>
-                <div id="multiItemsList" class="multi-items-list"></div>
-                <div id="multiRejectedSection" class="multi-rejected-section" hidden>
-                  <div class="multi-rejected-title" id="multiRejectedTitle">Excluded non-waste regions</div>
-                  <div id="multiRejectedList" class="multi-rejected-list"></div>
-                </div>
-                <div class="scope-note">Eight fixed proposal windows, one batched pass, IoU suppression, and the same 0.0702 rejection threshold. These are spatial proposals, not trained bounding boxes.</div>
-              </div>
-            </div>
-          </div>
+        <div class="conf-row">
+          <div class="conf-num" id="confidence">&ndash;</div>
+          <div class="conf-cap" id="confCap">model confidence</div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="categories">
-    <div class="wrap">
-      <p class="eyebrow">Four supported streams</p>
-      <h2>What the model can name.</h2>
-      <p class="section-intro">A bin is shown only when the image clears the rejection head and the class is clearly ahead of the runner-up.</p>
-      <div class="stream-grid">
-        <article class="card"><div class="index">01</div><h3>Recyclable</h3><p>Clean cardboard, paper, PET and HDPE plastics, cans, and glass.</p><div class="dest">Blue recycling bin</div></article>
-        <article class="card"><div class="index">02</div><h3>Organic</h3><p>Food scraps, peels, coffee grounds, and garden trimmings.</p><div class="dest">Green compost bin</div></article>
-        <article class="card"><div class="index">03</div><h3>Hazardous</h3><p>Batteries, lithium cells, chemical packaging, and small electronics.</p><div class="dest">Hazardous drop-off</div></article>
-        <article class="card"><div class="index">04</div><h3>General trash</h3><p>Soiled wrappers, composites, and other non-recyclable refuse.</p><div class="dest">Black or grey bin</div></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="architecture">
-    <div class="wrap">
-      <p class="eyebrow">Decision ladder</p>
-      <h2>Reject first. Then ask if the bin is obvious.</h2>
-      <div class="split">
-        <article class="card">
-          <div class="index">model</div>
-          <h3>Dual head on a frozen backbone</h3>
-          <ul>
-            <li>Input 224×224, normalized with (x / 127.5) − 1.</li>
-            <li>Four-class softmax: recyclable, organic, hazardous, general trash.</li>
-            <li>Sigmoid rejection head: probability the image is outside scope.</li>
-            <li>TensorFlow.js 4.22.0, WebGL, no upload.</li>
-          </ul>
-        </article>
-        <article class="card ink">
-          <div class="index">gates</div>
-          <h3>The order that actually decides</h3>
-          <ul>
-            <li>Unsupported when the rejection score is at least 0.0702.</li>
-            <li>Uncertain when the top class is under 0.60, or the margin under 0.50.</li>
-            <li>Otherwise the top class is the predicted bin.</li>
-          </ul>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="audit">
-    <div class="wrap">
-      <p class="eyebrow">What was measured</p>
-      <h2>Ready, with limits.</h2>
-      <p class="section-intro">Single-item classification is the production path. Multi-region analysis is a fixed-window experiment.</p>
-      <div class="card" style="padding:8px 16px 4px;">
-        <table class="audit">
-          <thead>
-            <tr><th></th><th>Single item</th><th>Multi-region</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Architecture</td><td>MobileNetV2 dual head</td><td>8 fixed windows, batched cropAndResize</td></tr>
-            <tr><td>Accuracy</td><td>98.13% on 1,233 single-item test images</td><td>Useful, with documented misses</td></tr>
-            <tr><td>OOD gate</td><td>0.0702 — 99.64% detection, 1.78% false rejection</td><td>Same threshold, per window</td></tr>
-            <tr><td>Localization</td><td>Whole frame</td><td>Proposals, not trained boxes</td></tr>
-            <tr><td>Status</td><td>Default</td><td>Experimental</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="split" style="margin-top:16px;">
-        <article class="card">
-          <h3>Known misses</h3>
-          <ul>
-            <li>A large centered item can light up several overlapping windows.</li>
-            <li>A center window can bridge two separate objects.</li>
-            <li>Busy countertops can push a real item over 0.0702.</li>
-            <li>Isolated non-waste can still look like a candidate.</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h3>Not in this model</h3>
-          <p>True bounding boxes would need instance labels and a detector. That is future work. This page does not pretend the eight windows are one.</p>
-        </article>
+        <dl class="decision-metrics" id="decisionMetrics">
+          <dt>OOD rejection score</dt><dd id="oodScore">&ndash;</dd>
+          <dt>OOD threshold</dt><dd id="oodThreshold">&ndash;</dd>
+          <dt>Confidence threshold</dt><dd id="confThreshold">&ndash;</dd>
+          <dt>Class margin</dt><dd id="classMargin">&ndash;</dd>
+          <dt>Required margin</dt><dd id="reqMargin">&ndash;</dd>
+        </dl>
+        <div class="reason-note" id="reasonNote" hidden></div>
+        <div class="uncertain-note" id="uncertainNote" hidden>
+          The model cannot confidently assign this image to a supported waste category. Verify the item before disposal.
+        </div>
+        <div class="unsupported-note" id="unsupportedNote" hidden>
+          This image appears to be outside WasteLens's supported single-item
+          waste classification scope. Non-waste objects, cluttered or
+          multi-object scenes, and unsupported item types may be rejected.
+          Rejection is not perfect &mdash; some unsupported images may still be
+          classified, and occasional supported photos may be flagged.
+        </div>
+        <div id="bars"></div>
+        <div class="scope-note">
+          Trained on single-item photos. Cluttered scenes, multiple objects, or
+          non-waste images are outside the model's training data &mdash; even a
+          confident answer can be wrong. Photograph one item at a time on a
+          plain background for best results.
+        </div>
       </div>
     </div>
   </section>
 
   <footer>
-    <div class="wrap">
-      <strong>WasteLens</strong> · MobileNetV2 + 4-bin head + rejection head · resize 224×224, (x / 127.5) − 1 · labels: recyclable, organic, hazardous, general trash · uncertain when the bin is not clearly ahead · unsupported when the image leaves the single-item scope · the photo never leaves this device.
-    </div>
+    MobileNetV2 (ImageNet) + 4-bin head + rejection head &middot; preprocessing: resize 224&times;224, (x / 127.5) &minus; 1 &middot;
+    label order: recyclable, organic, hazardous, general trash &middot; weakly dominant predictions are flagged uncertain &middot; images that appear outside the supported single-item scope are flagged unsupported (imperfect: ~84% of unsupported inputs caught at ~1.4% false rejections in the validation experiment) &middot; no image ever leaves your device.
   </footer>
-</main>
-
-
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
 <script>
 (function () {
@@ -846,52 +308,26 @@
              top: probs[best], margin: margin, reject: rejectProb };
   }
 
-  // Candidate spatial proposal regions for multi-waste analysis (normalized [ymin, xmin, ymax, xmax]).
-  // Fast, deterministic 8-window spatial grid covering global scene, center focus, and overlapping quadrants.
-  var CANDIDATE_REGIONS = [
-    { id: 'full', name: 'Full Scene', box: [0.0, 0.0, 1.0, 1.0] },
-    { id: 'center', name: 'Center Region', box: [0.20, 0.20, 0.80, 0.80] },
-    { id: 'top_left', name: 'Top-Left', box: [0.0, 0.0, 0.60, 0.60] },
-    { id: 'top_right', name: 'Top-Right', box: [0.0, 0.40, 0.60, 1.0] },
-    { id: 'bottom_left', name: 'Bottom-Left', box: [0.40, 0.0, 1.0, 0.60] },
-    { id: 'bottom_right', name: 'Bottom-Right', box: [0.40, 0.40, 1.0, 1.0] },
-    { id: 'top_center', name: 'Top-Center', box: [0.05, 0.20, 0.65, 0.80] },
-    { id: 'bottom_center', name: 'Bottom-Center', box: [0.35, 0.20, 0.95, 0.80] }
-  ];
-
-  // Intersection over Union (IoU) between two bounding boxes [ymin, xmin, ymax, xmax].
-  function calculateIoU(boxA, boxB) {
-    if (!Array.isArray(boxA) || boxA.length !== 4 || !Array.isArray(boxB) || boxB.length !== 4) {
-      throw new TypeError('calculateIoU expects two 4-element box arrays [ymin, xmin, ymax, xmax]');
-    }
-    var ymin = Math.max(boxA[0], boxB[0]);
-    var xmin = Math.max(boxA[1], boxB[1]);
-    var ymax = Math.min(boxA[2], boxB[2]);
-    var xmax = Math.min(boxA[3], boxB[3]);
-    var interH = Math.max(0, ymax - ymin);
-    var interW = Math.max(0, xmax - xmin);
-    var interArea = interH * interW;
-    var areaA = Math.max(0, boxA[2] - boxA[0]) * Math.max(0, boxA[3] - boxA[1]);
-    var areaB = Math.max(0, boxB[2] - boxB[0]) * Math.max(0, boxB[3] - boxB[1]);
-    var unionArea = areaA + areaB - interArea;
-    if (unionArea <= 0) return 0;
-    return interArea / unionArea;
-  }
-
-  // Non-Maximum Suppression (NMS) for candidate waste regions.
-  function suppressDuplicateRegions(candidates, sameClassThreshold, diffClassThreshold) {
-    if (!Array.isArray(candidates)) {
-      throw new TypeError('suppressDuplicateRegions expects an array of candidates');
-    }
-    var sameThresh = typeof sameClassThreshold === 'number' ? sameClassThreshold : 0.30;
-    var diffThresh = typeof diffClassThreshold === 'number' ? diffClassThreshold : 0.60;
-
-    var rejected = [];
-    var valid = [];
-    for (var i = 0; i < candidates.length; i++) {
-      var c = candidates[i];
-      if (c.verdict && c.verdict.state === 'unsupported') {
-        rejected.push(c);
+  // Map the raw verdict to UI copy. Does not change gates or scores.
+  // Raw top class is never treated as an accepted bin unless state === 'supported'.
+  function presentVerdict(verdict, labels) {
+    labels = labels || LABELS;
+    var accepted = verdict.state === 'supported';
+    var uncertain = verdict.state === 'uncertain';
+    var unsupported = verdict.state === 'unsupported';
+    var topName = labels[verdict.best];
+    var titled = topName.charAt(0).toUpperCase() + topName.slice(1);
+    var topPct = (verdict.top * 100).toFixed(1) + '%';
+    var lowTop = verdict.top < UNCERTAIN.MIN_TOP - 1e-9;
+    var lowMargin = verdict.margin + 1e-9 < UNCERTAIN.MIN_MARGIN;
+    var reason = '';
+    if (unsupported) {
+      reason = 'The rejection head scored this image above the OOD threshold.';
+    } else if (uncertain) {
+      if (lowTop && lowMargin) {
+        reason = 'Low confidence and insufficient separation between the leading classes.';
+      } else if (lowTop) {
+        reason = 'Low confidence \u2014 the model is not sure which bin this is.';
       } else {
         valid.push(c);
       }
@@ -933,37 +369,6 @@
     }
 
     return {
-      accepted: accepted,
-      suppressed: suppressed,
-      rejected: rejected
-    };
-  }
-
-  function presentVerdict(verdict, labels) {
-    labels = labels || LABELS;
-    var accepted = verdict.state === 'supported';
-    var uncertain = verdict.state === 'uncertain';
-    var unsupported = verdict.state === 'unsupported';
-    var topName = labels[verdict.best];
-    var titled = topName.charAt(0).toUpperCase() + topName.slice(1);
-    var topPct = (verdict.top * 100).toFixed(1) + '%';
-    var lowTop = verdict.top < UNCERTAIN.MIN_TOP - 1e-9;
-    var lowMargin = verdict.margin + 1e-9 < UNCERTAIN.MIN_MARGIN;
-    var reason = '';
-    if (unsupported) {
-      reason = 'The rejection head scored this image above the OOD threshold.';
-    } else if (uncertain) {
-      if (lowTop && lowMargin) {
-        reason = 'Low confidence and insufficient separation between the leading classes.';
-      } else if (lowTop) {
-        reason = 'Low confidence \u2014 the model is not sure which bin this is.';
-      } else {
-        reason = 'Insufficient separation between the leading classes.';
-      }
-    }
-    var cannotAssign =
-      'The model cannot confidently assign this image to a supported waste category. Verify the item before disposal.';
-    return {
       assignBin: accepted,
       headlineLabel: accepted ? 'Predicted bin' : 'Final verdict',
       headlineValue: accepted ? titled : (uncertain ? 'Uncertain' : 'Unsupported'),
@@ -973,6 +378,11 @@
         ? (verdict.reject * 100).toFixed(1) + '%'
         : topPct,
       confidenceCaption: unsupported ? 'rejection confidence' : 'model confidence',
+      oodScoreText: Number(verdict.reject).toFixed(4),
+      oodThresholdText: REJECT_THRESHOLD.toFixed(4),
+      confidenceThresholdText: (UNCERTAIN.MIN_TOP * 100).toFixed(0) + '%',
+      marginText: (verdict.margin * 100).toFixed(1) + '%',
+      requiredMarginText: (UNCERTAIN.MIN_MARGIN * 100).toFixed(0) + '%',
       reason: reason,
       disposal: accepted ? '' : cannotAssign,
       highlightBest: accepted
@@ -1129,39 +539,29 @@
     els.boxOverlay.innerHTML = '';
     els.multiResultPanel.hidden = true;
 
-    els.binLabel.textContent = ui.headlineLabel;
-    els.binName.textContent = ui.headlineValue;
+    els.boxOverlay.innerHTML = '';
+    els.multiResultPanel.hidden = true;
+
+    els.binLabel.textContent = unsupported ? 'Result' : 'Predicted bin';
+    els.binName.textContent = unsupported
+      ? 'Unsupported'
+      : LABELS[verdict.best].charAt(0).toUpperCase() + LABELS[verdict.best].slice(1);
     els.binName.classList.toggle('unsupported', unsupported);
     els.binName.classList.toggle('uncertain', uncertain);
-    if (els.topPredBlock) {
-      els.topPredBlock.hidden = !ui.showTopPrediction;
-      els.topPredValue.textContent = ui.topPrediction;
-    }
+    els.topPredBlock.hidden = !ui.showTopPrediction;
+    els.topPredValue.textContent = ui.topPrediction;
     els.confidence.textContent = ui.confidenceText;
     els.confCap.textContent = ui.confidenceCaption;
-
-    if (els.oodScoreVal) {
-      els.oodScoreVal.textContent = verdict.reject.toFixed(4);
-      els.oodScoreVal.style.color = unsupported ? 'var(--danger)' : 'var(--text-primary)';
-    }
-
+    els.oodScore.textContent = ui.oodScoreText;
+    els.oodThreshold.textContent = ui.oodThresholdText;
+    els.confThreshold.textContent = ui.confidenceThresholdText;
+    els.classMargin.textContent = ui.marginText;
+    els.reqMargin.textContent = ui.requiredMarginText;
+    els.reasonNote.hidden = !ui.reason;
+    els.reasonNote.textContent = ui.reason ? ('Reason: ' + ui.reason) : '';
     els.uncertainNote.hidden = !uncertain;
     if (uncertain) els.uncertainNote.lastElementChild.innerHTML = '<strong>Uncertain.</strong> ' + ui.disposal + (ui.reason ? ' ' + ui.reason : '');
     els.unsupportedNote.hidden = !unsupported;
-
-    if (els.guidelineCallout && els.guidelineText) {
-      if (ui.assignBin) {
-        els.guidelineCallout.hidden = false;
-        els.guidelineCallout.style.background = 'rgba(255, 255, 255, 0.04)';
-        els.guidelineCallout.style.borderColor = 'rgba(161, 161, 170, 0.45)';
-        els.guidelineText.textContent = BIN_GUIDELINES[LABELS[verdict.best]] || 'Dispose according to local recycling instructions.';
-      } else {
-        els.guidelineCallout.hidden = false;
-        els.guidelineCallout.style.background = uncertain ? 'rgba(245, 158, 11, 0.08)' : 'rgba(244, 63, 94, 0.08)';
-        els.guidelineCallout.style.borderColor = uncertain ? 'rgba(245, 158, 11, 0.35)' : 'rgba(244, 63, 94, 0.3)';
-        els.guidelineText.textContent = ui.disposal;
-      }
-    }
 
     els.bars.innerHTML = '';
     LABELS.forEach(function (label, i) {
